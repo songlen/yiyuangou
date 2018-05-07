@@ -67,7 +67,7 @@ class Controller
         $this->assign('template_now_time', time());//模板现在时间
         if(isMobile() && strtolower(MODULE_NAME) == 'home'  && strtolower(CONTROLLER_NAME) == 'index' && strtolower(ACTION_NAME) == 'index')
         {
-            header("Location: ".U('Mobile/Index/index'));
+            header("Location: index.php".U('Mobile/Index/index'));
             exit();
          }
 
