@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 <?php
 
 function response_success($data=[], $msg=''){
