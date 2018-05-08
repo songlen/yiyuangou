@@ -1,0 +1,39 @@
+body,ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div, input, dl, dt{margin:0;padding:0;border:0;} 
+body{background:#fff; color:#000; font-family: "PingFangSC-Regular","微软雅黑","Microsoft Yahei",arial,"\5b8b\4f53";} 
+input, a {outline: none;}
+ 
+a {color: #232326; text-decoration: none; vertical-align: middle; }
+i,em {font-style: normal }
+span,img {vertical-align: middle }
+
+
+body {
+    width: 10rem;
+    max-width: 10rem;
+    margin: 0 auto;
+    font-family: PingFangSC-Regular,"Droid Sans",Arial,sans-serif;
+}
+/*div {
+    font-size: 12px; // 默认写上dpr为1的fontSize
+}
+
+[data-dpr="2"] div {
+    font-size: 24px;
+}
+
+[data-dpr="3"] div {
+    font-size: 36px;
+}*/
+
+.header {position: fixed; z-index: 2; height: 1.333333rem; font-size: 0.426667rem; color: #FFF; line-height: 1.333333rem; text-align: center; overflow: hidden; width: 10.0rem;}
+.header .goback { height: 1.333333rem; position: absolute; left: 0.4rem; }
+.header .goback img { width: 0.266667rem; height: 0.48rem; cursor: default;}
+.actThumb {position: relative;}
+.actThumb img {width: 10rem; height: 6.266667rem;}
+.actThumb .goGoodsInfo {height: 1.066667rem; line-height: 1.066667rem; font-size: 0.293333rem; position: absolute; bottom: 0px; text-align: center; color: #FFF; width: 100%; }
+
+.acttitle { overflow: hidden; padding: 0.333333rem 0.4rem; font-size: 0.373333rem; }
+.acttitle a {float: right; color: #9B9B9B; font-size: 0.293333rem;}
+.actprice {overflow: hidden; padding: 0 0.4rem; vertical-align: middle;  font-size: 0.426667rem}
+.actprice .acttime {float: right; font-size: 0.293333rem;}
+
