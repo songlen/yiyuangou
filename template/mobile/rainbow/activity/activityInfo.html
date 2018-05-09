@@ -119,6 +119,9 @@
 
 		var tubiao_pie = echarts.init(document.getElementById("pie"));
 	    tubiao_pie.setOption(option, true);
+	    window.onresize = function(){
+	    	tubiao_pie.resize();
+	    }
 
 	    // 折线图
 	    option = {
