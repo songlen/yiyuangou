@@ -34,7 +34,10 @@ class Activity extends MobileBase {
                     ->find($activity_id)
                     ;
 
+        $config_basic = tpcache('basic');
+
         $this->assign('info', $info);
+        $this->assign('buy_rules', $config_basic['buy_rules']);
         
         return $this->fetch();
     }

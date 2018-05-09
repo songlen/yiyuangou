@@ -11,6 +11,10 @@
 	<!-- layui start -->
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/layui/css/layui.css">
 	<script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script>
+	<!-- layui mobile start -->
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/layui/mobile/layer.css">
+	<script type="text/javascript" src="__PUBLIC__/plugins/layui/mobile/layer.js"></script>
+
 	<!-- layui end -->
 	<!-- siwper css -->
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/swiper/css/swiper.min.css">
@@ -28,7 +32,7 @@
 		<div class="goGoodsInfo"><a href="">查看商品详情</a></div>
 	</div>
 
-	<div class="acttitle"><a href="">购买规则</a><span class="name">iPhone 8 Red</span></div>
+	<div class="acttitle"><a href="javascript:onclick=buy_rules()">购买规则</a><span class="name">iPhone 8 Red</span></div>
 	<div class="actprice">
 		<div class="acttime"><img src="__STATIC__/default/images/clock.png" alt=""> 75:78:23</div>
 		<b>${$info.shop_price}</b>
@@ -119,9 +123,6 @@
 
 		var tubiao_pie = echarts.init(document.getElementById("pie"));
 	    tubiao_pie.setOption(option, true);
-	    window.onresize = function(){
-	    	tubiao_pie.resize();
-	    }
 
 	    // 折线图
 	    option = {
@@ -270,6 +271,13 @@
 		layui.use('element', function(){
 			var element = layui.element;
 		});
+
+		function buy_rules(){
+			layer.open({
+				content: '{$buy_rules}',
+				btn: '确定'
+			});
+		}
 	</script>
 </body>
 </html>

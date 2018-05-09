@@ -202,6 +202,10 @@
                     <p class="notic">商家中心右下侧显示，方便商家遇到问题时咨询</p>
                 </dd>
             </dl>
+            <dl class="row">
+                <dt class="tit">购买规则</dt>
+                <dd class="opt"><textarea name="buy_rules" id="buy_rules">{$config.buy_rules}</textarea></dd>
+            </dl>
 			<dl class="row">
                 <dt class="tit">第三方登录是否必须绑定账号</dt>
                 <dd class="opt">
@@ -218,6 +222,11 @@
         </div>
     </form>
 </div>
+
+<!--以下是在线编辑器 代码 -->
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.config.js"/>
+<load href="__ROOT__/public/plugins/Ueditor/ueditor.all.min.js"/>
+<script type="text/javascript" charset="utf-8" src="__ROOT__/public/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
     function fromsubmit(){
         var vip_price=$("#rechargevip_price").val();
@@ -227,6 +236,19 @@
         }
         document.form1.submit();
     }
+
+    // 初始化购买规则富文本编辑器
+    var url="{:url('Admin/Ueditor/index',array('savePath'=>'goods'))}";
+    var ue = UE.getEditor('buy_rules',{
+         serverUrl :url,
+         zIndex: 999,
+         initialFrameWidth: "100%", //初化宽度
+         initialFrameHeight: 300, //初化高度            
+         focus: false, //初始化时，是否让编辑器获得焦点true或false
+         maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+         pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+         autoHeightEnabled: true
+     });
 </script>
 <div id="goTop">
     <a href="JavaScript:void(0);" id="btntop">
