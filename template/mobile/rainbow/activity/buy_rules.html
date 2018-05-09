@@ -2,8 +2,30 @@
 <html>
 <head>
 	<title>{$title}</title>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/ydui/ydui.css">
+	<script type="text/javascript" src="__PUBLIC__/plugins/ydui/ydui.flexible.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/plugins/ydui/ydui.js"></script>
+	<style type="text/css">
+		/*body{font-size: 0.24rem;}*/
+		.page_content {padding: 0.2rem;}
+		.page_content img {max-width: 100%;}
+	</style>
 </head>
 <body>
+		<header class="m-navbar">
+			<a href="javascript:history.back(-1);" class="navbar-item">
+				<i class="back-ico"></i>
+			</a>
+			<div class="navbar-center">
+				<span class="navbar-title">购买规则</span>
+			</div>
+		</header>
 	<div class="page_content">{$content}</div>
+
+<script>
+    export default {
+
+    }
+</script>
 </body>
 </html>
