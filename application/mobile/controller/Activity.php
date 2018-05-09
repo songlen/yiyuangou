@@ -34,16 +34,27 @@ class Activity extends MobileBase {
                     ->find($activity_id)
                     ;
 
-        $config_basic = tpcache('basic');
 
         $this->assign('info', $info);
-        $this->assign('buy_rules', $config_basic['buy_rules']);
-        
+           $config_basic = tpcache('basic');
+
+
+        $this->assign('title', '购买规则');
+        $this->assign('content', html_entity_decode($config_basic['buy_rules'], ENT_QUOTES, 'utf-8'));
+
         return $this->fetch();
     }
 
-    
+    public function buy_rules(){
+        $config_basic = tpcache('basic');
 
+
+        $this->assign('title', '购买规则');
+        $this->assign('content', html_entity_decode($config_basic['buy_rules'], ENT_QUOTES, 'utf-8'));
+
+        return $this->fetch();
+    }
+    
     /**
      * 商品活动页面
      * @author lxl
