@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport"/>
-	<title>[title]--{$tpshop_config['shop_info_store_title']}</title>
+	<title>{$info.goods_name}--{$tpshop_config['shop_info_store_title']}</title>
 	
 	<!-- flexible start-->
     <link rel="stylesheet" type="text/css" href="__STATIC__/default/css/flexible.css">
@@ -27,18 +27,18 @@
     <script type="text/javascript" src="__PUBLIC__/plugins/echart/echarts.min.js"></script>
 </head>
 <body>
-	<div class="header">第1期 <span class="goback" onclick="javascript:history.back(-1);"><img src="__STATIC__/default/images/goback.png" alt=""></span></div>
+	<div class="header">第{$info.phase}期 <span class="goback" onclick="javascript:history.back(-1);"><img src="__STATIC__/default/images/goback.png" alt=""></span></div>
 	<div class="actThumb"><img src="{$info.original_img}" alt="">
-		<div class="goGoodsInfo"><a href="">查看商品详情</a></div>
+		<div class="goGoodsInfo"><a href="{:U('mobile/goods/goodsInfo', array('id'=>$info[goods_id]))}">查看商品详情</a></div>
 	</div>
 
 	<div class="acttitle"><a href="{:U('mobile/activity/buy_rules')}">购买规则</a><span class="name">iPhone 8 Red</span></div>
 	<div class="actprice">
-		<div class="acttime"><img src="__STATIC__/default/images/clock.png" alt=""> 75:78:23</div>
+		<div class="acttime"><img src="__STATIC__/default/images/clock.png" alt=""> <span id="count_down"></span></div>
 		<b>${$info.shop_price}</b>
 	</div>
 	<div class="layui-progress layui-progress-new">
-		<div class="layui-progress-bar layui-bg-cyan layui-bg-cyan-new" lay-percent="60%"></div>
+		<div class="layui-progress-bar layui-bg-cyan layui-bg-cyan-new" lay-percent="{$buy_percent}"></div>
 	</div>
 	<div class="heng"></div>
 	
@@ -267,11 +267,60 @@
 	    tubiao_bubble.setOption(option, true);
 	</script>
 
-	<script type="text/javascript">
-		// 进度条
-		layui.use('element', function(){
-			var element = layui.element;
-		});
-	</script>
+<script type="text/javascript">
+	// 进度条
+	layui.use('element', function(){
+		var element = layui.element;
+	});
+
+	// 倒计时
+	$(document).ready(function(){  
+		var begin_time=new Date().getTime(); //获取本地当前时间  
+		var end_time = '{$info.end_time}';   //获取倒计时截止时间  
+		
+		$.ajax({
+		        type: "POST",   
+		        url: "{:U('mobile/common/ajaxGetTimestamp')}",  
+		        success: function(data) { //通过ajax请求后台的到服务器当前时间  
+			        var sertime = data; //由于js时间戳精确到毫秒所以要转换  
+			        var nowtime = new Date().getTime(); //再次获取本地当前时间  
+			        console.log(nowtime);
+			        //加载时间
+			        var loadtime = nowtime - begin_time;
+			        //服务器和本地时间差值
+			        var diff_time = sertime - (nowtime + loadtime);
+			        //校正本地时间
+			        var biaozhun_time;
+			        var new_time;
+			        var diff;
+			        var a = setInterval(function(){   //这里采用setinterval定时获取本地时间  
+			            new_time = new Date().getTime();  
+			            biaozhun_time = new_time + diff_time;  
+			            diff = Math.round(end_time * 1000 - biaozhun_time) / 1000;  
+			            if(diff <= 0){
+			                diff = 0;
+			            }
+			            
+			            if(diff >= 0){
+			                day = Math.floor(diff / (60 * 60 * 24));  
+			                hour = Math.floor(diff / (60 * 60)) - (day * 24);  
+			                minute = Math.floor(diff / 60) - (day * 24 * 60) - (hour * 60);  
+			                second = Math.floor(diff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60)  
+			            }  
+			            if (minute <= 9) minute = '0' + minute;  
+			            if (second <= 9) second = '0' + second;  
+			            
+			            // 将天化成时间
+			            hour = parseInt(day*24)+parseInt(hour);
+			            var str_time = hour+':'+minute+':'+second+'';
+			            if(day == '0' && hour == '0' && minute == '00' && second == '00'){  
+			                clearInterval(a); //这里是让等于零时清除  
+			            }
+			            $('#count_down').html(str_time);
+			        },1000);              
+		   		}  
+		});  
+	});  
+</script>
 </body>
 </html>

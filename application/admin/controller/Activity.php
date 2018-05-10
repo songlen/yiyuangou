@@ -53,6 +53,8 @@ class Activity extends Base
             $data = I('post.');
             $data['end_time'] = strtotime($data['end_time']);
 
+            $data['total_count'] = floor(100.22);
+
             // 数据验证
             $validate = Loader::validate('Duobao');
             if (!$validate->batch()->check($data)) {
@@ -63,6 +65,9 @@ class Activity extends Base
             }
 
             if(empty($data['id'])){
+                // 计算期数
+                $max_phase = Db::name('goods_activity')->max('phase');
+                $data['phase'] = $max_phase+1;
                 $insertId = Db::name('goods_activity')->insert($data);
 
                 adminLog("添加夺宝 " . $data['goods_name']);

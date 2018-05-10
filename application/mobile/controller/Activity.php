@@ -34,13 +34,11 @@ class Activity extends MobileBase {
                     ->find($activity_id)
                     ;
 
+        // 计算购买百分比
+        $buy_percent = number_format($info['buy_count']/$info['total_count']*100).'%';
 
         $this->assign('info', $info);
-           $config_basic = tpcache('basic');
-
-
-        $this->assign('title', '购买规则');
-        $this->assign('content', html_entity_decode($config_basic['buy_rules'], ENT_QUOTES, 'utf-8'));
+        $this->assign('buy_percent', $buy_percent);
 
         return $this->fetch();
     }
