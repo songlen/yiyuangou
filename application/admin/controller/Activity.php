@@ -76,6 +76,12 @@ class Activity extends Base
                 } else {
                     $this->ajaxReturn(['status' => 0, 'msg' => '添加夺宝失败', 'result' => '']);
                 }
+            } else {
+                $act_id = $data['id'];
+                unset($data['id']);
+                Db::name('goods_activity')->where(array('act_id'=>$act_id))->save($data);
+
+                $this->ajaxReturn(['status' => 1, 'msg' => '修改成功', 'result' => '']);
             }
         }
 

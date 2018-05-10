@@ -28,12 +28,13 @@ class Activity extends MobileBase {
     // 夺宝详情
     public function activityInfo(){
         $activity_id = $_GET['activity_id'];
-        
+        if($activity_id == '') return false;
+
         $info = M('goods_activity')->alias('ga')
                     ->join('goods g', 'g.goods_id=ga.goods_id')
                     ->find($activity_id)
                     ;
-p($info);
+
         // 计算购买百分比
         $buy_percent = number_format($info['buy_count']/$info['total_count']*100).'%';
 

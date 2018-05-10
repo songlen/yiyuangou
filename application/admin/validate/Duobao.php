@@ -51,5 +51,6 @@ class Duobao extends Validate
         // }else{
         //     return true;
         // }
+        return true;
     }
 }
