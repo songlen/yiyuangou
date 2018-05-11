@@ -5096,7 +5096,7 @@ float: left
 .edit_gtfix {
     background-color: white;
     position: relative;
-    min-height: 3.37067rem
+    min-height: 4.5rem
 }
 
 .edit_gtfix .namephone {
@@ -5152,7 +5152,7 @@ float: left
 }
 
 .edit_gtfix .youjter .Mright {
-    margin-top: 1.23733rem
+    margin-top: 2rem
 }
 
 .edit_gtfix .ttrebu {
@@ -5215,15 +5215,15 @@ float: left
 }
 
 .shopprice .img_or img {
-    width: 2.13333rem;
-    height: 2.13333rem;
-    border: 1px solid #c2c2c2
+    width: 4.666667rem;
+    height: 4.666667rem;
+    /*border: 1px solid #c2c2c2*/
 }
 
 .shopprice .fon_or {
     width: 8.53333rem;
     margin-left: .42667rem;
-    margin-top: .36267rem
+    margin-top: 1.36267rem
 }
 
 .shopprice .fon_or h2 {
@@ -5264,6 +5264,13 @@ float: left
     margin-top: .21333rem;
     text-align: right
 }
+
+.inputOrder .changeNum .shutext {margin-left: 36%; font-size: 0.45rem; float: left; height: 0.586667rem; line-height: 0.586667rem;}
+.inputOrder .changeNum .jian { float: left;}
+.inputOrder .changeNum .num { float: left; text-align: center;}
+.inputOrder .changeNum .num  input { outline: none; border:none; width: 1.333333rem;text-align: center; font-size: 0.426667rem;  height: 0.586667rem; line-height: 0.586667rem; }
+.inputOrder .changeNum .jia { float: left;}
+.inputOrder .changeNum .jian img, .inputOrder .changeNum .jia img{width: 0.586667rem; height: 0.586667rem;}
 
 .qqz {
     height: 2.13333rem;

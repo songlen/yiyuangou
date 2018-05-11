@@ -38,15 +38,13 @@ class Index extends Base {
         $goods_activity = M('goods_activity')->alias('ga')
         	->join('goods g', 'ga.goods_id=g.goods_id')
         	->where($ga_where)
-        	->field('ga.act_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+        	->field('ga.act_id, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
         	->select()
         	;
 
         if(!empty($goods_activity)){
         	foreach ($goods_activity as &$item) {
-        		$buy_count = 10;
-        		$item['buy_count'] = $buy_count;
-        		$item['surplus'] = $item['shop_price']-$buy_count;
+        		$item['surplus'] = $item['total_count']-$item['buy_count'];
         	}
         }
 

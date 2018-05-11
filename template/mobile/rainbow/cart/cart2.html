@@ -15,6 +15,7 @@
         /*部分手机不能点击问题*/
         cursor: pointer
     }
+    .jisong { font-size: 0.7rem; margin-left: 0.85rem; padding-top: 0.6rem; }
 </style>
 <form name="cart2_form" id="cart2_form" method="post">
     <input type="hidden" name="coupon_id" value=""/>
@@ -31,6 +32,7 @@
         <a href="{:U('Mobile/User/address_list',array('source'=>'cart2','goods_id'=>$Request.param.goods_id,'goods_num'=>$Request.param.goods_num,'item_id'=>$Request.param.item_id,'action'=>$Request.param.action))}">
             <if condition="!empty($address)">
             <div class="namephone fl">
+                <div class="jisong">寄送地址</div>
                 <div class="top">
                     <div class="le fl">{$address.consignee}</div>
                     <div class="lr fl">{$address.mobile}</div>
@@ -39,14 +41,12 @@
                     <i class="dwgp"></i>
                     <span>{$address.address}</span>
                 </div>
-                <input type="hidden" value="{$address.address_id}" name="address_id"/> <!--收货地址id-->
+                <input type="hidden" name="address_id" value="{$address.address_id}"/> <!--收货地址id-->
             </div>
             <div class="fr youjter">
                 <i class="Mright"></i>
             </div>
-            <div class="ttrebu">
-                <img src="__STATIC__/images/tt.png"/>
-            </div>
+
         <else/>
                 <div class="namephone fl">
                     <div class="top">
@@ -72,15 +72,16 @@
     <div class="ord_list fill-orderlist p">
         <div class="maleri30">
             <volist name="cartList" id="cart">
-                <div class="shopprice">
+                <div class="shopprice inputOrder">
                     <div class="img_or fl"><img src="{$cart[goods_id]|goods_thum_images=100,100}"/></div>
                     <div class="fon_or fl">
                         <h2 class="similar-product-text">{$cart[goods_name]}</h2>
-                        <div>{$cart[spec_key_name]}</div>
-                    </div>
-                    <div class="price_or fr">
-                        <p class="red"><span>￥</span><span>{$cart[member_goods_price]}</span></p>
-                        <p class="ligfill">x{$cart[goods_num]}</p>
+                    </div> 
+                    <div class="changeNum">
+                        <div class="shutext">数量：</div>
+                        <div class="jian"><img onclick="jian()" src="__STATIC__/default/images/jian.png" /></div>
+                        <div class="num"><input type="text" name="num" value="{$cart.goods_num}" onblur="input({$cart.prom_id})" /></div>
+                        <div class="jia"><img onclick="jia({$cart.prom_id})" src="__STATIC__/default/images/jia.png" /></div>
                     </div>
                 </div>
             </volist>
@@ -840,6 +841,48 @@
         closer();
         ajax_order_price();
     }
+
+        // 加减
+    function jia(act_id){
+        var now_val = parseInt($('.changeNum .num input').val());
+        var num = now_val+1;
+
+        ajaxCheckActNum(act_id, num);
+        $('.changeNum .num input').val(num);
+    }   
+
+    function jian(){
+        var now_val = parseInt($('.changeNum .num input').val());
+        if(now_val <= 1) return false;
+        var val = now_val-1;
+
+
+        $('.changeNum .num input').val(val);
+    }
+
+    function input(act_id){
+        var num = parseInt($('.changeNum .num input').val());
+        if(num <= 1 || isNaN(num)) num = 1;
+
+        ajaxCheckActNum(act_id, num);
+        $('.changeNum .num input').val(num);
+    }
+
+    function ajaxCheckActNum(act_id, num){
+        $.ajax({
+            url:'{:U("mobile/cart/ajaxCheckActNum")}',
+            type:'post',
+            dataType:'json',
+            data:{act_id:act_id, num:num},
+            success:function(data){
+                if(data.status=='-1'){
+                    layer.msg(data.msg);
+                    return false;
+                }
+            }
+        })
+    }
+
 </script>
 </body>
 </html>

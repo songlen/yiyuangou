@@ -2,11 +2,7 @@
 /**
  * tpshop
  * ============================================================================
- * * 版权所有 2015-2027 深圳搜豹网络科技有限公司，并保留所有权利。
- * 网站地址: http://www.tp-shop.cn
- * ----------------------------------------------------------------------------
- * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
- * 不允许对程序代码以任何形式任何目的的再发布。
+
  * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
  * ============================================================================
  * $Author: IT宇宙人 2015-08-10 $
@@ -110,13 +106,17 @@ class Cart extends MobileBase {
      * 购物车第二步确定页面
      */
     public function cart2(){
-        $goods_id = input("goods_id/d"); // 商品id
+        $act_id = input("act_id/d"); // 夺宝活动id
+        $goods_id = input("goods_id/d"); // 商品规格id
         $goods_num = input("goods_num/d");// 商品数量
-        $item_id = input("item_id/d"); // 商品规格id
         $action = input("action/s"); // 行为
+
+        // 登录判断
         if ($this->user_id == 0){
             $this->error('请先登录', U('Mobile/User/login'));
         }
+
+        // 收货地址
         $address_id = I('address_id/d');
         if($address_id){
             $address = M('user_address')->where("address_id", $address_id)->find();
@@ -126,21 +126,22 @@ class Cart extends MobileBase {
         if(empty($address)){
             $address = M('user_address')->where(['user_id'=>$this->user_id])->find();
         }
+
         $cartLogic = new CartLogic();
-        $couponLogic = new CouponLogic();
         $cartLogic->setUserId($this->user_id);
         //立即购买
         if($action == 'buy_now'){
             $cartLogic->setGoodsModel($goods_id);
-            $cartLogic->setSpecGoodsPriceModel($item_id);
+            // $cartLogic->setSpecGoodsPriceModel($item_id);
             $cartLogic->setGoodsBuyNum($goods_num);
             $buyGoods = [];
             try{
-                $buyGoods = $cartLogic->buyNow();
+                $buyGoods = $cartLogic->buyNow($act_id);
             }catch (TpshopException $t){
                 $error = $t->getErrorArr();
                 $this->error($error['msg']);
             }
+
             $cartList['cartList'][0] = $buyGoods;
             $cartGoodsTotalNum = $goods_num;
         }else{
@@ -150,22 +151,45 @@ class Cart extends MobileBase {
             $cartList['cartList'] = $cartLogic->getCartList(1); // 获取用户选中的购物车商品
             $cartGoodsTotalNum = count($cartList['cartList']);
         }
+
         $cartGoodsList = get_arr_column($cartList['cartList'],'goods');
         $cartGoodsId = get_arr_column($cartGoodsList,'goods_id');
         $cartGoodsCatId = get_arr_column($cartGoodsList,'cat_id');
         $cartPriceInfo = $cartLogic->getCartPriceInfo($cartList['cartList']);  //初始化数据。商品总额/节约金额/商品总共数量
-        $userCouponList = $couponLogic->getUserAbleCouponList($this->user_id, $cartGoodsId, $cartGoodsCatId);//用户可用的优惠券列表
+
         $cartList = array_merge($cartList,$cartPriceInfo);
-        $userCartCouponList = $cartLogic->getCouponCartList($cartList, $userCouponList);
-        $userCouponNum = $cartLogic->getUserCouponNumArr();
+        // $userCartCouponList = $cartLogic->getCouponCartList($cartList, $userCouponList);
+        // $userCouponNum = $cartLogic->getUserCouponNumArr();
         $this->assign('address',$address); //收货地址
-        $this->assign('userCartCouponList', $userCartCouponList);  //优惠券，用able判断是否可用
-        $this->assign('userCouponNum', $userCouponNum);  //优惠券数量
+        // $this->assign('userCartCouponList', $userCartCouponList);  //优惠券，用able判断是否可用
+        // $this->assign('userCouponNum', $userCouponNum);  //优惠券数量
         $this->assign('cartGoodsTotalNum', $cartGoodsTotalNum);
         $this->assign('cartList', $cartList['cartList']); // 购物车的商品
         $this->assign('cartPriceInfo', $cartPriceInfo);//商品优惠总价
         return $this->fetch();
     }
+
+    // public function buy_now(){
+    //     $act_id = input("act_id/d"); // 夺宝活动id
+    //     $goods_id = input("goods_id/d"); // 商品规格id
+    //     $goods_num = input("goods_num/d");// 商品数量
+
+    //     if ($this->user_id == 0){
+    //         $this->error('请先登录', U('Mobile/User/login'));
+    //     }
+
+
+    //     $address_id = I('address_id/d');
+    //     if($address_id){
+    //         $address = M('user_address')->where("address_id", $address_id)->find();
+    //     } else {
+    //         $address = Db::name('user_address')->where(['user_id'=>$this->user_id])->order(['is_default'=>'desc'])->find();
+    //     }
+    //     if(empty($address)){
+    //         $address = M('user_address')->where(['user_id'=>$this->user_id])->find();
+    //     }
+
+    // }
 
 
     /**
@@ -342,6 +366,31 @@ class Cart extends MobileBase {
         $cartLogic->setGoodsBuyNum($goods_num);
         $result = $cartLogic->addGoodsToCart();
         exit(json_encode($result));
+    }
+    /**
+     * [ajaxCheckNum 修改商品数量判断是否超出剩余份额]
+     * @return [type] [description]
+     */
+    public function ajaxCheckActNum(){
+        $act_id = I('act_id/d');
+        $num = I('num/d');
+
+        if(empty($act_id)){
+            $this->ajaxReturn(['status'=>-1,'msg'=>'请选择要购买的商品','result'=>'']);
+        }
+        if(empty($num)){
+            $this->ajaxReturn(['status'=>-1,'msg'=>'购买商品数量不能为0','result'=>'']);
+        }
+
+        $activity = Db::name('goods_activity')->field('total_count, buy_count')->find($act_id);
+        
+        $store_count = $activity['total_count'] - $activity['buy_count'];
+        if($num > $store_count){
+            $this->ajaxReturn(['status'=>'-1', 'msg'=>'选购份额超出剩余份额']);
+        }
+
+        $this->ajaxReturn(['status'=>'1', 'msg'=>'']);
+
     }
     /**
      * ajax 获取用户收货地址 用于购物车确认订单页面

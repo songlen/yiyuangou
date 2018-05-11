@@ -90,72 +90,82 @@ class CartLogic extends Model
      * @return mixed
      * @throws TpshopException
      */
-    public function buyNow(){
+    public function buyNow($act_id=0){
         if(empty($this->goods)){
             throw new TpshopException('立即购买',0,['status'=>0,'msg'=>'购买商品不存在','result'=>'']);
         }
         if(empty($this->goodsBuyNum)){
             throw new TpshopException('立即购买',0,['status'=>0,'msg'=>'购买商品数量不能为0','result'=>'']);
         }
+
+
         $buyGoods = [
             'user_id'=>$this->user_id,
             'session_id'=>$this->session_id,
             'goods_id'=>$this->goods['goods_id'],
             'goods_sn'=>$this->goods['goods_sn'],
             'goods_name'=>$this->goods['goods_name'],
-            'market_price'=>$this->goods['market_price'],
+            // 'market_price'=>$this->goods['market_price'],
             'goods_price'=>$this->goods['shop_price'],
-            'member_goods_price'=>$this->goods['shop_price'],
+            // 'member_goods_price'=>$this->goods['shop_price'],
             'goods_num' => $this->goodsBuyNum, // 购买数量
             'add_time' => time(), // 加入购物车时间
-            'prom_type' => 0,   // 0 普通订单,1 限时抢购, 2 团购 , 3 促销优惠
-            'prom_id' => 0,   // 活动id
+            'prom_type' => 4,   // 0 普通订单,1 限时抢购, 2 团购 , 3 促销优惠 4 夺宝活动
+            'prom_id' => $act_id,   // 活动id
             'weight' => $this->goods['weight'],   // 商品重量
             'goods'=>$this->goods,
         ];
-        if(empty($this->specGoodsPrice)){
-            $specGoodsPriceCount = Db::name('SpecGoodsPrice')->where("goods_id", $this->goods['goods_id'])->count('item_id');
-            if($specGoodsPriceCount > 0){
-                throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '必须传递商品规格', 'result' => '']);
-            }
-            $prom_type = $this->goods['prom_type'];
-            $store_count = $this->goods['store_count'];
-        }else{
-            $buyGoods['member_goods_price'] = $this->specGoodsPrice['price'];
-            $buyGoods['goods_price'] = $this->specGoodsPrice['price'];
-            $buyGoods['spec_key'] = $this->specGoodsPrice['key'];
-            $buyGoods['spec_key_name'] = $this->specGoodsPrice['key_name']; // 规格 key_name
-            $buyGoods['sku'] = $this->specGoodsPrice['sku']; //商品条形码
-            $prom_type = $this->specGoodsPrice['prom_type'];
-            $store_count = $this->specGoodsPrice['store_count'];
-        }
+        // if(empty($this->specGoodsPrice)){
+        //     $specGoodsPriceCount = Db::name('SpecGoodsPrice')->where("goods_id", $this->goods['goods_id'])->count('item_id');
+        //     if($specGoodsPriceCount > 0){
+        //         throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '必须传递商品规格', 'result' => '']);
+        //     }
+        //     // $prom_type = $this->goods['prom_type'];
+        //     $store_count = $this->goods['store_count'];
+        // }else{
+        //     $buyGoods['member_goods_price'] = $this->specGoodsPrice['price'];
+        //     $buyGoods['goods_price'] = $this->specGoodsPrice['price'];
+        //     $buyGoods['spec_key'] = $this->specGoodsPrice['key'];
+        //     $buyGoods['spec_key_name'] = $this->specGoodsPrice['key_name']; // 规格 key_name
+        //     $buyGoods['sku'] = $this->specGoodsPrice['sku']; //商品条形码
+        //     $prom_type = $this->specGoodsPrice['prom_type'];
+        //     $store_count = $this->specGoodsPrice['store_count'];
+        // }
 
-        if($this->goodsBuyNum > $store_count){
-            throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '商品库存不足，剩余'.$this->goods['store_count'], 'result' => '']);
+        // if($this->goodsBuyNum > $store_count){
+        //     throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '商品库存不足，剩余'.$this->goods['store_count'], 'result' => '']);
+        // }
+        // 判断夺宝活动剩余份数
+        $activityInfo = DB::name('goods_activity')->where(array('act_id'=>$act_id))->find();
+        $store_count = $activityInfo['total_count'] - $activityInfo['buy_count'];
+
+        if($this->goodsBuyNum > $store_count) {
+            throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '商品份额不足，剩余'.$store_count, 'result' => '']);
         }
-        $goodsPromFactory = new GoodsPromFactory();
-        if ($goodsPromFactory->checkPromType($prom_type)) {
-            $goodsPromLogic = $goodsPromFactory->makeModule($this->goods,$this->specGoodsPrice);
-            if($goodsPromLogic->checkActivityIsAble()){    
-                $buyGoods = $goodsPromLogic->buyNow($buyGoods);
-            }
-        }else{
-            if($this->goods['prom_type'] == 0){
-                if (!empty($this->goods['price_ladder'])){
-                    //如果有阶梯价格,就是用阶梯价格
-                    $goodsLogic = new GoodsLogic();
-                    $price_ladder = unserialize($this->goods['price_ladder']);
-                    $buyGoods['goods_price'] = $buyGoods['member_goods_price']  = $goodsLogic->getGoodsPriceByLadder($this->goodsBuyNum, $buyGoods['shop_price'], $price_ladder);
-                }else if($this->user_id){
-                    $user = Users::get(['user_id'=>$this->user_id]);
-                    $buyGoods['goods_price'] = $buyGoods['member_goods_price'] = round($buyGoods['goods_price'] * $user['discount'], 2);
-                }
-            }
-        }
+        // $goodsPromFactory = new GoodsPromFactory();
+        // if ($goodsPromFactory->checkPromType($prom_type)) {
+        //     $goodsPromLogic = $goodsPromFactory->makeModule($this->goods,$this->specGoodsPrice);
+        //     if($goodsPromLogic->checkActivityIsAble()){    
+        //         $buyGoods = $goodsPromLogic->buyNow($buyGoods);
+        //     }
+        // }else{
+        //     if($this->goods['prom_type'] == 0){
+        //         if (!empty($this->goods['price_ladder'])){
+        //             //如果有阶梯价格,就是用阶梯价格
+        //             $goodsLogic = new GoodsLogic();
+        //             $price_ladder = unserialize($this->goods['price_ladder']);
+        //             $buyGoods['goods_price'] = $buyGoods['member_goods_price']  = $goodsLogic->getGoodsPriceByLadder($this->goodsBuyNum, $buyGoods['shop_price'], $price_ladder);
+        //         }else if($this->user_id){
+        //             $user = Users::get(['user_id'=>$this->user_id]);
+        //             $buyGoods['goods_price'] = $buyGoods['member_goods_price'] = round($buyGoods['goods_price'] * $user['discount'], 2);
+        //         }
+        //     }
+        // }
         $cart = new Cart();
         $buyGoods['cut_fee'] = $cart->getCutFeeAttr(0,$buyGoods);
         $buyGoods['goods_fee'] = $cart->getGoodsFeeAttr(0,$buyGoods);
         $buyGoods['total_fee'] = $cart->getTotalFeeAttr(0,$buyGoods);
+
         return $buyGoods;
     }
     /**
