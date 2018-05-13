@@ -5228,7 +5228,7 @@ float: left
 
 .shopprice .fon_or h2 {
     color: #666666;
-    font-size: .55467rem;
+    font-size: .64rem;
     font-weight: normal;
     height: 1.19467rem
 }
@@ -5265,12 +5265,32 @@ float: left
     text-align: right
 }
 
-.inputOrder .changeNum .shutext {margin-left: 36%; font-size: 0.45rem; float: left; height: 0.586667rem; line-height: 0.586667rem;}
+.inputOrder .changeNum .shutext {margin-left: 36%; font-size: 0.64rem; float: left; height: 0.64rem; line-height: 0.586667rem;}
 .inputOrder .changeNum .jian { float: left;}
 .inputOrder .changeNum .num { float: left; text-align: center;}
-.inputOrder .changeNum .num  input { outline: none; border:none; width: 1.333333rem;text-align: center; font-size: 0.426667rem;  height: 0.586667rem; line-height: 0.586667rem; }
+.inputOrder .changeNum .num  input { outline: none; border:none; width: 1.333333rem;text-align: center; font-size: 0.64rem;  height: 0.586667rem; line-height: 0.586667rem; }
 .inputOrder .changeNum .jia { float: left;}
-.inputOrder .changeNum .jian img, .inputOrder .changeNum .jia img{width: 0.586667rem; height: 0.586667rem;}
+.inputOrder .changeNum .jian img, .inputOrder .changeNum .jia img{width: 0.64rem; height: 0.64rem;}
+
+
+
+.jifeninfo {background: #f6f7fa; padding: .85333rem;}
+.jifeninfo .con {margin-top: 1.706667rem; font-size: 0.64rem; color: #9B9B9B;}
+.jifeninfo .jifentip {background-image: url("../default/images/jifentip.png"); vertical-align: middle; display: inline-block; background-size: cover; width: 0.64rem; height: 0.64rem;}
+.orderBeforInfo { padding: 0.85333rem; font-size: 0.64rem; line-height: 1.6em; background: #FFF;}
+.orderBeforInfo label { display: inline-block; width:5rem; color: #9B9B9B;}
+.orderBeforInfo span {color: #000;}
+.orderBeforInfo .split {height: 8px; margin-top: 30px; background: url(../default/images/split.png) center center no-repeat; background-size: cover;}
+.select_jifen_tab {font-size: 0.64rem; text-align: right;  margin-top: 0.64rem;}
+.select_jifen_tab span { margin-left: 1.066667rem;}
+.select_jifen_tab i {background: url(../default/images/radio.png); background-size: cover; margin-right: 0.426667rem; width: 0.64rem; height: 0.64rem; display: inline-block; vertical-align: middle;}
+.select_jifen_tab i.selected { background: url(../default/images/radio_s.png); background-size: cover; }
+.orderTotal {text-align: center;}
+.orderTotal .amount {margin-top: 0.853333rem; font-size: 1rem; }
+.orderTotal .t {color: #9B9B9B; font-size: 0.512rem; }
+#cart2_form .submit {margin: 0.853333rem auto; display: block; font-size: 0.84rem; text-align: center; height: 1.92rem; line-height: 1.92rem; background: #000; width: 80%; color: #FFF;}
+
+
 
 .qqz {
     height: 2.13333rem;

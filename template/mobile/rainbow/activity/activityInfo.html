@@ -368,25 +368,53 @@
 		});
 	}
 
-	// 加减
-	function jia(){
-		var now_val = parseInt($('.changeNum .num input').val());
-		var val = now_val+1;
-		$('.changeNum .num input').val(val);
-	}	
+    // 加减
+    function jia(act_id){
+        var now_val = parseInt($('.changeNum .num input').val());
+        var num = now_val+1;
 
-	function jian(){
-		var now_val = parseInt($('.changeNum .num input').val());
-		if(now_val <= 1) return false;
-		var val = now_val-1;
-		$('.changeNum .num input').val(val);
-	}
+        if(ajaxCheckActNum(act_id, num) == false){
+            return false;
+        }
+        $('.changeNum .num input').val(num);
+    }   
 
-	function input(){
-		var now_val = parseInt($('.changeNum .num input').val());
-		if(now_val <= 1 || isNaN(now_val)) now_val = 1;
-		$('.changeNum .num input').val(now_val);
-	}
+    function jian(){
+        var now_val = parseInt($('.changeNum .num input').val());
+        if(now_val <= 1) return false;
+        var val = now_val-1;
+
+
+        $('.changeNum .num input').val(val);
+    }
+
+    function input(act_id){
+        var num = parseInt($('.changeNum .num input').val());
+        if(num <= 1 || isNaN(num)) num = 1;
+
+        if(ajaxCheckActNum(act_id, num) == false){
+           $('.changeNum .num input').val(1);
+        }
+    }
+
+    function ajaxCheckActNum(act_id, num){
+        var re = true;
+        $.ajax({
+            url:'{:U("mobile/cart/ajaxCheckActNum")}',
+            type:'post',
+            dataType:'json',
+            async:false,
+            data:{act_id:act_id, num:num},
+            success:function(data){
+                if(data.status=='-1'){
+                    showErrorMsg(data.msg);
+                    re = false;
+                }
+            }
+        })
+
+        return re;
+    }
 </script>
 
 </body>
