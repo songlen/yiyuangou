@@ -5281,9 +5281,9 @@ float: left
 .orderBeforInfo label { display: inline-block; width:5rem; color: #9B9B9B;}
 .orderBeforInfo span {color: #000;}
 .orderBeforInfo .split {height: 8px; margin-top: 30px; background: url(../default/images/split.png) center center no-repeat; background-size: cover;}
-.select_jifen_tab {font-size: 0.64rem; text-align: right; padding-bottom: 0.213333rem;  margin-top: 0.64rem;}
+.select_jifen_tab {font-size: 0.64rem; text-align: right; padding-bottom: 10px;  margin-top: 0.64rem;}
 .select_jifen_tab span { margin-left: 1.066667rem;}
-.select_jifen_tab i {background: url(../default/images/radio.png); background-size: cover; margin-right: 0.426667rem; width: 0.64rem; height: 0.64rem; display: inline-block; vertical-align: middle;}
+.select_jifen_tab i {background: url(../default/images/radio.png); margin-bottom: 0.106667rem; background-size: cover; margin-right: 0.426667rem; width: 0.64rem; height: 0.64rem; display: inline-block; vertical-align: middle;}
 .select_jifen_tab i.selected { background: url(../default/images/radio_s.png); background-size: cover; }
 .orderTotal {text-align: center;}
 .orderTotal .amount {margin-top: 0.853333rem; font-size: 1rem; }
