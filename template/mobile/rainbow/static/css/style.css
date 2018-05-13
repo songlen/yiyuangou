@@ -5268,7 +5268,7 @@ float: left
 .inputOrder .changeNum .shutext {margin-left: 36%; font-size: 0.64rem; float: left; height: 0.64rem; line-height: 0.586667rem;}
 .inputOrder .changeNum .jian { float: left;}
 .inputOrder .changeNum .num { float: left; text-align: center;}
-.inputOrder .changeNum .num  input { outline: none; border:none; width: 1.333333rem;text-align: center; font-size: 0.64rem;  height: 0.586667rem; line-height: 0.586667rem; }
+.inputOrder .changeNum .num  input { outline: none; border:none; width: 1.333333rem;text-align: center; font-size: 0.64rem;  height: 0.58rem; line-height: 0.58rem; }
 .inputOrder .changeNum .jia { float: left;}
 .inputOrder .changeNum .jian img, .inputOrder .changeNum .jia img{width: 0.64rem; height: 0.64rem;}
 
