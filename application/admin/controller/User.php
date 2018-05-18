@@ -138,7 +138,6 @@ class User extends Base {
     public function add_robot(){
         // 随机生成昵称
         $config = Config::load(APP_PATH.'admin/conf/nickname.php');
-        return;
         $tou = $config['tou'];
         $do = $config['do'];
         $wei = $config['wei'];
@@ -157,7 +156,6 @@ class User extends Base {
                 'nickname' => $nickname,
                 'reg_time' => time(),
             );
-            p($data);
             M('users')->insert($data);
         }
         // Db::query('commit');
