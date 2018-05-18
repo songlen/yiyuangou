@@ -157,6 +157,7 @@ class User extends Base {
                 'nickname' => $nickname,
                 'reg_time' => time(),
             );
+            p($data);
             M('users')->insert($data);
         }
         // Db::query('commit');
