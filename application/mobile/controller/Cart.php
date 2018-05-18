@@ -102,13 +102,16 @@ class Cart extends MobileBase {
         }
     }
 
+
     /**
-     * 购物车第二步确定页面
+     * 购物车第二步确定页面/立即购买
+     * selectInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
      */
     public function cart2(){
-        $act_id = input("act_id/d"); // 夺宝活动id
-        $goods_id = input("goods_id/d"); // 商品规格id
-        $goods_num = input("goods_num/d");// 商品数量
+        $selectInfo = I('selectInfo');
+        $selectInfo =  stripslashes(html_entity_decode($selectInfo));
+        $selectInfo = json_decode($selectInfo, true);
+
         $action = input("action/s"); // 行为
 
         // 登录判断
@@ -127,45 +130,78 @@ class Cart extends MobileBase {
             $address = M('user_address')->where(['user_id'=>$this->user_id])->find();
         }
 
-        $cartLogic = new CartLogic();
-        $cartLogic->setUserId($this->user_id);
         //立即购买
-        if($action == 'buy_now'){
-            $cartLogic->setGoodsModel($goods_id);
-            // $cartLogic->setSpecGoodsPriceModel($item_id);
-            $cartLogic->setGoodsBuyNum($goods_num);
-            $buyGoods = [];
-            try{
-                $buyGoods = $cartLogic->buyNow($act_id);
-            }catch (TpshopException $t){
-                $error = $t->getErrorArr();
-                $this->error($error['msg']);
-            }
+        // if($action == 'buy_now'){
+        //     $actInfo = current($selectInfo);
+        //     // $cartLogic->setGoodsModel($actInfo['goods_id']);
+        //     // // $cartLogic->setSpecGoodsPriceModel($item_id);
+        //     // $cartLogic->setGoodsBuyNum($actInfo['num']);
+        //     // $buyGoods = [];
+        //     // try{
+        //     //     $buyGoods = $cartLogic->buyNow($actInfo['act_id']);
+        //     // }catch (TpshopException $t){
+        //     //     $error = $t->getErrorArr();
+        //     //     $this->error($error['msg']);
+        //     // }
 
-            $cartList['cartList'][0] = $buyGoods;
-            $cartGoodsTotalNum = $goods_num;
-        }else{
-            if ($cartLogic->getUserCartOrderCount() == 0){
-                $this->error('你的购物车没有选中商品', 'Cart/index');
-            }
-            $cartList['cartList'] = $cartLogic->getCartList(1); // 获取用户选中的购物车商品
-            $cartGoodsTotalNum = count($cartList['cartList']);
+        //     $cartList['cartList'][0] = $buyGoods;
+        //     $cartGoodsTotalNum = $goods_num;
+        // }else{
+        //     if ($cartLogic->getUserCartOrderCount() == 0){
+        //         $this->error('你的购物车没有选中商品', 'Cart/index');
+        //     }
+        //     $cartList['cartList'] = $cartLogic->getCartList(1); // 获取用户选中的购物车商品
+        //     $cartGoodsTotalNum = count($cartList['cartList']);
+        // }
+
+        // $cartGoodsList = get_arr_column($cartList['cartList'],'goods');
+        // $cartGoodsId = get_arr_column($cartGoodsList,'goods_id');
+        // $cartGoodsCatId = get_arr_column($cartGoodsList,'cat_id');
+        // $cartPriceInfo = $cartLogic->getCartPriceInfo($cartList['cartList']);  //初始化数据。商品总额/节约金额/商品总共数量
+        $cartList = array();
+        $money = 0; // 商品金额总额
+
+        foreach ($selectInfo as $item) {
+            $where = array(
+                'ga.act_id' => $item['act_id'],
+            );
+            $actInfo = Db::name('goods_activity')->alias('ga')
+                ->join('goods g', 'ga.goods_id=g.goods_id')
+                ->where($where)
+                ->find()
+                ;
+
+            $cartList[] = array(
+                'act_id' => $item['act_id'],
+                'goods_id' => $item['goods_id'],
+                'goods_name' => $actInfo['goods_name'],
+                'num' => $item['num'],
+            );
+
+            $money += $item['num'];
+            
         }
 
-        $cartGoodsList = get_arr_column($cartList['cartList'],'goods');
-        $cartGoodsId = get_arr_column($cartGoodsList,'goods_id');
-        $cartGoodsCatId = get_arr_column($cartGoodsList,'cat_id');
-        $cartPriceInfo = $cartLogic->getCartPriceInfo($cartList['cartList']);  //初始化数据。商品总额/节约金额/商品总共数量
+        $tax_rate = 0.13; // 税率
+        $tax_money += $money*$tax_rate; // 税额
+        $tax_amount = $money+$tax_money; // 税后金额
+        $total_amount += $tax_amount;
 
-        $cartList = array_merge($cartList,$cartPriceInfo);
-        // $userCartCouponList = $cartLogic->getCouponCartList($cartList, $userCouponList);
-        // $userCouponNum = $cartLogic->getUserCouponNumArr();
+        
+
+        $priceInfo = array(
+            'money' => $money,
+            'tax_rate' => '13%',
+            'tax_money' => $tax_money,
+            'tax_amount' => $tax_amount,
+            'total_amount' => $total_amount, // 总金额
+        );
+
+
         $this->assign('address',$address); //收货地址
-        // $this->assign('userCartCouponList', $userCartCouponList);  //优惠券，用able判断是否可用
-        // $this->assign('userCouponNum', $userCouponNum);  //优惠券数量
-        $this->assign('cartGoodsTotalNum', $cartGoodsTotalNum);
-        $this->assign('cartList', $cartList['cartList']); // 购物车的商品
-        $this->assign('cartPriceInfo', $cartPriceInfo);//商品优惠总价
+        $this->assign('cartList', $cartList); // 购物车的商品
+        $this->assign('priceInfo', $priceInfo); // 价格信息
+
         return $this->fetch();
     }
 
@@ -190,6 +226,97 @@ class Cart extends MobileBase {
     //     }
 
     // }
+   
+    /**
+     * [ajaxCountAmount 计算商品金额]
+     * @return [type] [description]
+     */
+    public function ajaxTotalAmount(){
+        $post = I('p.');
+        
+        $act_ids = $post['act_id'];
+        $nums = $post['num'];
+        foreach ($act_ids as $k => $act_id) {
+            $goodsInfo[] = array(
+                'act_id' =>$act_id,
+                'num' => $nums[$k],
+            );
+        }
+        p($goodsInfo);
+        // $goodsInfo =  stripslashes(html_entity_decode($goodsInfo));
+        // $goodsInfo = json_decode($goodsInfo, true);
+
+        $use_jifen = I('use_jifen/d'); // 是否使用积分
+
+        $money = 0; // 商品金额
+        foreach ($goodsInfo as $item) {
+
+            $where = array(
+                'ga.act_id' => $item['act_id'],
+            );
+
+            $activitInfo = Db::name('goods_activity')->alias('ga')
+                ->join('goods g', 'ga.goods_id=g.goods_id')
+                ->where($where)
+                ->find()
+                ;
+
+            // 判断活动份额是否足够
+            $store_count = $activitInfo['total_count'] - $activitInfo['buy_count'];
+            if($num > $store_count){
+                $this->ajaxReturn(['status'=>'-1', 'msg'=>'选购份额超出剩余份额']);
+            }
+
+            $money += $item['num'];
+
+        }
+
+        $tax_rate = 0.13; // 税率
+        $tax_money = $money*$tax_rate; // 税额
+        $tax_amount = $money+$tax_money; // 税后金额
+        $total_amount = $tax_amount;
+
+        $priceInfo = array(
+            'money' => $money,
+            'tax_rate' => '13%',
+            'tax_money' => $tax_money,
+            'tax_amount' => $tax_amount,
+            'total_amount' => $total_amount, // 总金额
+            // 'use_point' => 0,
+        );
+
+        if($use_point){
+            
+        }
+
+        $this->ajaxReturn(['status'=>200, 'data'=>$priceInfo]);
+    }
+
+    /**
+     * [ajaxCheckNum 修改商品数量判断是否超出剩余份额]
+     * @return [type] [description]
+     */
+    public function ajaxCheckActNum(){
+        $act_id = I('act_id/d');
+        $num = I('num/d');
+
+        if(empty($act_id)){
+            $this->ajaxReturn(['status'=>-1,'msg'=>'请选择要购买的商品','result'=>'']);
+        }
+        if(empty($num)){
+            $this->ajaxReturn(['status'=>-1,'msg'=>'购买商品数量不能为0','result'=>'']);
+        }
+
+        $activity = Db::name('goods_activity')->field('total_count, buy_count')->find($act_id);
+        
+        $store_count = $activity['total_count'] - $activity['buy_count'];
+        if($num > $store_count){
+            $this->ajaxReturn(['status'=>'-1', 'msg'=>'选购份额超出剩余份额']);
+        }
+
+        $this->ajaxReturn(['status'=>'1', 'msg'=>'']);
+
+    }
 
 
     /**
@@ -367,31 +494,7 @@ class Cart extends MobileBase {
         $result = $cartLogic->addGoodsToCart();
         exit(json_encode($result));
     }
-    /**
-     * [ajaxCheckNum 修改商品数量判断是否超出剩余份额]
-     * @return [type] [description]
-     */
-    public function ajaxCheckActNum(){
-        $act_id = I('act_id/d');
-        $num = I('num/d');
 
-        if(empty($act_id)){
-            $this->ajaxReturn(['status'=>-1,'msg'=>'请选择要购买的商品','result'=>'']);
-        }
-        if(empty($num)){
-            $this->ajaxReturn(['status'=>-1,'msg'=>'购买商品数量不能为0','result'=>'']);
-        }
-
-        $activity = Db::name('goods_activity')->field('total_count, buy_count')->find($act_id);
-        
-        $store_count = $activity['total_count'] - $activity['buy_count'];
-        if($num > $store_count){
-            $this->ajaxReturn(['status'=>'-1', 'msg'=>'选购份额超出剩余份额']);
-        }
-
-        $this->ajaxReturn(['status'=>'1', 'msg'=>'']);
-
-    }
     /**
      * ajax 获取用户收货地址 用于购物车确认订单页面
      */

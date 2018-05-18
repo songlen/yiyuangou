@@ -16,6 +16,7 @@ use think\Verify;
 use think\Db;
 use app\admin\logic\UsersLogic;
 use think\Loader;
+use think\Config;
 
 class User extends Base {
 
@@ -129,6 +130,62 @@ class User extends Base {
 			}
     	}
     	return $this->fetch();
+    }
+
+    /**
+     * [add_robot 添加机器人]
+     */
+    public function add_robot(){
+        // 随机生成昵称
+        $config = Config::load(APP_PATH.'admin/conf/nickname.php');
+        return;
+        $tou = $config['tou'];
+        $do = $config['do'];
+        $wei = $config['wei'];
+
+        // Db::query('SET AUTOCOMMIT=0');
+        $start_time = time();
+        for($i=1; $i<10000; $i++){
+            $tou_num = rand(0, 331);
+            $do_num = rand(0, 19);
+            $wei_num = rand(0, 327);
+            $nickname = $tou[$tou_num].$do[$do_num].$wei[$wei_num];
+            $mobile = $this->create_mobile();
+
+            $data = array(
+                'mobile' => $mobile,
+                'nickname' => $nickname,
+                'reg_time' => time(),
+            );
+            M('users')->insert($data);
+        }
+        // Db::query('commit');
+
+        $end_time = time();
+
+        echo $end_time-$start_time;
+    }
+
+
+    private function create_nickname(){
+
+    }
+    /**
+     * [create_mobile 生成手机号]
+     * @return [type] [description]
+     */
+    private function create_mobile(){
+        $mobile_tou = array(
+            '130','131','132','133','134','135','136','137','138','139','144','147','150','151','152','153','155','156','157','158','159','176','177','178','180','181','182','183','184','185','186','187','188','189',
+        );
+
+        $mobile = $mobile_tou[rand(0,33)].mt_rand(1000, 9999).mt_rand(1000, 9999);
+
+        $count = M('users')->where(array('mobile'=>$mobile))->count();
+        if($count){
+            $this->create_mobile();
+        }
+        return $mobile;
     }
     
     public function export_user(){

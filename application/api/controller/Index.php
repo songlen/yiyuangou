@@ -35,10 +35,13 @@ class Index extends Base {
         	'ga.is_finished' => '0',
         );
 
+        $page = I('page', 1);
+
         $goods_activity = M('goods_activity')->alias('ga')
         	->join('goods g', 'ga.goods_id=g.goods_id')
         	->where($ga_where)
         	->field('ga.act_id, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->limit($page, 10)
         	->select()
         	;
 

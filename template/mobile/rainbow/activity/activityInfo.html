@@ -340,13 +340,13 @@
 						<div id="tit">{$info.goods_name}</div>\
 						<div class="goods_info">\
 							<div class="thumb"><img src="{$info.original_img}"/></div>\
-							<div class="offer"><b class="offer_money">${$info.shop_price}</b> <br> <span class="offer_text">YOUR OFFER</span></div>\
+							<div class="offer"><b>$</b><b class="offer_money">1</b> <br> <span class="offer_text">YOUR OFFER</span></div>\
 						</div>\
 						<div class="youbiao"><img src="__STATIC__/default/images/youbiao.png" /></div>\
 						<div class="changeNum">\
-							<div class="jian"><img onclick="jian()" src="__STATIC__/default/images/jian.png" /></div>\
-							<div class="num"><input type="text" name="num" value="1" onblur="input()" /></div>\
-							<div class="jia"><img onclick="jia()" src="__STATIC__/default/images/jia.png" /></div>\
+							<div class="jian"><img onclick="jian({$info.act_id})" src="__STATIC__/default/images/jian.png" /></div>\
+							<div class="num"><input type="text" name="num" value="1" onblur="input({$info.act_id})" /></div>\
+							<div class="jia"><img onclick="jia({$info.act_id})" src="__STATIC__/default/images/jia.png" /></div>\
 						</div>\
 					</div>\
 					';
@@ -358,9 +358,10 @@
 			// anim: 'up',
 			yes: function(index){
 				var num = $('input[name=num]').val();
-
+				var selectInfo = [{act_id: act_id, goods_id:goods_id, num:num}]
 				if(type=='buy_now'){
-					window.location="/index.php/mobile/cart/cart2/action/"+type+'/act_id/'+act_id+'/goods_id/'+goods_id+'/goods_num/'+num;
+					// window.location="/index.php/mobile/cart/cart2/action/"+type+'/act_id/'+act_id+'/goods_id/'+goods_id+'/goods_num/'+num;
+					window.location="/index.php/mobile/cart/cart2/action/"+type+'/selectInfo/'+encodeURI(JSON.stringify(selectInfo));
 				}
 
 				
@@ -377,15 +378,17 @@
             return false;
         }
         $('.changeNum .num input').val(num);
+        $('.offer_money').html(num);
     }   
 
-    function jian(){
+    function jian(act_id){
         var now_val = parseInt($('.changeNum .num input').val());
         if(now_val <= 1) return false;
         var val = now_val-1;
 
 
         $('.changeNum .num input').val(val);
+        $('.offer_money').html(val);
     }
 
     function input(act_id){
@@ -394,10 +397,13 @@
 
         if(ajaxCheckActNum(act_id, num) == false){
            $('.changeNum .num input').val(1);
+        } else {
+        	$('.offer_money').html($('.changeNum .num input').val())
         }
     }
 
     function ajaxCheckActNum(act_id, num){
+
         var re = true;
         $.ajax({
             url:'{:U("mobile/cart/ajaxCheckActNum")}',
@@ -407,7 +413,7 @@
             data:{act_id:act_id, num:num},
             success:function(data){
                 if(data.status=='-1'){
-                    showErrorMsg(data.msg);
+                    layer.msg(data.msg);
                     re = false;
                 }
             }

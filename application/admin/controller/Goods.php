@@ -38,7 +38,7 @@ class Goods extends Base {
      */
     public function addEditCategory(){
         
-            $GoodsLogic = new GoodsLogic();        
+            $GoodsLogic = new GoodsLogic();
             if(IS_GET)
             {
                 $goods_category_info = D('GoodsCategory')->where('id='.I('GET.id',0))->find();

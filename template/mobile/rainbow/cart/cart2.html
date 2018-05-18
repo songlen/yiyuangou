@@ -18,14 +18,10 @@
     .jisong { font-size: 0.7rem; margin-left: 0.85rem; padding-top: 0.6rem; }
 </style>
 <form name="cart2_form" id="cart2_form" method="post">
-    <input type="hidden" name="coupon_id" value=""/>
-    <input type="hidden" id="wap_invoice_title" name="invoice_title" value="个人">
-    <input type="hidden" id="wap_taxpayer" name="taxpayer" value="">
     <!--立即购买才会用到-s-->
+    <input type="hidden" name="act_id" value="{$Request.param.act_id}">
     <input type="hidden" name="action" value="{$Request.param.action}">
     <input type="hidden" name="goods_id" value="{$Request.param.goods_id}">
-    <input type="hidden" name="item_id" value="{$Request.param.item_id}">
-    <input type="hidden" name="goods_num" value="{$Request.param.goods_num}">
     <input type="hidden" name="auth_code" value="{$Think.config.AUTH_CODE}"/>
     <!--立即购买才会用到-e-->
     <div class="edit_gtfix">
@@ -48,22 +44,22 @@
             </div>
 
         <else/>
-                <div class="namephone fl">
-                    <div class="top">
-                        <div class="le fl"></div>
-                        <div class="lr fl">请先先写收货信息</div>
-                    </div>
-                    <div class="bot">
-                        <i class="dwgp"></i>
-                        <span></span>
-                    </div>
+            <div class="namephone fl">
+                <div class="top">
+                    <div class="le fl"></div>
+                    <div class="lr fl">请先先写收货信息</div>
                 </div>
-                <div class="fr youjter">
-                    <i class="Mright"></i>
+                <div class="bot">
+                    <i class="dwgp"></i>
+                    <span></span>
                 </div>
-                <div class="ttrebu">
-                    <img src="__STATIC__/images/tt.png"/>
-                </div>
+            </div>
+            <div class="fr youjter">
+                <i class="Mright"></i>
+            </div>
+            <div class="ttrebu">
+                <img src="__STATIC__/images/tt.png"/>
+            </div>
         </if>
         </a>
     </div>
@@ -72,16 +68,19 @@
     <div class="ord_list fill-orderlist p">
         <div class="maleri30">
             <volist name="cartList" id="cart">
+                <input type="hidden" name="act_id[]" value="{$cart[act_id]}">
+                <input type="hidden" name="num[]" value="{$cart[num]}">
                 <div class="shopprice inputOrder">
                     <div class="img_or fl"><img src="{$cart[goods_id]|goods_thum_images=100,100}"/></div>
                     <div class="fon_or fl">
                         <h2 class="similar-product-text">{$cart[goods_name]}</h2>
                     </div> 
                     <div class="changeNum">
-                        <div class="shutext">数量：</div>
-                        <div class="jian"><img onclick="jian()" src="__STATIC__/default/images/jian.png" /></div>
-                        <div class="num"><input type="text" name="num" value="{$cart.goods_num}" onblur="input({$cart.prom_id})" /></div>
-                        <div class="jia"><img onclick="jia({$cart.prom_id})" src="__STATIC__/default/images/jia.png" /></div>
+                        <div class="shutext">数量：{$cart.num}</div>
+
+                        <!-- <div class="jian"><img onclick="jian()" src="__STATIC__/default/images/jian.png" /></div> -->
+                        <!-- <div class="num"><input type="text" name="num" value="{$cart.goods_num}" onblur="input({$cart.prom_id})" /></div> -->
+                        <!-- <div class="jia"><img onclick="jia({$cart.prom_id})" src="__STATIC__/default/images/jia.png" /></div> -->
                     </div>
                 </div>
             </volist>
@@ -94,10 +93,10 @@
 
     <div class="orderBeforInfo">
         <ul>
-            <li><label>商品金额</label><span>$10</span></li>
-            <li><label>税率</label><span>13%</span></li>
-            <li><label>税后金额</label><span>$10</span></li>
-            <li class="jifenxiaofei" style="display: none;"><label>消费积分</label><span>10</span></li>
+            <li><label>商品金额</label><span class="shop_price">${$priceInfo.money}</span></li>
+            <li><label>税率</label><span class="tax_rate">{$priceInfo.tax_rate}</span></li>
+            <li><label>税后金额</label><span class="tax_amount">{$priceInfo.tax_amount}</span></li>
+            <li class="jifenxiaofei" style="display: none;"><label>消费积分</label><span class="use_point">0</span></li>
         </ul>
         <div class="split"></div>
         <div class="select_jifen_tab">
@@ -106,7 +105,7 @@
             <span><i class="no_select selected"></i>直接购买</span>
         </div>
         <div class="orderTotal"> 
-            <div class="amount">$121</div>
+            <div class="total_amount">${$priceInfo.total_amount}</div>
             <div class="t">实付款</div>
         </div>
     </div>
@@ -115,48 +114,7 @@
 
 <script type="text/javascript">
 
-    // 获取订单价格
-    function ajax_order_price() {
-        $.ajax({
-            type: "POST",
-            url: '/index.php?m=Mobile&c=Cart&a=cart3&act=order_price&t=' + Math.random(),
-            data: $('#cart2_form').serialize(),
-            dataType: "json",
-            success: function (data) {
-                if (data.status == -3 || data.status == -4) {
-                    showErrorMsg(data.msg);
-                    refresh_price(data);
-                    $('.submit_price a').addClass("disable");
-                } else if (data.status != 1) {
-                    //执行有误
-                    $('#coupon_div').show();
-                    showErrorMsg(data.msg);
-                    // 登录超时
-                    if (data.status == -100) {
-                        location.href = "{:U('Mobile/User/login')}";
-                        return false;
-                    }
-                } else {
-                    $('.submit_price a').removeClass("disable");
-                    refresh_price(data);
-                }
-
-            }
-        });
-    }
-
-    function refresh_price(data) {
-        $("#balance").text(data.result.user_money);// 余额
-        $("#pointsFee").text(data.result.integral_money);// 积分支付
-        $("#order_prom_amount").text(data.result.order_prom_amount);// 订单 优惠活动
-        $("#postFee").text(data.result.shipping_price); // 物流费
-        if (data.result.coupon_price == null) {
-            $("#couponFee").text(0);// 优惠券
-        } else {
-            $("#couponFee").text(data.result.coupon_price);// 优惠券
-        }
-        $("#payables").text(data.result.order_amount);// 应付
-    }
+   
 
     // 提交订单
     ajax_return_status = 1; // 标识ajax 请求是否已经回来 可以进行下一次请求
@@ -199,36 +157,25 @@
         });
     }
 
-    $(function () {
-        get_invoice();
-        $('.submits_de').click(function () {
-            $('.mask-filter-div').hide();
-            $('.losepay').hide();
-        })
 
-        //显示隐藏使用发票信息
-        $('.invoiceclickin').click(function () {
-            get_invoice();
-            $('#invoice').toggle(300);
-        })
-    })
 
-        // 加减
+    // 加数量
     function jia(act_id){
         var now_val = parseInt($('.changeNum .num input').val());
         var num = now_val+1;
 
-        if(ajaxCheckActNum(act_id, num) == false){
-            return false;
-        }
+         // 公共方法计算金额
+        if(ajaxTotalAmount() == false) return false;
+
         $('.changeNum .num input').val(num);
     }   
-
+    // 减数量
     function jian(){
         var now_val = parseInt($('.changeNum .num input').val());
         if(now_val <= 1) return false;
         var val = now_val-1;
-
+        // 公共方法计算金额
+        if(ajaxTotalAmount() == false) return false;
 
         $('.changeNum .num input').val(val);
     }
@@ -236,38 +183,39 @@
     function input(act_id){
         var num = parseInt($('.changeNum .num input').val());
         if(num <= 1 || isNaN(num)) num = 1;
-
-        if(ajaxCheckActNum(act_id, num) == false){
+         // 公共方法计算金额
+        if(ajaxTotalAmount() == false){
            $('.changeNum .num input').val(1);
         }
     }
 
-    function ajaxCheckActNum(act_id, num){
-        var re = true;
-        $.ajax({
-            url:'{:U("mobile/cart/ajaxCheckActNum")}',
-            type:'post',
-            dataType:'json',
-            async:false,
-            data:{act_id:act_id, num:num},
-            success:function(data){
-                if(data.status=='-1'){
-                    showErrorMsg(data.msg);
-                    re = false;
-                }
-            }
-        })
+    // function ajaxCheckActNum(act_id, num){
+    //     var re = true;
+    //     $.ajax({
+    //         url:'{:U("mobile/cart/ajaxCheckActNum")}',
+    //         type:'post',
+    //         dataType:'json',
+    //         async:false,
+    //         data:{act_id:act_id, num:num},
+    //         success:function(data){
+    //             if(data.status=='-1'){
+    //                 showErrorMsg(data.msg);
+    //                 re = false;
+    //             }
+    //         }
+    //     })
 
-        return re;
-    }
+    //     return re;
+    // }
 
-</script>
-
-<script type="text/javascript">
     // 积分购买还是直接购买
     $(function(){
         $('.no_select').click(function(){
             if($(this).hasClass('use_jifen')){
+
+                // 计算金额
+                if(ajaxTotalAmount() ==  false) return;
+
                 $('.no_select').removeClass('selected');
                 $(this).addClass('selected');
                 $('.jifenxiaofei').show();
@@ -278,6 +226,43 @@
             }
         })
     })
+
+     // 获取订单价格
+    function ajaxTotalAmount() {
+        re = true;
+
+        $.ajax({
+            type: "POST",
+            url: '/index.php?m=Mobile&c=Cart&a=ajaxTotalAmount',
+            data: $('#cart2_form').serialize(),
+            dataType: "json",
+            async:false,
+            success: function (data) {
+                if(data.status == '-1'){
+                    showErrorMsg(data.msg);
+                    re = false;
+                }
+
+                if(data.status == 200){
+                    refresh_price(data.data);
+                }
+               
+            }
+           
+        });
+         return re;
+    }
+
+    function refresh_price(data) {
+        console.log(data);
+        $('.shop_price').text('$'+data.shop_price);//商品金额
+        $('.tax_rate').text(data.tax_rate);//税率
+        $(".tax_amount").text('$'+data.tax_amount);// 税后金额
+        $(".use_point").text('$'+data.use_point);// 消费积分
+       
+        $(".total_amount").text(data.total_amount);// 应付
+    }
+
 </script>
 </body>
 </html>

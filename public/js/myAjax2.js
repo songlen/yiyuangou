@@ -76,6 +76,44 @@ function changeTableVal(table,id_name,id_value,field,obj)
 		});		
 }
 
+
+
+/**
+ * [changeFieldVal ajax修改表中某个字段的值]
+ * @param  {[type]} table       [description]
+ * @param  {[type]} id_name     [description]
+ * @param  {[type]} id_value    [description]
+ * @param  {[type]} field       [description]
+ * @param  {[type]} field_value [description]
+ * @param  {[type]} show_text   [description]
+ * @return {[type]}             [description]
+ */
+function changeFieldVal(table, id_name, id_value, field, obj){
+
+	var toggle_text = $(obj).attr('toggle_text');
+	var toggle_value = $(obj).attr('toggle_value');
+
+	var toggle_text_arr = toggle_text.split('-');
+	var toggle_value_arr = toggle_value.split('-');
+	// 要更新的值和更新后显示的文字
+	var text = toggle_text_arr[1];
+	var value = toggle_value_arr[1];
+	
+	var toggle_text_new = toggle_text_arr.reverse().join('-');
+	var toggle_value_new = toggle_value_arr.reverse().join('-');
+
+	$.ajax({
+		url:"/index.php?m=Admin&c=Index&a=changeTableVal&table="+table+"&id_name="+id_name+"&id_value="+id_value+"&field="+field+'&value='+value,			
+		success: function(data){									
+		     $(obj).attr('toggle_text', toggle_text_new);
+		     $(obj).attr('toggle_value', toggle_value_new);
+		     $(obj).html(text);
+
+			 layer.msg('更新成功', {icon: 1}); 
+		}
+	});	
+}
+
 // 给商家用的修改某个表的某个字段  商家是需要判断当前session的
 // 修改指定表的指定字段值 包括有按钮点击切换是否 或者 排序 或者输入框文字
 function changeTableVal2(table,id_name,id_value,field,obj)
