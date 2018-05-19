@@ -18,20 +18,20 @@ class Activity extends Base {
 		parent::__construct();
 	}
     
-    public function index(){
+    // 夺宝详情
+    public function actInfo(){
+        $act_id = I('act_id');
 
-    	$ad_where = array(
-    		'pid' => '1',
-    		'media_type' => '0',
-    		'enabled' => '1',
-    	);
-        $adList = M('ad')->where($ad_where)->field('ad_name, ad_code, ad_link')->select();
-
-        $data['adList'] = $adList;
-
-        
-
-        $data['goods_activity'] = $goods_activity;
+        // 活动详情
+        $info = M('goods_activity')->alias('ga')
+                ->join('goods g', 'g.goods_id=ga.goods_id')
+                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price')
+                ->find($act_id)
+                ;
+        $data['actInfo'] = $info;
+        // 购买规则
+        $config_basic = tpcache('basic');
+        $data['buy_rules'] = $config_basic['buy_rules'];
 
         response_success($data);
     }
@@ -72,7 +72,7 @@ class Activity extends Base {
      * [getAllCategory description]
      * @return [type] [description]
      */
-    public function getAllCategory(){
+    private function getAllCategory(){
         $where = array(
             'is_show' => '1',
             'parent_id' => '0',

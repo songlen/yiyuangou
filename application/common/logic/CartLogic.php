@@ -111,7 +111,7 @@ class CartLogic extends Model
             'goods_num' => $this->goodsBuyNum, // 购买数量
             'add_time' => time(), // 加入购物车时间
             'prom_type' => 4,   // 0 普通订单,1 限时抢购, 2 团购 , 3 促销优惠 4 夺宝活动
-            'prom_id' => $act_id,   // 活动id
+            'act_id' => $act_id,   // 活动id
             'weight' => $this->goods['weight'],   // 商品重量
             'goods'=>$this->goods,
         ];
@@ -275,7 +275,7 @@ class CartLogic extends Model
                 'goods_num' => $this->goodsBuyNum, // 购买数量
                 'add_time' => time(), // 加入购物车时间
                 'prom_type' => 0,   // 0 普通订单,1 限时抢购, 2 团购 , 3 促销优惠
-                'prom_id' => 0,   // 活动id
+                'act_id' => 0,   // 活动id
             );
             if($this->specGoodsPrice){
                 $cartAddData['spec_key'] = $this->specGoodsPrice['key'];
@@ -357,10 +357,10 @@ class CartLogic extends Model
                 $cartAddFlashSaleData['spec_key_name'] = $this->specGoodsPrice['key_name']; // 规格 key_name
                 $cartAddFlashSaleData['sku'] = $this->specGoodsPrice['sku']; //商品条形码
                 $cartAddFlashSaleData['goods_price'] = $this->specGoodsPrice['price'];   // 规格价
-                $cartAddFlashSaleData['prom_id'] = $this->specGoodsPrice['prom_id']; // 活动id
+                $cartAddFlashSaleData['act_id'] = $this->specGoodsPrice['act_id']; // 活动id
             }else{
                 $cartAddFlashSaleData['goods_price'] =  $this->goods['shop_price'];   // 原价
-                $cartAddFlashSaleData['prom_id'] = $this->goods['prom_id'];// 活动id
+                $cartAddFlashSaleData['act_id'] = $this->goods['act_id'];// 活动id
             }
             $cartResult = Db::name('Cart')->insert($cartAddFlashSaleData);
         }
@@ -429,10 +429,10 @@ class CartLogic extends Model
                 $cartAddFlashSaleData['spec_key_name'] = $this->specGoodsPrice['key_name']; // 规格 key_name
                 $cartAddFlashSaleData['sku'] = $this->specGoodsPrice['sku']; //商品条形码
                 $cartAddFlashSaleData['goods_price'] = $this->specGoodsPrice['price'];   // 规格价
-                $cartAddFlashSaleData['prom_id'] = $this->specGoodsPrice['prom_id']; // 活动id
+                $cartAddFlashSaleData['act_id'] = $this->specGoodsPrice['act_id']; // 活动id
             }else{
                 $cartAddFlashSaleData['goods_price'] =  $this->goods['shop_price'];   // 原价
-                $cartAddFlashSaleData['prom_id'] = $this->goods['prom_id'];// 活动id
+                $cartAddFlashSaleData['act_id'] = $this->goods['act_id'];// 活动id
             }
             $cartResult = Db::name('Cart')->insert($cartAddFlashSaleData);
         }
@@ -519,9 +519,9 @@ class CartLogic extends Model
                 $cartAddData['spec_key'] = $this->specGoodsPrice['key'];
                 $cartAddData['spec_key_name'] = $this->specGoodsPrice['key_name']; // 规格 key_name
                 $cartAddData['sku'] = $this->specGoodsPrice['sku']; //商品条形码
-                $cartAddData['prom_id'] = $this->specGoodsPrice['prom_id']; // 活动id
+                $cartAddData['act_id'] = $this->specGoodsPrice['act_id']; // 活动id
             }else{
-                $cartAddData['prom_id'] = $this->goods['prom_id'];// 活动id
+                $cartAddData['act_id'] = $this->goods['act_id'];// 活动id
             }
             $cartResult = Db::name('Cart')->insert($cartAddData);
         }
@@ -602,13 +602,13 @@ class CartLogic extends Model
             if ($goodsPromFactory->checkPromType($cart['prom_type'])) {
                 if (!empty($cart['spec_key'])) {
                     $specGoodsPrice = SpecGoodsPrice::get(['goods_id' => $cart['goods_id'], 'key' => $cart['spec_key']], '', true);
-                    if($specGoodsPrice['prom_id'] != $cart['prom_id']){
+                    if($specGoodsPrice['act_id'] != $cart['act_id']){
                         $cart->delete();
                         unset($cartList[$cartKey]);
                         continue;
                     }
                 } else {
-                    if($cart['goods']['prom_id'] != $cart['prom_id']){
+                    if($cart['goods']['act_id'] != $cart['act_id']){
                         $cart->delete();
                         unset($cartList[$cartKey]);
                         continue;
