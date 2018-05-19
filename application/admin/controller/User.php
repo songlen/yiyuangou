@@ -155,6 +155,7 @@ return;
                 'mobile' => $mobile,
                 'nickname' => $nickname,
                 'reg_time' => time(),
+                'robot'=>'1',
             );
             M('users')->insert($data);
         }
