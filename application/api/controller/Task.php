@@ -95,7 +95,7 @@ class Task {
             Db::name('order_activity')->insert($activityData);
 
             // 活动表增减数量
-            Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('total_count', $num);
+            Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num);
             Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num);
         }
     }

@@ -35,41 +35,9 @@ class Address extends Base {
      */
     public function add_address()
     {
-        $source = input('source');
-        if (IS_POST) {
-            $post_data = input('post.');
-            $logic = new UsersLogic();
-            $data = $logic->add_address($this->user_id, 0, $post_data);
-            $goods_id = input('goods_id/d');
-            $item_id = input('item_id/d');
-            $goods_num = input('goods_num/d');
-            $order_id = input('order_id/d');
-            $action = input('action');
-            if ($data['status'] != 1){
-                $this->error($data['msg']);
-            } elseif ($source == 'cart2') {
-                $data['url']=U('/Mobile/Cart/cart2', array('address_id' => $data['result'],'goods_id'=>$goods_id,'goods_num'=>$goods_num,'item_id'=>$item_id,'action'=>$action));
-                $this->ajaxReturn($data);
-            } elseif ($_POST['source'] == 'integral') {
-                $data['url']=U('/Mobile/Cart/integral', array('address_id' => $data['result'],'goods_id'=>$goods_id,'goods_num'=>$goods_num,'item_id'=>$item_id));
-                $this->ajaxReturn($data);
-            } elseif($source == 'pre_sell_cart'){
-                $data['url']=U('/Mobile/Cart/pre_sell_cart', array('address_id' => $data['result'],'act_id'=>$post_data['act_id'],'goods_num'=>$post_data['goods_num']));
-                $this->ajaxReturn($data);
-            } elseif($_POST['source'] == 'team'){
-                $data['url']= U('/Mobile/Team/order', array('address_id' => $data['result'],'order_id'=>$order_id));
-                $this->ajaxReturn($data);
-            }else{
-                $data['url']= U('/Mobile/User/address_list');
-                $this->ajaxReturn($data);
-            } 
-            
-        }
-        $p = M('region')->where(array('parent_id' => 0, 'level' => 1))->select();
-        $this->assign('province', $p);
-        $this->assign('source', $source);
-        return $this->fetch();
-
+         $post_data = input('post.');
+        $logic = new UsersLogic();
+        $data = $logic->add_address($this->user_id, 0, $post_data);
     }
 
     /*

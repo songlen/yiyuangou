@@ -86,7 +86,6 @@ class User extends MobileBase
         return $this->fetch();
     }
 
-
     public function logout()
     {
         session_unset();
@@ -225,7 +224,6 @@ class User extends MobileBase
      */
     public function reg()
     {
-
         if($this->user_id > 0) {
             $this->redirect(U('Mobile/User/index'));
         }
@@ -285,8 +283,7 @@ class User extends MobileBase
             }else{
                 $data = $logic->reg($username, $password, $password2,0,$invite);
             }
-             
-            
+
             if ($data['status'] != 1) $this->ajaxReturn($data);
             
             //获取公众号openid,并保持到session的user中

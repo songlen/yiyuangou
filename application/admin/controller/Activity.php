@@ -52,7 +52,8 @@ class Activity extends Base
             $data = I('post.');
             $data['end_time'] = strtotime($data['end_time']);
 
-            $data['total_count'] = floor(100.22);
+            $data['total_count'] = floor($data['shop_price']);
+            $data['surplus'] = floor($data['shop_price']);
 
             // 数据验证
             $validate = Loader::validate('Duobao');

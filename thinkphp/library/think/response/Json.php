@@ -39,6 +39,7 @@ class Json extends Response
                 throw new \InvalidArgumentException(json_last_error_msg());
             }
 
+            $data = str_replace('null', '""', $data);
             return $data;
         } catch (\Exception $e) {
             if ($e->getPrevious()) {

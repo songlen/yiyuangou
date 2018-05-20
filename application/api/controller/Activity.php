@@ -40,6 +40,8 @@ class Activity extends Base {
      * 即将揭晓
      */
     public function publishSoon(){
+        $cat_id = I('cat_id/d');
+
         $categoryList = $this->getAllCategory();
         $data['categoryList'] = $categoryList;
 
@@ -49,6 +51,9 @@ class Activity extends Base {
             'ga.is_publish' => '1',
             'ga.is_finished' => '0',
         );
+        if($cat_id){
+            $ga_where['g.cat_id'] = $cat_id;
+        }
 
         $goods_activity = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
@@ -56,6 +61,7 @@ class Activity extends Base {
             ->field('ga.act_id, ga.phase, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
             ->select()
             ;
+
 
         if(!empty($goods_activity)){
             foreach ($goods_activity as &$item) {
