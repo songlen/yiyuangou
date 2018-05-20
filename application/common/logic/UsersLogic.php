@@ -790,6 +790,7 @@ class UsersLogic extends Model
      */
     public function add_address($user_id,$address_id=0,$data){
         $post = $data;
+
         if($address_id == 0)
         {
             $c = M('UserAddress')->where("user_id", $user_id)->count();
@@ -800,8 +801,8 @@ class UsersLogic extends Model
         //检查手机格式
         if($post['consignee'] == '')
             return array('status'=>-1,'msg'=>'收货人不能为空','result'=>'');
-        if (!($post['province'] > 0)|| !($post['city']>0) || !($post['district']>0))
-            return array('status'=>-1,'msg'=>'所在地区不能为空','result'=>'');
+        // if (!($post['province'] > 0)|| !($post['city']>0) || !($post['district']>0))
+        //     return array('status'=>-1,'msg'=>'所在地区不能为空','result'=>'');
         if(!$post['address'])
             return array('status'=>-1,'msg'=>'地址不能为空','result'=>'');
         if(!check_mobile($post['mobile']) && !check_telephone($post['mobile']))
@@ -822,10 +823,9 @@ class UsersLogic extends Model
 
         }
         //添加模式
-        $post['user_id'] = $user_id;
         
         // 如果目前只有一个收货地址则改为默认收货地址
-        $c = M('user_address')->where("user_id", $post['user_id'])->count();
+        $c = M('user_address')->where("user_id", $user_id)->count();
         if($c == 0)  $post['is_default'] = 1;
         
         $address_id = M('user_address')->add($post);
