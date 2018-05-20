@@ -16,37 +16,34 @@ class User extends Base {
     /**
      * 登录
      */
-    public function do_login()
+    public function login()
     {
-        $username = trim(I('post.username'));
-        $password = trim(I('post.password'));
-        //验证码验证
-        if (isset($_POST['verify_code'])) {
-            $verify_code = I('post.verify_code');
-            $verify = new Verify();
-            if (!$verify->check($verify_code, 'user_login')) {
-                $res = array('status' => 0, 'msg' => '验证码错误');
-                exit(json_encode($res));
-            }
+        $mobile = trim(I('mobile'));
+        $password = trim(I('password'));
+
+        if (!$mobile || !$password) {
+        	response_error('请填写账号或密码');
         }
-        $logic = new UsersLogic();
-        $res = $logic->login($username, $password);
-        if ($res['status'] == 1) {
-            $res['url'] = htmlspecialchars_decode(I('post.referurl'));
-            session('user', $res['result']);
-            setcookie('user_id', $res['result']['user_id'], null, '/');
-            setcookie('is_distribut', $res['result']['is_distribut'], null, '/');
-            $nickname = empty($res['result']['nickname']) ? $username : $res['result']['nickname'];
-            setcookie('uname', urlencode($nickname), null, '/');
-            setcookie('cn', 0, time() - 3600, '/');
-            $cartLogic = new CartLogic();
-            $cartLogic->setUserId($res['result']['user_id']);
-            $cartLogic->doUserLoginHandle();// 用户登录后 需要对购物车 一些操作
-            $orderLogic = new OrderLogic();
-            $orderLogic->setUserId($res['result']['user_id']);//登录后将超时未支付订单给取消掉
-            $orderLogic->abolishOrder();
+        $user = Db::name('users')->where("mobile", $mobile)->find();
+        if (!$user) {
+            response_error('账号不存在！');
+        } elseif (encrypt($password) != $user['password']) {
+            response_error('密码错误！');
+        } elseif ($user['is_lock'] == 1) {
+            response_error('账号异常已被锁定！');
         }
-        exit(json_encode($res));
+        
+        // $res['url'] = htmlspecialchars_decode(I('referurl'));
+        session('user', $res['result']);
+        setcookie('user_id', $res['result']['user_id'], null, '/');
+        setcookie('nickname', urlencode($nickname), null, '/');
+
+        // $orderLogic = new OrderLogic();
+        // $orderLogic->setUserId($res['result']['user_id']);//登录后将超时未支付订单给取消掉
+        // $orderLogic->abolishOrder();
+        
+        $userInfo = $this->getUserInfo($user['user_id']);
+       	response_success($userInfo);
     }
 
     /**
@@ -55,8 +52,8 @@ class User extends Base {
     public function register() {
     	$mobile = I('mobile');
     	$code = I('code');
-    	$password = I('password');
-    	$password_confirm = I('password_confirm');
+    	$password = trim(I('password'));
+    	$password_confirm = trim(I('password_confirm'));
 
     	if(check_mobile($mobile) == false){
     		response_error('手机号格式错误');

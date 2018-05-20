@@ -51,6 +51,7 @@ class Activity extends Base {
             'ga.is_publish' => '1',
             'ga.is_finished' => '0',
         );
+        
         if($cat_id){
             $ga_where['g.cat_id'] = $cat_id;
         }
