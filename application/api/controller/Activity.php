@@ -25,7 +25,7 @@ class Activity extends Base {
         // 活动详情
         $info = M('goods_activity')->alias('ga')
                 ->join('goods g', 'g.goods_id=ga.goods_id')
-                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price')
+                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
                 ->find($act_id)
                 ;
         $data['actInfo'] = $info;
