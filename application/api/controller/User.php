@@ -114,15 +114,61 @@ class User extends Base {
         }
 
         $user = Db::name('users')->where("mobile = $mobile")->find();
-        if(empty($use)){
+        if(empty($user)){
             response_error('', '手机号不存在');
         }
 
         $password = encrypt($password);
-        Db::name('users')->where('mobile=$mobile')->update(array('password'=>$password));
+        Db::name('users')->where("mobile=$mobile")->update(array('password'=>$password));
 
         response_success('', '操作成功');
-    }    
+    }
+
+    // 我的积分
+    public function points(){
+        $user_id = I('user_id/d');
+        $page = I('page/d', 1);
+
+        $user = Db::name('users')->field('pay_points')->find($user_id);
+
+        $account_log = M('account_log')->where("user_id=" . $user_id." and pay_points!=0 ")
+        ->order('log_id desc')
+        ->field("pay_points, FROM_UNIXTIME(change_time, '%Y-%m-%d %H:%i:%s') change_time, desc, order_sn")
+        ->limit(($page-1)*10 . ', 10')
+        ->select();
+
+        $result['total_points'] = $user['pay_points'];
+        $result['points_log'] = $account_log;
+
+        response_success($result);
+    }
+
+    // 修改昵称
+    public function changeNickname(){
+        $user_id = I('user_id/d');
+        $nickname = I('nickname');
+
+        $updateData = array(
+            'user_id' => $user_id,
+            'nickname' => $nickname,
+        );
+        Db::name('users')->update($updateData);
+
+        response_success('', '操作成功');
+    }
+    // 修改昵称
+    public function changeSex(){
+        $user_id = I('user_id/d');
+        $sex = I('sex');
+
+        $updateData = array(
+            'user_id' => $user_id,
+            'sex' => $sex,
+        );
+        Db::name('users')->update($updateData);
+
+        response_success('', '操作成功');
+    }
 
     /**
      * [getUserInfo 获取用户基本资料]
