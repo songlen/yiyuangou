@@ -22,15 +22,15 @@ class User extends Base {
         $password = trim(I('password'));
 
         if (!$mobile || !$password) {
-        	response_error('请填写账号或密码');
+        	response_error('', '请填写账号或密码');
         }
         $user = Db::name('users')->where("mobile", $mobile)->find();
         if (!$user) {
-            response_error('账号不存在！');
+            response_error('', '账号不存在！');
         } elseif (encrypt($password) != $user['password']) {
-            response_error('密码错误！');
+            response_error('', '密码错误！');
         } elseif ($user['is_lock'] == 1) {
-            response_error('账号异常已被锁定！');
+            response_error('', '账号异常已被锁定！');
         }
         
         // $res['url'] = htmlspecialchars_decode(I('referurl'));
@@ -56,19 +56,19 @@ class User extends Base {
     	$password_confirm = trim(I('password_confirm'));
 
     	if(check_mobile($mobile) == false){
-    		response_error('手机号格式错误');
+    		response_error('', '手机号格式错误');
     	}
 
     	$userInfo = Db::name('users')->where("mobile={$mobile}")->find();
     	if($userInfo){
-    		response_error('该手机号已注册');
+    		response_error('', '该手机号已注册');
     	}
 
     	// 验证码检测
     	// 
 
     	if(empty($password) || empty($password_confirm)){
-    		response_error('密码不能为空');
+    		response_error('', '密码不能为空');
     	}
     	if($password != $password_confirm){
     		response_error('两次密码输入不一致');
@@ -85,7 +85,7 @@ class User extends Base {
 
     	$user_id = M('users')->insertGetId($map);
         if($user_id === false){
-           response_error('注册失败');
+           response_error('', '注册失败');
         }
         
         $pay_points = tpCache('basic.reg_integral'); // 会员注册赠送积分
@@ -96,6 +96,33 @@ class User extends Base {
         $userInfo = $this->getUserInfo($user_id);
         return response_success($userInfo, '注册成功');
     }
+
+    // 忘记密码
+    public function resetPwd(){
+        $mobile = I('mobile');
+        $code = I('code');
+        $password = I('password');
+        $password_confirm = I('password_confirm');
+
+        if(check_mobile($mobile) == false){
+            response_error('', '手机号码有误');
+        }
+        // 检测验证码
+
+        if($password != $password_confirm){
+            response_error('', '两次密码输入不一致');
+        }
+
+        $user = Db::name('users')->where("mobile = $mobile")->find();
+        if(empty($use)){
+            response_error('', '手机号不存在');
+        }
+
+        $password = encrypt($password);
+        Db::name('users')->where('mobile=$mobile')->update(array('password'=>$password));
+
+        response_success('', '操作成功');
+    }    
 
     /**
      * [getUserInfo 获取用户基本资料]

@@ -76,6 +76,7 @@ class Task {
             'goods_price' => $num,
             'add_time' => time(),
             'robot' => 1,
+            'prom_type' => 4, // 订单类型
         );
 
         $order_id = Db::name('order')->insertGetId($orderdata);
@@ -89,7 +90,7 @@ class Task {
                 'act_id' => $act_id,
                 'num' => $num,
                 'add_time' => time(),
-                'add_time_ms' => $add_time_ms,
+                'add_time_ms' => 0,
             );
 
             Db::name('order_activity')->insert($activityData);

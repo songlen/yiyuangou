@@ -40,16 +40,40 @@ class Cart extends Base {
         // }
     }
 
-    public function index(){
-        $cartLogic = new CartLogic();
-        $cartLogic->setUserId($this->user_id);
-        $cartList = $cartLogic->getCartList();//用户购物车
-        $userCartGoodsTypeNum = $cartLogic->getUserCartGoodsTypeNum();//获取用户购物车商品总数
-        $hot_goods = M('Goods')->where('is_hot=1 and is_on_sale=1')->limit(20)->cache(true,TPSHOP_CACHE_TIME)->select();
-        $this->assign('hot_goods', $hot_goods);
-        $this->assign('userCartGoodsTypeNum', $userCartGoodsTypeNum);
-        $this->assign('cartList', $cartList);//购物车列表
-        return $this->fetch();
+    public function cartlist(){
+        $user_id = I("user_id/d");
+
+        $cartList = Db::name('cart')->where("user_id=$user_id")
+            ->field('id cart_id, act_id, num')
+            ->select();
+        if($cartList){
+            foreach ($cartList as $k => &$item) {
+                $where = array(
+                    'ga.is_finished' => '1',
+                    'ga.is_publish' => '1',
+                    'ga.act_id' => $item['act_id'],
+                );
+                $actInfo = Db::name('GoodsActivity')->alias('ga')
+                    ->join('goods g', 'ga.goods_id=g.goods_id')
+                    ->where($where)
+                    ->field('ga.act_id, ga.surplus, g.goods_name, g.original_img')
+                    ->find();
+
+                if(empty($actInfo)){
+                    unset($cartList[$k]);
+                    Db::name('cart')->where(array('user_id'=>$user_id, 'id'=>$item['cart_id']))->delete();
+                    continue;
+                }
+
+                if($item['num'] > $actInfo['surplus']){
+                    $item['num'] = 1;
+                    Db::name('cart')->update(array('id'=>$item['cart_id'], 'num'=>1));
+                }
+                $item = array_merge($item, $actInfo);
+            }
+        }
+
+        response_success(array_values($cartList));
     }
 
     /**
@@ -68,100 +92,135 @@ class Cart extends Base {
      *  购物车加减
      */
     public function changeNum(){
-        $cart = input('cart/a',[]);
-        if (empty($cart)) {
-            $this->ajaxReturn(['status' => 0, 'msg' => '请选择要更改的商品', 'result' => '']);
+        $user_id = I('user_id/d');
+        $act_id = I("act_id/d"); // 商品id
+        $num = I('num/d');
+
+        $actInfo = Db::name('goods_activity')->find($act_id);
+        if($num > $actInfo['surplus']) response_error('', '商品数量超过剩余量');
+        if($num < 1) response_error('', '至少一个商品');
+
+        // 判断商品是否已经存在购物车里，存在的话直接更新数量
+
+        Db::name('cart')->where("user_id={$user_id} and act_id={$act_id}")->update(array('num'=>$num));
+        response_success('', '操作成功');
+    }
+
+    /**
+     * ajax 将商品加入购物车
+     */
+    function addCart()
+    {
+        $user_id = I('user_id/d');
+        $act_id = I("act_id/d"); // 商品id
+        $num = I("num/d");// 商品数量
+
+        $actInfo = Db::name('goods_activity')->find($act_id);
+        
+        if($num > $actInfo['surplus']) response_error('', '商品数量超过剩余量');
+
+        // 判断商品是否已经存在购物车里，存在的话直接更新数量
+        $cart = Db::name('cart')->where("user_id={$user_id} and act_id={$act_id}")->find();
+        if($cart){
+            Db::name('cart')->where("user_id={$user_id} and act_id={$act_id}")->update(array('num'=>$num));
+        } else {
+            $cartData = array(
+                'user_id' => $this->user_id,
+                'act_id' => $act_id,
+                'goods_id' => $actInfo['goods_id'],
+                'num' => $num,
+            );
+            Db::name('cart')->insert($cartData);
         }
-        $cartLogic = new CartLogic();
-        $result = $cartLogic->changeNum($cart['id'],$cart['goods_num']);
-        $this->ajaxReturn($result);
+
+        response_success('', '已添加至购物车');
     }
 
     /**
      * 删除购物车商品
      */
     public function delete(){
-        $cart_ids = input('cart_ids/a',[]);
-        $cartLogic = new CartLogic();
-        $cartLogic->setUserId($this->user_id);
-        $result = $cartLogic->delete($cart_ids);
+        $user_id = I('user_id/d');
+        $cart_id = I('cart_id/d');
+
+        $where = array(
+            'user_id' => $user_id,
+            'id' => $cart_id,
+        );
+
+        $result =  Db::name('cart')->where($where)->delete();
         if($result !== false){
-            $this->ajaxReturn(['status'=>1,'msg'=>'删除成功','result'=>$result]);
+            response_success('', '操作成功');
         }else{
-            $this->ajaxReturn(['status'=>0,'msg'=>'删除失败','result'=>$result]);
+            response_error('', '操作失败');
         }
     }
 
 
     /**
-     * 购物车第二步确定页面/立即购买
-     * selectInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
+     * 购物车第二步确定页面/立即购买/下单
+     * goodsInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
      */
-    public function cart2(){
-        $selectInfo = I('selectInfo');
-        $selectInfo =  stripslashes(html_entity_decode($selectInfo));
-        $selectInfo = json_decode($selectInfo, true);
+    public function prepareOrder(){
+        $user_id = I('user_id/d');
+        $goodsInfo = I('goodsInfo');
+        $use_point = I('use_point', 0); // 是否使用积分
+        $submit_order = I('submit_order', 0); // 是否提交订单
+        $address_id = I('address_id/d');
 
-        $action = input("action/s"); // 行为
+        $goodsInfo =  stripslashes(html_entity_decode($goodsInfo));
+        $goodsInfo = json_decode($goodsInfo, true);
 
         // 登录判断
-        if ($this->user_id == 0){
-            $this->error('请先登录', U('Mobile/User/login'));
+        if ($user_id == 0){
+            response_error('用户不存在');
+        }
+        $user = Db::name('users')->find($user_id);
+        if(empty($user)){
+            response_error('用户不存在');
         }
 
         // 收货地址
-        $address_id = I('address_id/d');
+        
         if($address_id){
             $address = M('user_address')->where("address_id", $address_id)->find();
         } else {
-            $address = Db::name('user_address')->where(['user_id'=>$this->user_id])->order(['is_default'=>'desc'])->find();
+            $address = Db::name('user_address')->where(['user_id'=>$user_id])->order(['is_default'=>'desc'])->find();
         }
         if(empty($address)){
-            $address = M('user_address')->where(['user_id'=>$this->user_id])->find();
+            $address = M('user_address')->where(['user_id'=>$user_id])->find();
         }
 
-        //立即购买
-        // if($action == 'buy_now'){
-        //     $actInfo = current($selectInfo);
-        //     // $cartLogic->setGoodsModel($actInfo['goods_id']);
-        //     // // $cartLogic->setSpecGoodsPriceModel($item_id);
-        //     // $cartLogic->setGoodsBuyNum($actInfo['num']);
-        //     // $buyGoods = [];
-        //     // try{
-        //     //     $buyGoods = $cartLogic->buyNow($actInfo['act_id']);
-        //     // }catch (TpshopException $t){
-        //     //     $error = $t->getErrorArr();
-        //     //     $this->error($error['msg']);
-        //     // }
-
-        //     $cartList['cartList'][0] = $buyGoods;
-        //     $cartGoodsTotalNum = $goods_num;
-        // }else{
-        //     if ($cartLogic->getUserCartOrderCount() == 0){
-        //         $this->error('你的购物车没有选中商品', 'Cart/index');
-        //     }
-        //     $cartList['cartList'] = $cartLogic->getCartList(1); // 获取用户选中的购物车商品
-        //     $cartGoodsTotalNum = count($cartList['cartList']);
-        // }
-
-        // $cartGoodsList = get_arr_column($cartList['cartList'],'goods');
-        // $cartGoodsId = get_arr_column($cartGoodsList,'goods_id');
-        // $cartGoodsCatId = get_arr_column($cartGoodsList,'cat_id');
-        // $cartPriceInfo = $cartLogic->getCartPriceInfo($cartList['cartList']);  //初始化数据。商品总额/节约金额/商品总共数量
-        $cartList = array();
+       
+        $goodsList = array();
         $money = 0; // 商品金额总额
 
-        foreach ($selectInfo as $item) {
+        foreach ($goodsInfo as $item) {
             $where = array(
                 'ga.act_id' => $item['act_id'],
+                // 'ga.is_finished' => '1',
+                // 'ga.is_publish' => '1',
             );
             $actInfo = Db::name('goods_activity')->alias('ga')
                 ->join('goods g', 'ga.goods_id=g.goods_id')
                 ->where($where)
                 ->find()
                 ;
+            if(empty($actInfo)){
+                response_error('', '活动不存在');
+            }
+            if($actInfo['is_finished'] != '1'){
+                response_error('', $actInfo['goods_name'].' 已结束');
+            }
+            if($actInfo['is_publish'] != '1'){
+                response_error('', $actInfo['goods_name'].' 未发布');
+            }
 
-            $cartList[] = array(
+            if($item['num'] > $actInfo['surplus']){
+                response_error('', $actInfo['goods_name'].' 数量超过剩余数量');
+            }
+
+            $goodsList[] = array(
                 'act_id' => $item['act_id'],
                 'goods_id' => $item['goods_id'],
                 'goods_name' => $actInfo['goods_name'],
@@ -169,30 +228,108 @@ class Cart extends Base {
             );
 
             $money += $item['num'];
-            
         }
 
         $tax_rate = 0.13; // 税率
         $tax_money += $money*$tax_rate; // 税额
         $tax_amount = $money+$tax_money; // 税后金额
-        $total_amount += $tax_amount;
+        if($use_point){
+            $points = $tax_amount*100;
 
-        
+            if($user['pay_points'] < $points){
+                response_error('', '积分不够');
+            }
+            $actual_amount = 0.00; // 如果使用积分，全部抵扣，实付款为0
+        } else {
+            $actual_amount = $tax_amount; // 实付款
+        }
 
         $priceInfo = array(
+            'total_point' => $user['pay_points'], // 用户总积分
             'money' => $money,
             'tax_rate' => '13%',
-            'tax_money' => $tax_money,
-            'tax_amount' => $tax_amount,
-            'total_amount' => $total_amount, // 总金额
+            'tax_amount' => $tax_amount, // 税后金额
+            'points' => $points, // 使用的积分数
+            'actual_amount' => $actual_amount, // 实付款
         );
 
+        // $data['address'] = $address;
+        $data['goodsList'] = $goodsList;
+        $data['priceInfo'] = $priceInfo;
 
-        $this->assign('address',$address); //收货地址
-        $this->assign('cartList', $cartList); // 购物车的商品
-        $this->assign('priceInfo', $priceInfo); // 价格信息
+        if($submit_order){
+            $this->placeOrder($user_id, $goodsList, $address, $priceInfo);
+        } else {
+            response_success($data);
+        }
+    }
 
-        return $this->fetch();
+
+    public function placeOrder($user_id, $goodsList, $address, $priceInfo){
+        if(empty($address)){
+            response_error('', '请选择收货地址');
+        }
+
+        $order_sn = date('YmdHis').mt_rand(1000,9999);
+        $orderdata = array(
+            'order_sn' => $order_sn,
+            'user_id' => $user_id,
+            'order_status' => 0,
+            'pay_status' => 0,
+            'consignee' => $address['consignee'],
+            'country' => $address['country'],
+            'province' => $address['province'],
+            'city' => $address['city'],
+            'address' => $address['address'],
+            'zipcode' => $address['zipcode'],
+            'mobile' => $address['mobile'],
+            'goods_price' => $priceInfo['money'],
+            'integral' => 0,
+            'integral_money' => 0,
+            'order_amount' => $priceInfo['actual_amount'], // 实付款
+            'total_amount' => $priceInfo['tax_amount'], // 税后金额就是总金额
+            'add_time' => time(),
+            'prom_type' => 4, // 订单类型 夺宝活动
+        );
+
+        if($priceInfo['points'] > 0){
+            $orderdata['integral'] = $priceInfo['points'];
+            $orderdata['integral_money'] = $priceInfo['tax_amount'];
+        }
+
+        $order_id = Db::name('order')->insertGetId($orderdata);
+
+        // 活动订单附加表
+        if($order_id){
+            foreach ($goodsList as $item) {
+                $activityData = array(
+                    'order_id' => $order_id,
+                    'order_sn' => $order_sn,
+                    'user_id' => $user_id,
+                    'act_id' => $item['act_id'],
+                    'goods_id' => $item['goods_id'],
+                    'num' => $item['num'],
+                    'add_time' => time(),
+                    'add_time_ms' => 0,
+                );
+
+                Db::name('order_activity')->insert($activityData);
+
+                // 活动表增减数量
+                Db::name('GoodsActivity')->where('act_id', $item['act_id'])->setDec('surplus', $item['num']);
+                Db::name('GoodsActivity')->where('act_id', $item['act_id'])->setInc('buy_count', $item['num']);
+
+
+            }
+
+            // 如果使用了积分
+            if($priceInfo['points']>0){
+                accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
+            }
+        }
+
+        // 下单成功去付款
+        response_success('', '订单提交成功');
     }
 
     // public function buy_now(){
@@ -309,76 +446,6 @@ class Cart extends Base {
     }
 
 
-    /**
-     * ajax 获取订单商品价格 或者提交 订单
-     */
-    public function cart3(){
-        if($this->user_id == 0){
-            exit(json_encode(array('status'=>-100,'msg'=>"登录超时请重新登录!",'result'=>null))); // 返回结果状态
-        }
-        $address_id = I("address_id/d"); //  收货地址id
-        $invoice_title = I('invoice_title'); // 发票
-        $taxpayer = I('taxpayer'); // 纳税人编号
-        $coupon_id =  I("coupon_id/d"); //  优惠券id
-        $pay_points =  I("pay_points/d",0); //  使用积分
-        $user_money =  I("user_money/f",0); //  使用余额
-        $user_note = trim(I('user_note'));   //买家留言
-        $goods_id = input("goods_id/d"); // 商品id
-        $goods_num = input("goods_num/d");// 商品数量
-        $item_id = input("item_id/d"); // 商品规格id
-        $action = input("action"); // 立即购买
-        $payPwd =  I("payPwd",''); // 支付密码
-        strlen($user_note) > 50 && exit(json_encode(['status'=>-1,'msg'=>"备注超出限制可输入字符长度！",'result'=>null]));
-        $address = Db::name('UserAddress')->where("address_id", $address_id)->find();
-        $cartLogic = new CartLogic();
-        $pay = new Pay();
-        $cartList = [];
-        try {
-            $cartLogic->setUserId($this->user_id);
-            $pay->setUserId($this->user_id);
-            if ($action == 'buy_now') {
-                $cartLogic->setGoodsModel($goods_id);
-                $cartLogic->setSpecGoodsPriceModel($item_id);
-                $cartLogic->setGoodsBuyNum($goods_num);
-                $buyGoods = $cartLogic->buyNow();
-                array_push($cartList,$buyGoods);
-                $pay->payGoodsList($cartList);
-            } else {
-                $userCartList = $cartLogic->getCartList(1);
-                $cartLogic->checkStockCartList($userCartList);
-                $cartList = array_merge_recursive($cartList,$userCartList);
-                $pay->payCart($cartList);
-            }
-            $pay->delivery($address['district']);
-            $pay->orderPromotion();
-            $pay->useCouponById($coupon_id);
-            $pay->useUserMoney($user_money);
-            $pay->usePayPoints($pay_points);
-        } catch (TpshopException $t) {
-            $error = $t->getErrorArr();
-            $this->ajaxReturn($error);
-        }
-        // 提交订单
-        if ($_REQUEST['act'] == 'submit_order') {
-            $placeOrder = new PlaceOrder($pay);
-            $placeOrder->setUserAddress($address);
-            $placeOrder->setInvoiceTitle($invoice_title);
-            $placeOrder->setUserNote($user_note);
-            $placeOrder->setTaxpayer($taxpayer);
-            $placeOrder->setPayPsw($payPwd);
-            try{
-                $placeOrder->addNormalOrder();
-            }catch (TpshopException $t) {
-                $error = $t->getErrorArr();
-                $this->ajaxReturn($error);
-            }
-            $cartLogic->clear();
-            $order = $placeOrder->getOrder();
-            $this->ajaxReturn(['status'=>1,'msg'=>'提交订单成功','result'=>$order['order_sn']]);
-        }
-        $car_price = $pay->toArray();
-        $this->ajaxReturn(['status'=>1,'msg'=>'计算成功','result'=>$car_price]);
-    }
     /*
      * 订单支付页面
      */
@@ -458,35 +525,5 @@ class Cart extends Base {
         $this->assign('bankCodeList',$bankCodeList);
         $this->assign('pay_date',date('Y-m-d', strtotime("+1 day")));
         return $this->fetch();
-    }
-
-    /**
-     * ajax 将商品加入购物车
-     */
-    function addCart()
-    {
-        $act_id = I("act_id/d"); // 商品id
-        $num = I("num/d");// 商品数量
-
-        $actInfo = Db::name('goods_activity')->find($act_id);
-        $surplus = $actInfo['total_count'] - $actInfo['buy_count'];
-        
-        if($num > $surplus) response_error('购买数量超过商品剩余数量');
-
-        // 判断商品是否已经存在购物车里，存在的话直接更新数量
-        $cart = Db::name('cart')->where("user_id={$this->user_id} and act_id={$act_id}")->find();
-        if($cart){
-            Db::name('cart')->where("user_id={$this->user_id} and act_id={$act_id}")->update(array('num'=>$num));
-        } else {
-            $cartData = array(
-                'user_id' => $this->user_id,
-                'act_id' => $act_id,
-                'goods_id' => $actInfo['goods_id'],
-                'num' => $num,
-            );
-            Db::name('cart')->insert($cartData);
-        }
-
-        response_success('已添加至购物车');
     }
 }
