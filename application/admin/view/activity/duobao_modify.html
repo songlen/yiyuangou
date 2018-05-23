@@ -28,6 +28,7 @@
                 </dt>
                 <dd class="opt">
                     <input type="text" id="goods_name" readonly name="goods_name" value="{$info.goods_name}" class="input-txt">
+                    <input type="hidden" name="shop_price" value="{$info.shop_price}">
                     <div style="overflow: hidden" id="selected_group_goods">
                         <if condition="$info['goods_id'] gt 0">
                             <div style="float: left;margin-right: 10px" class="selected-group-goods">
@@ -35,7 +36,7 @@
 
                                 <div class="goods-price">
                                     价格：￥{$info['shop_price']} 库存:{$info['store_count']}
-                                    <input type="hidden" name="shop_price" value="{$info.shop_price}">
+                                    <input type="hidden" name="shop_price" value="{$info['shop_price']}">
                                 </div>
                             </div>
                         </if>
@@ -132,6 +133,7 @@
                     '<a target="_blank" href="/index.php?m=Home&c=Goods&a=goodsInfo&id='+goodsItem.goods_id+'">'+goodsItem.goods_name+'</a> </div>' +
                     ' <div class="goods-price">商城价：￥'+goodsItem.goods_price+'库存:'+goodsItem.store_count+'</div> </div>';
             $('input[name=goods_name]').val(goodsItem.goods_name);
+            $('input[name=shop_price]').val(goodsItem.goods_price);
         }
         $('#select_goods_button').attr('data-goods-id',goodsItem.goods_id);
         $('#selected_group_goods').empty().html(html);

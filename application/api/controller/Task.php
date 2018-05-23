@@ -11,6 +11,60 @@ use think\Db;
 
 class Task {
 
+    public function test(){
+        file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
+    }
+
+    /**
+     * [openPrize 活动开奖]
+     *（1） 求和：最后一百条购买记录的时间之和
+     *（2） 取余：按照步骤（1）的数值%本商品参与人次
+     *（3） 计算结果：步骤（2）的数值+10000001=中奖幸运码
+     * @return [type] [description]
+     */
+    public function openPrize(){
+        $time = time();
+        $where = array(
+            'end_time' => ['<=', time()+5],
+            'is_finished' => '1',
+        );
+
+        $activits = Db::name('goods_activity')->where($where)->field('act_id')->select();
+        if(empty($activits)){
+            exit();
+        }
+
+       foreach ($activits as $key => $item) {
+            $act_id = $item['act_id'];
+            // 购买最后100条记录
+            $lastlist100 = Db::name('order')->where(array('prom_id'=>$act_id))->limit('0, 100')->field('add_time, add_time_ms')->order('order_id desc')->select();
+
+            $sumTime = 0;
+            foreach ($lastlist100 as $item) {
+                $sumTime += date('YmdHis', $item['add_time']).$item['add_time_ms'];
+            }
+            // 参与人次
+            $count = Db::name('order')->where("prom_id=$act_id")->count();
+            $mo = fmod($sumTime, $count);
+            $lucky_number = $mo + 10000001;
+
+            // 查找中奖者
+            $luckyinfo = Db::name('LuckyNumber')->where('lucky_number='.$lucky_number)->find();
+            $win_user_id = $luckyinfo['user_id'];
+            // 活动表记录中奖信息
+            $actUpdateData = array(
+                'act_id'=>$act_id,
+                'lucky_number'=>$lucky_number,
+                'win_user_id'=>$win_user_id,
+                'is_finished' => '3',
+            );
+            Db::name('goods_activity')->update($actUpdateData);
+            // 幸运码表记录中奖信息
+            Db::name('LuckyNumber')->where('lucky_number='.$lucky_number)->update(array('is_win'=>'1'));
+       }
+
+    }
+
 	    /**
      * [robot_task 执行定时任务读取数据库执行下单]
      * @return [type] [description]

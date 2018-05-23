@@ -51,7 +51,6 @@ class Activity extends Base
         if(IS_POST){
             $data = I('post.');
             $data['end_time'] = strtotime($data['end_time']);
-
             $data['total_count'] = floor($data['shop_price']);
             $data['surplus'] = floor($data['shop_price']);
 
@@ -72,6 +71,7 @@ class Activity extends Base
 
                 adminLog("添加夺宝 " . $data['goods_name']);
                 if ($insertId !== false) {
+                    Db::name('goods_activity')->update(array('act_id'=>$insertId, 'relation_id'=>$insertId));
                     $this->ajaxReturn(['status' => 1, 'msg' => '添加夺宝成功', 'result' => '']);
                 } else {
                     $this->ajaxReturn(['status' => 0, 'msg' => '添加夺宝失败', 'result' => '']);

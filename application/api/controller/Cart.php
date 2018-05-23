@@ -162,6 +162,8 @@ class Cart extends Base {
      * goodsInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
      */
     public function prepareOrder(){
+        $order_sn = date('YmdHis').mt_rand(1000,9999);
+
         $user_id = I('user_id/d');
         $goodsInfo = I('goodsInfo');
         $use_point = I('use_point', 0); // 是否使用积分
@@ -264,8 +266,194 @@ class Cart extends Base {
         }
     }
 
-
     public function placeOrder($user_id, $goodsList, $address, $priceInfo){
+        if(empty($address)){
+            response_error('', '请选择收货地址');
+        }
+
+        $goodsInfo = current($goodsList);
+
+        $order_sn = date('YmdHis').mt_rand(1000,9999);
+
+        // 时间戳和毫秒数
+        list($usec, $sec) = explode(" ", microtime());
+        $usec = round($usec *1000);
+
+        $orderdata = array(
+            'order_sn' => $order_sn,
+            'user_id' => $user_id,
+            'order_status' => 0,
+            'pay_status' => 0,
+            'consignee' => $address['consignee'],
+            'country' => $address['country'],
+            'province' => $address['province'],
+            'city' => $address['city'],
+            'address' => $address['address'],
+            'zipcode' => $address['zipcode'],
+            'mobile' => $address['mobile'],
+            'goods_price' => $priceInfo['money'],
+            'integral' => 0,
+            'integral_money' => 0,
+            'order_amount' => $priceInfo['actual_amount'], // 实付款
+            'total_amount' => $priceInfo['tax_amount'], // 税后金额就是总金额
+            'add_time' => $sec,
+            'add_time_ms' => $usec,
+            'prom_id' => $goodsInfo['act_id'],
+            'prom_type' => 4, // 订单类型 夺宝活动
+            'num' => $goodsInfo['num'],
+        );
+
+
+        if($priceInfo['points'] > 0){
+            $orderdata['integral'] = $priceInfo['points'];
+            $orderdata['integral_money'] = $priceInfo['tax_amount'];
+        }
+
+        $order_id = Db::name('order')->insertGetId($orderdata);
+
+        // 活动表增减数量
+        Db::name('GoodsActivity')->where('act_id', $goodsInfo['act_id'])->setDec('surplus', $goodsInfo['num']);
+        Db::name('GoodsActivity')->where('act_id', $goodsInfo['act_id'])->setInc('buy_count', $goodsInfo['num']);
+
+        // 如果使用了积分
+        if($priceInfo['points']>0){
+            accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
+        }
+
+        $i = 1;
+        while ($i <= $goodsInfo['num']) {
+            // 找出最大的幸运码
+           $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$goodsInfo['act_id']))->max('lucky_number');
+           $lucky_number = $max_lucky_number ? $max_lucky_number+1 : 10000001;
+           // 更新附加表
+           $luckynumber = array(
+               'order_id' => $order_id,
+               'order_sn' => $order_sn,
+               'user_id' => $user_id,
+               'act_id' => $goodsInfo['act_id'],
+               'goods_id' => $goodsInfo['goods_id'],
+               'num' => $goodsInfo['num'],
+               'add_time' => $sec,
+               'add_time_ms' => $usec,
+               'lucky_number' => $lucky_number,
+           );
+           Db::name('LuckyNumber')->insert($luckynumber);
+           $i++;
+        }
+
+        // 下单成功去付款
+        response_success('', '订单提交成功');
+    }
+
+
+    /**
+     * 购物车第二步确定页面/立即购买/下单
+     * goodsInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
+     */
+    /*public function prepareOrder(){
+        $user_id = I('user_id/d');
+        $goodsInfo = I('goodsInfo');
+        $use_point = I('use_point', 0); // 是否使用积分
+        $submit_order = I('submit_order', 0); // 是否提交订单
+        $address_id = I('address_id/d');
+
+        $goodsInfo =  stripslashes(html_entity_decode($goodsInfo));
+        $goodsInfo = json_decode($goodsInfo, true);
+
+        // 登录判断
+        if ($user_id == 0){
+            response_error('用户不存在');
+        }
+        $user = Db::name('users')->find($user_id);
+        if(empty($user)){
+            response_error('用户不存在');
+        }
+
+        // 收货地址
+        
+        if($address_id){
+            $address = M('user_address')->where("address_id", $address_id)->find();
+        } else {
+            $address = Db::name('user_address')->where(['user_id'=>$user_id])->order(['is_default'=>'desc'])->find();
+        }
+        if(empty($address)){
+            $address = M('user_address')->where(['user_id'=>$user_id])->find();
+        }
+
+       
+        $goodsList = array();
+        $money = 0; // 商品金额总额
+
+        foreach ($goodsInfo as $item) {
+            $where = array(
+                'ga.act_id' => $item['act_id'],
+                // 'ga.is_finished' => '1',
+                // 'ga.is_publish' => '1',
+            );
+            $actInfo = Db::name('goods_activity')->alias('ga')
+                ->join('goods g', 'ga.goods_id=g.goods_id')
+                ->where($where)
+                ->find()
+                ;
+            if(empty($actInfo)){
+                response_error('', '活动不存在');
+            }
+            if($actInfo['is_finished'] != '1'){
+                response_error('', $actInfo['goods_name'].' 已结束');
+            }
+            if($actInfo['is_publish'] != '1'){
+                response_error('', $actInfo['goods_name'].' 未发布');
+            }
+
+            if($item['num'] > $actInfo['surplus']){
+                response_error('', $actInfo['goods_name'].' 数量超过剩余数量');
+            }
+
+            $goodsList[] = array(
+                'act_id' => $item['act_id'],
+                'goods_id' => $item['goods_id'],
+                'goods_name' => $actInfo['goods_name'],
+                'num' => $item['num'],
+            );
+
+            $money += $item['num'];
+        }
+
+        $tax_rate = 0.13; // 税率
+        $tax_money += $money*$tax_rate; // 税额
+        $tax_amount = $money+$tax_money; // 税后金额
+        if($use_point){
+            $points = $tax_amount*100;
+
+            if($user['pay_points'] < $points){
+                response_error('', '积分不够');
+            }
+            $actual_amount = 0.00; // 如果使用积分，全部抵扣，实付款为0
+        } else {
+            $actual_amount = $tax_amount; // 实付款
+        }
+
+        $priceInfo = array(
+            'total_point' => $user['pay_points'], // 用户总积分
+            'money' => $money,
+            'tax_rate' => '13%',
+            'tax_amount' => $tax_amount, // 税后金额
+            'points' => $points, // 使用的积分数
+            'actual_amount' => $actual_amount, // 实付款
+        );
+
+        // $data['address'] = $address;
+        $data['goodsList'] = $goodsList;
+        $data['priceInfo'] = $priceInfo;
+
+        if($submit_order){
+            $this->placeOrder($user_id, $goodsList, $address, $priceInfo);
+        } else {
+            response_success($data);
+        }
+    }*/
+
+    /*public function placeOrder($user_id, $goodsList, $address, $priceInfo){
         if(empty($address)){
             response_error('', '请选择收货地址');
         }
@@ -289,6 +477,7 @@ class Cart extends Base {
             'order_amount' => $priceInfo['actual_amount'], // 实付款
             'total_amount' => $priceInfo['tax_amount'], // 税后金额就是总金额
             'add_time' => time(),
+            'prom_id' => 
             'prom_type' => 4, // 订单类型 夺宝活动
         );
 
@@ -330,7 +519,7 @@ class Cart extends Base {
 
         // 下单成功去付款
         response_success('', '订单提交成功');
-    }
+    }*/
 
     // public function buy_now(){
     //     $act_id = input("act_id/d"); // 夺宝活动id
