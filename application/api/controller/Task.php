@@ -11,9 +11,9 @@ use think\Db;
 
 class Task {
 
-    public function test(){
-        file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
-    }
+    // public function test(){
+    //     file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
+    // }
 
     /**
      * [openPrize 活动开奖]
@@ -49,7 +49,7 @@ class Task {
             $lucky_number = $mo + 10000001;
 
             // 查找中奖者
-            $luckyinfo = Db::name('LuckyNumber')->where('lucky_number='.$lucky_number)->find();
+            $luckyinfo = Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->find();
             $win_user_id = $luckyinfo['user_id'];
             // 活动表记录中奖信息
             $actUpdateData = array(
@@ -60,7 +60,9 @@ class Task {
             );
             Db::name('goods_activity')->update($actUpdateData);
             // 幸运码表记录中奖信息
-            Db::name('LuckyNumber')->where('lucky_number='.$lucky_number)->update(array('is_win'=>'1'));
+            Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->update(array('is_win'=>'1'));
+            // 订单表中记录是否中奖
+            Db::name('order')->where("order_id=$luckyinfo['order_id']")->update(array('is_win'=>'1'));
        }
 
     }

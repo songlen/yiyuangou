@@ -49,7 +49,7 @@ class Activity extends Base {
         $ga_where = array(
             'ga.act_type' => '3',
             'ga.is_publish' => '1',
-            'ga.is_finished' => '0',
+            'ga.status' => '1',
         );
         
         if($cat_id){
@@ -59,14 +59,51 @@ class Activity extends Base {
         $goods_activity = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
             ->where($ga_where)
-            ->field('ga.act_id, ga.phase, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->field('ga.act_id, ga.phase, ga.surplus, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->select()
+            ;
+
+
+        $data['goods_activity'] = $goods_activity;
+
+        response_success($data);
+    }
+
+    /**
+     * [finished 揭晓结果]
+     * @return [type] [description]
+     */
+    public function finished(){
+        $cat_id = I('cat_id/d');
+        $page = I('page/d', 1);
+
+        $categoryList = $this->getAllCategory();
+        $data['categoryList'] = $categoryList;
+
+        // 商品
+        $ga_where = array(
+            'ga.act_type' => '3', // 活动类别、夺宝
+            'ga.is_publish' => '1', // 是否发布
+            'ga.status' => '3', // 已结束状态
+        );
+        
+        if($cat_id){
+            $ga_where['g.cat_id'] = $cat_id;
+        }
+
+        $goods_activity = M('goods_activity')->alias('ga')
+            ->join('goods g', 'ga.goods_id=g.goods_id')
+            ->where($ga_where)
+            ->field('ga.act_id, ga.win_user_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->limit(($page-1)*10, 10)
             ->select()
             ;
 
 
         if(!empty($goods_activity)){
             foreach ($goods_activity as &$item) {
-                $item['surplus'] = $item['total_count']-$item['buy_count'];
+                $user = Db::name('users')->find($item['win_user_id']);
+                $item['winner'] = substr_replace($user['mobile'], '****', 3, 4);
             }
         }
 
