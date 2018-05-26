@@ -31,7 +31,7 @@ class Order extends Base {
             ->where($where)
             ->order('order_id DESC')
             ->limit(($page-1)*10 . ',' . 10)
-            ->field('order_id, order_sn, phase, order_status, pay_status, total_amount, goods_id')
+            ->field('order_id, order_sn, phase, surplus, order_status, pay_status, total_amount, goods_id')
             ->select();
 
         if($orderList){
@@ -166,7 +166,7 @@ class Order extends Base {
             foreach ($orderList as &$order) {
                 $goods = M('goods')
                     ->where('goods_id='.$order['goods_id'])
-                    ->field('goods_name, original_img')
+                    ->field('shop_price, goods_name, original_img')
                     ->find();
                 $order = array_merge($order, $goods);
             }
