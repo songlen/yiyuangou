@@ -26,7 +26,7 @@ class Index extends Base {
         // 商品
         $ga_where = array(
         	'ga.act_type' => '3',
-        	'ga.is_finished' => '0',
+        	'ga.status' => '1',
         );
 
         $page = I('page', 1);

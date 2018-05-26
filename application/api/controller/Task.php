@@ -46,11 +46,12 @@ class Task {
             // 参与人次
             $count = Db::name('order')->where("prom_id=$act_id")->count();
             $mo = fmod($sumTime, $count);
-            $lucky_number = $mo + 10000001;
+            $lucky_number = $mo + 10000001;  // 诞生中奖幸运号
 
             // 查找中奖者
             $luckyinfo = Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->find();
             $win_user_id = $luckyinfo['user_id'];
+
             // 活动表记录中奖信息
             $actUpdateData = array(
                 'act_id'=>$act_id,
@@ -67,7 +68,7 @@ class Task {
 
     }
 
-	    /**
+	/**
      * [robot_task 执行定时任务读取数据库执行下单]
      * @return [type] [description]
      */
