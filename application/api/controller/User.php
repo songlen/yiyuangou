@@ -53,7 +53,7 @@ class User extends Base {
     	$mobile = I('mobile');
     	$code = I('code');
     	$password = trim(I('password'));
-    	$password_confirm = trim(I('password_confirm'));
+    	// $password_confirm = trim(I('password_confirm'));
 
     	if(check_mobile($mobile) == false){
     		response_error('', '手机号格式错误');
@@ -67,11 +67,8 @@ class User extends Base {
     	// 验证码检测
     	// 
 
-    	if(empty($password) || empty($password_confirm)){
+    	if(empty($password)){
     		response_error('', '密码不能为空');
-    	}
-    	if($password != $password_confirm){
-    		response_error('两次密码输入不一致');
     	}
 
     	$map = array(
