@@ -54,7 +54,7 @@ class Cart extends Base {
                 $actInfo = Db::name('GoodsActivity')->alias('ga')
                     ->join('goods g', 'ga.goods_id=g.goods_id')
                     ->where($where)
-                    ->field('ga.act_id, ga.surplus, g.goods_name, g.original_img')
+                    ->field('ga.act_id, ga,goods_id, ga.surplus, g.goods_name, g.original_img')
                     ->find();
 
                 if(empty($actInfo)){

@@ -236,7 +236,6 @@ class Order extends Base {
             ->field('lucky_number, nickname, ln.add_time, add_time_ms')
             ->select();
 
-        
         if($lists){
             foreach ($lists as &$item) {
                 $item['date'] = date('Y-m-d', $item['add_time']);
