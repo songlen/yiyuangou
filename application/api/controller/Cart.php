@@ -1,13 +1,10 @@
 <?php
 
 namespace app\api\controller;
-use app\common\logic\CartLogic;
-use app\common\logic\Integral;
+// use app\common\logic\CartLogic;
+// use app\common\logic\Integral;
 use app\api\logic\OrderLogic;
-use app\common\logic\PlaceOrder;
-use app\common\model\Goods;
 use think\Db;
-use think\Url;
 
 class Cart extends Base {
 
@@ -259,15 +256,17 @@ class Cart extends Base {
         $data['priceInfo'] = $priceInfo;
 
         if($submit_order){
-            $orderResult = $this->placeOrder($user_id, $goodsList, $address, $priceInfo);
+            $OrderLogic = new OrderLogic();
+            $orderResult = $OrderLogic->placeOrder($user_id, $goodsList, $address, $use_point);
             if($orderResult['status'] == '-1') response_error('', $orderResult['error']);
+            p($orderResult);
             response_success('下单成功');
         } else {
             response_success($data);
         }
     }
 
-    public function placeOrder($user_id, $goodsList, $address, $use_point=0){
+    /*public function placeOrder($user_id, $goodsList, $address, $use_point=0){
         if($user_id == '') return array('status'=>'-1', 'error'=>'用户不存在');
         if(empty($goodsList)) return array('status'=>'-1', 'error'=>'商品不存在');
         if(empty($address)) return array('status'=>'-1', 'error'=>'地址不存在');
@@ -344,7 +343,7 @@ class Cart extends Base {
 
         // 下单成功去付款
         return array('status'=>'1');
-    }
+    }*/
 
 
     // public function buy_now(){
