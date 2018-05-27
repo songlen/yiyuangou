@@ -97,6 +97,8 @@ class Order extends Base {
             ->field('order_id, order_sn, is_win, consignee, country, province , city, address, prom_id, order_amount')
             ->find();
 
+        if(empty($orderInfo)) response_error('', '订单不存在');
+
         // 订单信息
         $result['order'] = array(
             'order_id' => $orderInfo['order_id'],

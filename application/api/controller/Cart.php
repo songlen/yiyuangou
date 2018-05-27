@@ -6,11 +6,8 @@ use app\common\logic\GoodsActivityLogic;
 use app\common\logic\CouponLogic;
 use app\common\logic\Integral;
 use app\common\logic\OrderLogic;
-use app\common\logic\Pay;
 use app\common\logic\PlaceOrder;
 use app\common\model\Goods;
-use app\common\model\SpecGoodsPrice;
-use app\common\util\TpshopException;
 use think\Db;
 use think\Url;
 
@@ -80,14 +77,14 @@ class Cart extends Base {
     /**
      * 更新购物车，并返回计算结果
      */
-    public function AsyncUpdateCart()
+    /*public function AsyncUpdateCart()
     {
         $cart = input('cart/a', []);
         $cartLogic = new CartLogic();
         $cartLogic->setUserId($this->user_id);
         $result = $cartLogic->AsyncUpdateCart($cart);
         $this->ajaxReturn($result);
-    }
+    }*/
 
     /**
      *  购物车加减
@@ -165,8 +162,6 @@ class Cart extends Base {
      * goodsInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
      */
     public function prepareOrder(){
-        $order_sn = date('YmdHis').mt_rand(1000,9999);
-
         $user_id = I('user_id/d');
         $goodsInfo = I('goodsInfo');
         $use_point = I('use_point', 0); // 是否使用积分
@@ -203,8 +198,6 @@ class Cart extends Base {
         foreach ($goodsInfo as $item) {
             $where = array(
                 'ga.act_id' => $item['act_id'],
-                // 'ga.status' => '1',
-                // 'ga.is_publish' => '1',
             );
             $actInfo = Db::name('goods_activity')->alias('ga')
                 ->join('goods g', 'ga.goods_id=g.goods_id')
@@ -215,14 +208,14 @@ class Cart extends Base {
                 response_error('', '活动不存在');
             }
             if($actInfo['status'] != '1'){
-                response_error('', $actInfo['goods_name'].' 已结束');
+                response_error('', ' 已结束');
             }
             if($actInfo['is_publish'] != '1'){
-                response_error('', $actInfo['goods_name'].' 未发布');
+                response_error('', ' 未发布');
             }
 
             if($item['num'] > $actInfo['surplus']){
-                response_error('', $actInfo['goods_name'].' 数量超过剩余数量');
+                response_error('', ' 商品数量超过剩余数量');
             }
 
             $goodsList[] = array(
