@@ -129,7 +129,7 @@ class Cart extends Base {
             Db::name('cart')->where("user_id={$user_id} and act_id={$act_id}")->update(array('num'=>$num));
         } else {
             $cartData = array(
-                'user_id' => $this->user_id,
+                'user_id' => $user_id,
                 'act_id' => $act_id,
                 'goods_id' => $actInfo['goods_id'],
                 'num' => $num,
