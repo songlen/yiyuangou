@@ -15,6 +15,8 @@ class Base extends Controller {
     public function __construct(){
         parent::__construct();
 
+        // 请求写入log
+        $this->requestToLog();
         $this->checkMethod();
     }
 
@@ -28,5 +30,14 @@ class Base extends Controller {
         if(!($method == $allow_method)) {
             response_error('', '不被允许的请求');
         }
+    }
+
+    protected function requestToLog(){
+        $pathinfo = $this->request->pathinfo();
+        $method = $this->request->method();
+        $param = $this->request->param();
+
+        $data = "\r\n".date('Y-m-d H:i:s')." ".$pathinfo." method: {$method} \r\n param: ".var_export($param, true);
+        file_put_contents('runtime/log/request.log', $data, FILE_APPEND);
     }
 }
