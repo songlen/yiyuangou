@@ -182,6 +182,16 @@ class Cart extends Base {
         if(empty($address)){
             $address = M('user_address')->where(['user_id'=>$user_id])->find();
         }
+        $address = array(
+            'address_id' => $address['address_id'],
+            'consignee' => $address['consignee'],
+            'mobile' => $address['mobile'],
+            'country' => $address['country'],
+            'province' => $address['province'],
+            'city' => $address['city'],
+            'address' => $address['address'],
+            'zipcode' => $address['zipcode'],
+        );
        
         $goodsList = array();
         $money = 0; // 商品金额总额
@@ -242,6 +252,7 @@ class Cart extends Base {
             'points' => $points, // 使用的积分数
             'actual_amount' => $actual_amount, // 实付款
         );
+
 
         $data['address'] = $address;
         $data['goodsList'] = $goodsList;
