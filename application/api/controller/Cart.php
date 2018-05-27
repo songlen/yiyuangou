@@ -259,7 +259,7 @@ class Cart extends Base {
             $OrderLogic = new OrderLogic();
             $orderResult = $OrderLogic->placeOrder($user_id, $goodsList, $address, $use_point);
             if($orderResult['status'] == '-1') response_error('', $orderResult['error']);
-            response_success('下单成功');
+            response_success('', '下单成功');
         } else {
             response_success($data);
         }
