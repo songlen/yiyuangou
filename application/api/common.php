@@ -23,3 +23,7 @@ function response_error($data=[], $msg=''){
 	json($result, 400)->send();
 	exit;
 }
+
+function generateOrderSn(){
+	return date('YmdHis').mt_rand(1000,9999);
+}
