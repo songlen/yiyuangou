@@ -268,9 +268,9 @@ class Cart extends Base {
     }
 
     public function placeOrder($user_id, $goodsList, $address, $use_point=0){
-        if($user_id == '') return array('status'='-1', 'error'=>'用户不存在');
-        if(empty($goodsList)) return array('status'='-1', 'error'=>'商品不存在');
-        if(empty($address)) return array('status'='-1', 'error'=>'地址不存在');
+        if($user_id == '') return array('status'=>'-1', 'error'=>'用户不存在');
+        if(empty($goodsList)) return array('status'=>'-1', 'error'=>'商品不存在');
+        if(empty($address)) return array('status'=>'-1', 'error'=>'地址不存在');
 
         $goodsInfo = current($goodsList);
 
