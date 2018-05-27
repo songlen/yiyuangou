@@ -33,7 +33,7 @@ class Order extends Base {
             ->limit(($page-1)*10 . ',' . 10)
             ->field('order_id, order_sn, phase, surplus, pay_status, total_amount, goods_id')
             ->select();
-p($orderList);
+
         if($orderList){
             // 活动及商品信息
             foreach ($orderList as &$order) {

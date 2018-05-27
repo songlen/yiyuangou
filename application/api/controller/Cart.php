@@ -44,8 +44,9 @@ class Cart extends Base {
         $user_id = I("user_id/d");
 
         $cartList = Db::name('cart')->where("user_id=$user_id")
-            ->field('id cart_id, act_id, num')
+            ->field('id as cart_id, act_id, num')
             ->select();
+
         if($cartList){
             foreach ($cartList as $k => &$item) {
                 $where = array(
@@ -115,7 +116,10 @@ class Cart extends Base {
         $act_id = I("act_id/d"); // 商品id
         $num = I("num/d");// 商品数量
 
-        $actInfo = Db::name('goods_activity')->find($act_id);
+        $actInfo = Db::name('goods_activity')
+            ->where("status=1")
+            ->find($act_id);
+        if(empty($actInfo)) response_error('', '活动不存在');
         
         if($num > $actInfo['surplus']) response_error('', '商品数量超过剩余量');
 
@@ -155,7 +159,6 @@ class Cart extends Base {
             response_error('', '操作失败');
         }
     }
-
 
     /**
      * 购物车第二步确定页面/立即购买/下单
