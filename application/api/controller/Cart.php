@@ -49,7 +49,7 @@ class Cart extends Base {
         if($cartList){
             foreach ($cartList as $k => &$item) {
                 $where = array(
-                    'ga.is_finished' => '1',
+                    'ga.status' => '1',
                     'ga.is_publish' => '1',
                     'ga.act_id' => $item['act_id'],
                 );
@@ -200,7 +200,7 @@ class Cart extends Base {
         foreach ($goodsInfo as $item) {
             $where = array(
                 'ga.act_id' => $item['act_id'],
-                // 'ga.is_finished' => '1',
+                // 'ga.status' => '1',
                 // 'ga.is_publish' => '1',
             );
             $actInfo = Db::name('goods_activity')->alias('ga')
@@ -211,7 +211,7 @@ class Cart extends Base {
             if(empty($actInfo)){
                 response_error('', '活动不存在');
             }
-            if($actInfo['is_finished'] != '1'){
+            if($actInfo['status'] != '1'){
                 response_error('', $actInfo['goods_name'].' 已结束');
             }
             if($actInfo['is_publish'] != '1'){
@@ -387,7 +387,7 @@ class Cart extends Base {
         foreach ($goodsInfo as $item) {
             $where = array(
                 'ga.act_id' => $item['act_id'],
-                // 'ga.is_finished' => '1',
+                // 'ga.status' => '1',
                 // 'ga.is_publish' => '1',
             );
             $actInfo = Db::name('goods_activity')->alias('ga')
@@ -398,7 +398,7 @@ class Cart extends Base {
             if(empty($actInfo)){
                 response_error('', '活动不存在');
             }
-            if($actInfo['is_finished'] != '1'){
+            if($actInfo['status'] != '1'){
                 response_error('', $actInfo['goods_name'].' 已结束');
             }
             if($actInfo['is_publish'] != '1'){
