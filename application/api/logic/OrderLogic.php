@@ -18,7 +18,7 @@ class OrderLogic {
      * @param  [1, 0] $use_point [是否使用积分]
      * @return [type]             [description]
      */
-     public function placeOrder($user_id, $goodsList, $address, $use_point=0){
+    public function placeOrder($user_id, $goodsList, $address, $use_point=0){
         $user = Db::name('users')->field('pay_points')->find($user_id);
         if(empty($user)) return array('status'=>'-1', 'error'=>'用户不存在');
         if(empty($goodsList)) return array('status'=>'-1', 'error'=>'商品不存在');
@@ -69,6 +69,8 @@ class OrderLogic {
                 }
                 $used_points = $points; // 使用的积分
                 // 如果可以使用积分
+                $orderdata['pay_status'] = '1';
+                $orderdata['pay_time'] = $sec;
                 $orderdata['integral'] = $points; // 使用积分
                 $orderdata['integral_money'] = $total_amount; // 积分抵扣金额（购买夺宝，全部抵扣）
                 $order_amount = 0; // 实付款就为0
@@ -91,9 +93,11 @@ class OrderLogic {
                 Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num);
                 Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num);
 
-                // 如果使用了积分
+                // 积分记录
                 if($used_points>0){
                     accountLog($user_id, 0, -$used_points, '订单使用积分', 0,$order_id, $order_sn);
+                } else {
+                    accountLog($user_id, 0, $goods_price, '订单获得积分', 0, $order_id, $order_sn);
                 }
 
                 $i = 1;

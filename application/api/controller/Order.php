@@ -290,21 +290,36 @@ class Order extends Base {
             'original_img' => $goodsInfo['original_img'],
             'num' => $num,
         );
-        $result['goodsInfo'] = $goodsInfo;
+        
         // 订单信息
         $order = Db::name('order')->where("order_id=$order_id")->find();
         if(empty($order)) response_error('', '订单不存在');
 
-
         $tax_amount = ($goodsInfo['shop_price']-$order['goods_price'])*1.13;
+
+        if($use_point){
+            $points = $tax_amount*100;
+
+            if($user['pay_points'] < $points){
+                response_error('', '积分不足抵扣金额');
+            }
+            $actual_amount = 0.00; // 如果使用积分，全部抵扣，实付款为0
+        } else {
+            $points = 0;
+            $actual_amount = $tax_amount; // 实付款
+        }
         $priceInfo = array(
             'money' => $goodsInfo['shop_price'], // 商品金额
-            'deductible_amount' => $order['goods_price'], // 可抵扣金额（订单价格）
+            'deductible_amount' => $order['goods_price'], // 可抵扣金额（原订单价格）
             'tax_rate' => '13%', // 税率
             'tax_amount' =>$tax_amount, // 税后金额
             'actual_amount' =>$tax_amount, // 实付金额
             'total_point' => $user['pay_points'], // 总积分
+            'points' => $points,
         );
+
+        $result['address'] = $address;
+        $result['goodsInfo'] = $goodsInfo;
         $result['priceInfo'] = $priceInfo;
 
         if($submit_order){
@@ -325,9 +340,7 @@ class Order extends Base {
      * @return [type]            [description]
      */
     private function placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo){
-        if(empty($address)){
-            response_error('', '请选择收货地址');
-        }
+        if(empty($address)) return array('status'=>'-1', 'error' => '请填写收货地址');
 
         $order_sn = date('YmdHis').mt_rand(1000,9999);
 
@@ -338,8 +351,6 @@ class Order extends Base {
         $orderdata = array(
             'order_sn' => $order_sn,
             'user_id' => $user_id,
-            'order_status' => 0,
-            'pay_status' => 0,
             'consignee' => $address['consignee'],
             'country' => $address['country'],
             'province' => $address['province'],
@@ -348,10 +359,9 @@ class Order extends Base {
             'zipcode' => $address['zipcode'],
             'mobile' => $address['mobile'],
             'goods_price' => $priceInfo['money'],
-            'integral' => 0,
-            'integral_money' => 0,
             'order_amount' => $priceInfo['actual_amount'], // 实付款
             'total_amount' => $priceInfo['tax_amount'], // 税后金额就是总金额
+            'deductible_amount' => $priceInfo['deductible_amount'], // 可抵扣金额（原订单价格）
             'add_time' => $sec,
             'add_time_ms' => $usec,
             'prom_id' => $goodsInfo['act_id'],
@@ -365,26 +375,43 @@ class Order extends Base {
             $orderdata['integral_money'] = $priceInfo['tax_amount'];
         }
 
-        $order_id = Db::name('order')->insertGetId($orderdata);
+        $commit_result = true;
+        Db::startTrans(); // 开启事物
+        try {
 
-        // 商品表减库存
-        Db::name('goods')->where('goods_id', $goodsInfo['goods_id'])->setDec('store_count', $goodsInfo['num']);
+            $order_id = Db::name('order')->insertGetId($orderdata);
 
-        // 如果使用了积分
-        if($priceInfo['points']>0){
-            accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
+            // 商品表减库存
+            Db::name('goods')->where('goods_id', $goodsInfo['goods_id'])->setDec('store_count', $goodsInfo['num']);
+
+            // 如果使用了积分
+            if($priceInfo['points']>0){
+                accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
+            } else {
+                accountLog($user_id, 0, -$priceInfo['points'], '下单', 0,$order_id, $order_sn);
+            }
+
+            // 更新订单商品附加表
+            $orderGoods = array(
+               'order_id' => $order_id,
+               'goods_id' => $goodsInfo['goods_id'],
+               'goods_name' => $goodsInfo['goods_name'],
+               'goods_num' => $goodsInfo['num'],
+            );
+            Db::name('OrderGoods')->insert($orderGoods);
+            // 提交事务
+            Db::commit();
+        } catch(\Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $commit_result = false;
+            break;
         }
 
-
-        // 更新订单商品附加表
-        $orderGoods = array(
-           'order_id' => $order_id,
-           'goods_id' => $goodsInfo['goods_id'],
-           'goods_name' => $goodsInfo['goods_name'],
-           'goods_num' => $goodsInfo['num'],
-        );
-        Db::name('OrderGoods')->insert($orderGoods);
-
-        return true;
+        if($commit_result){
+            return array('status'=>'1');
+        } else {
+            return array('status'=>'-1', 'error' => '下单失败');
+        }
     }
 }
