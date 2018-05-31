@@ -63,7 +63,7 @@ class Order extends Base {
         if($begin && $end){
         	$condition['add_time'] = array('between',"$begin,$end");
         }
-        $condition['prom_type'] = array('lt',5);
+        $condition['prom_type'] = '0';
         $order_sn = ($keyType && $keyType == 'order_sn') ? $keywords : I('order_sn') ;
         $order_sn ? $condition['order_sn'] = trim($order_sn) : false;
         
@@ -82,16 +82,6 @@ class Order extends Base {
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('pager',$Page);
         return $this->fetch();
-    }
-    //虚拟订单
-    public function virtual_list(){
-    header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
-    }
-    // 虚拟订单
-    public function virtual_info(){
-    header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
     }
 
     public function virtual_cancel(){
@@ -272,7 +262,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
                 //取消订单支付原路退回
                 if($order['pay_code'] == 'weixin' || $order['pay_code'] == 'alipay' || $order['pay_code'] == 'alipayMobile'){
 		header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+        exit("请联系TPshop官网客服购买高级版支持此功能");
                 }else{
                     $this->error('该订单支付方式不支持在线退回');
                 }
@@ -291,19 +281,21 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
     public function detail($order_id){
         $orderModel = new \app\common\model\Order();
         $orderObj = $orderModel::get(['order_id'=>$order_id]);
-        $order =$orderObj->append(['full_address','orderGoods','adminOrderButton'])->toArray();
-        $orderGoods =$order['orderGoods'];
+        $order =$orderObj->append(['full_address','adminOrderButton'])->toArray();
+
+        // 订单商品
+        $orderGoods = Db::name('order_goods')->alias('og')
+            ->join('goods g', 'g.goods_id=og.goods_id')
+            ->where("og.order_id={$order_id}")
+            ->field('og.goods_num, g.goods_id, g.goods_name, shop_price, (goods_num * shop_price) AS goods_total')
+            ->select();
+
+
         $express = Db::name('delivery_doc')->where("order_id" , $order_id)->select();  //发货信息（可能多个）
         $user = Db::name('users')->where(['user_id'=>$order['user_id']])->find();
         $this->assign('order',$order);
         $this->assign('user',$user);
-        $split = count($orderGoods) >1 ? 1 : 0;
-        foreach ($orderGoods as $val){
-        	if($val['goods_num']>1){
-        		$split = 1;
-        	}
-        }
-        $this->assign('split',$split);
+        $this->assign('orderGoods',$orderGoods);
         $this->assign('express',$express);
         return $this->fetch();
     }

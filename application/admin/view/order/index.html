@@ -9,7 +9,7 @@
     <div class="item-title">
       <div class="subject">
         <h3>商品订单</h3>
-        <h5>商城实物商品交易订单查询及管理</h5>
+        <h5>中奖订单及补差价购买订单</h5>
       </div>
     </div>
   </div>
@@ -20,9 +20,7 @@
       <span title="收起提示" id="explanationZoom" style="display: block;"></span>
     </div>
      <ul>
-      <li>查看操作可以查看订单详情, 包括支付费用, 商品详情等</li>
-      <li>未支付的订单可以取消</li>
-      <li>用户收货后, 如果没有点击"确认收货",系统自动根据设置的时间自动收货.</li>
+      
     </ul>
   </div>
   <div class="flexigrid">
@@ -54,30 +52,21 @@
         			<option value="1">已支付</option>
             </select>
         </div>
-        <div class="sDiv2">	   
-            <select name="pay_code" class="select sDiv3" style="margin-right:5px;margin-left:5px">
-                <option value="">支付方式</option>
-                <option value="alipay">支付宝支付</option>
-				<option value="weixin">微信支付</option>
-				<option value="cod">货到付款</option>
-             </select>
-         </div>
          <div class="sDiv2">	 
              <select name="shipping_status" class="select sDiv3" >
                 <option value="">发货状态</option>
                 <option value="0">未发货</option>
                 <option value="1">已发货</option>
-                <option value="2">部分发货</option>
              </select>
           </div>
-          <div class="sDiv2">	 
+         <!--  <div class="sDiv2">	 
              <select name="order_status" class="select sDiv3" >
                   <option value="">订单状态</option>
                   <volist name="order_status" id="v" key="k">
                       <option value="{$k-1}">{$v}</option>
                   </volist>
               </select>       
-         </div>
+         </div> -->
          <div class="sDiv2">	                
           <select  name="keytype" class="select">
             <option value="consignee">收货人</option>
@@ -114,9 +103,9 @@
 	              <th align="center" abbr="article_time" axis="col6" class="">
 	                <div style="text-align: center; width: 60px;" class="">应付金额</div>
 	              </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
+	              <!-- <th align="center" abbr="article_time" axis="col6" class="">
 	                <div style="text-align: center; width: 60px;" class="">订单状态</div>
-	              </th>
+	              </th> -->
 	              <th align="center" abbr="article_time" axis="col6" class="">
 	                <div style="text-align: center; width: 60px;" class="">支付状态</div>
 	              </th>
@@ -124,16 +113,7 @@
 	                <div style="text-align: center; width: 60px;" class="">发货状态</div>
 	              </th>
 	              <th align="center" abbr="article_time" axis="col6" class="">
-	                <div style="text-align: center; width: 60px;" class="">支付方式</div>
-	              </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
-	                <div style="text-align: center; width: 60px;" class="">配送方式</div>
-	              </th>
-	              <th align="center" abbr="article_time" axis="col6" class="">
 	                <div style="text-align: center; width: 120px;" class="">下单时间</div>
-	              </th>
-	              <th align="left" axis="col1" class="handle">
-	                <div style="text-align: left; width: 150px;">开票</div>
 	              </th>
                   <th align="left" axis="col1" class="handle">
                       <div style="text-align: left; width: 150px;">操作</div>

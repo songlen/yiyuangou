@@ -24,7 +24,7 @@
 		<div class="mDiv">
 			<div class="ftitle">
 				<h3>夺宝活动列表</h3>
-				<h5>(共{$pager->totalRows}条记录)</h5>
+				<h5>(共{$page->totalRows}条记录)</h5>
 			</div>
 			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
 		</div>
@@ -35,6 +35,9 @@
 					<tr>
 						<th class="sign" axis="col0">
 							<div style="width: 24px;"><i class="ico-check"></i></div>
+						</th>
+						<th align="left" axis="col6">
+							<div style="text-align: center; width: 60px;">操作</div>
 						</th>
 						<th align="left" abbr="article_time" axis="col6" class="">
 							<div style="text-align: left; width: 50px;" class="">期数</div>
@@ -62,9 +65,6 @@
 						</th>
 						<th align="center" abbr="article_time" axis="col6" class="">
 							<div style="text-align: center; width: 50px;" class="">发布状态</div>
-						</th>
-						<th align="left" axis="col1" class="handle">
-							<div style="text-align: center; width: 150px;">操作</div>
 						</th>
 						<th style="width:100%" axis="col7">
 							<div></div>
@@ -94,7 +94,23 @@
 						<tr>
 							<td class="sign">
 								<div style="width: 24px;"><i class="ico-check"></i></div>
-							</td>
+							</td><td class="handle" >
+                <div style="text-align:left;   min-width:50px !important; max-width:inherit !important;">
+                  <span class="btn"><em><i class="fa fa-cog"></i>操作<i class="arrow"></i></em>
+                  <ul>
+                  	<if condition="$vo.is_publish eq 0">
+					<li><a href="{:U('Activity/duobao_modify',array('id'=>$vo['act_id']))}">编辑</a></li>
+					<else>
+					<li><a href="javascript:layer.msg('发布后不可编辑')">编辑</a></li>
+					</if>
+					<li><a href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}">机器人</a></li>
+					<li><a href="{:U('Activity/orderList', array('act_id'=>$vo.act_id))}">购买记录</a></li>
+					<!-- <li><a href="javascript:void(0)" data-url="{:U('Activity/duobao_del')}" data-id="{$vo.act_id}" onClick="delfun(this)">删除</a></li> -->
+                   
+                  </ul>
+                  </span>
+                </div>
+              </td>                
 							<td align="left" class="">
 								<div style="text-align: left; width: 50px;">{$vo.phase}</div>
 							</td>
@@ -127,17 +143,6 @@
 							<td align="left" class="">
 								<div style="text-align: center; width: 50px;"><if condition="$vo.is_publish eq 1">已发布<else>未发布</if></div>
 							</td>
-							<td align="left" class="handle">
-								<div style="text-align: left; width: 150px; max-width:170px;">
-									<if condition="$vo.is_publish eq 0">
-									<a class="btn blue" href="{:U('Activity/duobao_modify',array('id'=>$vo['act_id']))}"><i class="fa fa-pencil-square-o"></i>编辑</a>
-									<else>
-									<a class="btn blue" href="javascript:layer.msg('发布后不可编辑')"><i class="fa fa-pencil-square-o"></i>编辑</a>
-									</if>
-									<a class="btn blue" href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}"><i class="fa"></i>机器人</a>
-									<!-- <a class="btn red" href="javascript:void(0)" data-url="{:U('Activity/duobao_del')}" data-id="{$vo.act_id}" onClick="delfun(this)"><i class="fa fa-trash-o"></i>删除</a> -->
-								</div>
-							</td>
 							<td align="" class="" style="width: 100%;">
 								<div>&nbsp;</div>
 							</td>
@@ -149,7 +154,7 @@
 			<div class="iDiv" style="display: none;"></div>
 		</div>
 		<!--分页位置-->
-		{$page} </div>
+		{$showPage} </div>
 </div>
 <script>
 	$(document).ready(function(){

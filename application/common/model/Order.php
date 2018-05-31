@@ -93,12 +93,21 @@ class Order extends Model
      * @param $data
      * @return string
      */
+    // public function getFullAddressAttr($value, $data)
+    // {
+    //     $province =  Region::where(['id'=>$data['province']])->value('name');
+    //     $city = Region::where(['id'=>$data['city']])->value('name');
+    //     $district =Region::where(['id'=>$data['district']])->value('name');
+    //     $adderss = $province.'，'.$city.'，'.$district.'，'.$data['address'];
+    //     return $adderss;
+    // }
+    
     public function getFullAddressAttr($value, $data)
     {
-        $province =  Region::where(['id'=>$data['province']])->value('name');
-        $city = Region::where(['id'=>$data['city']])->value('name');
-        $district =Region::where(['id'=>$data['district']])->value('name');
-        $adderss = $province.'，'.$city.'，'.$district.'，'.$data['address'];
+        $country = $data['country'];
+        $province =  $data['province'];
+        $city = $data['city'];
+        $adderss = $country. ', '.$province.'，'.$city.'，'.$data['address'];
         return $adderss;
     }
 

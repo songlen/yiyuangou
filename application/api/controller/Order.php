@@ -92,7 +92,6 @@ class Order extends Base {
         $user_id = I('user_id');
         $order_id = I('order_id/d');
 
-
         $orderInfo = Db::name('order')->where("user_id=$user_id and order_id=$order_id")
             ->field('order_id, order_sn, is_win, consignee, country, province , city, address, prom_id, order_amount')
             ->find();
@@ -123,8 +122,11 @@ class Order extends Base {
             ->find();
         $result['actInfo'] = $actInfo;
 
-        $winner = Db::name('users')->where("user_id={$actInfo['win_user_id']}")->field('nickname')->find();
-        $result['actInfo']['winner_nickname'] = $winner['nickname'];
+        if($actInfo['status'] = '3'){
+            $winner = Db::name('users')->where("user_id={$actInfo['win_user_id']}")->field('nickname')->find();
+            $result['actInfo']['winner_nickname'] = $winner['nickname'];
+            
+        }
 
         $my_lucky_number = Db::name('lucky_number')->where("user_id=$user_id")
             ->field("lucky_number, add_time, add_time_ms")
@@ -295,7 +297,7 @@ class Order extends Base {
         $order = Db::name('order')->where("order_id=$order_id")->find();
         if(empty($order)) response_error('', '订单不存在');
 
-        $tax_amount = ($goodsInfo['shop_price']-$order['goods_price'])*1.13;
+        $tax_amount = ($goodsInfo['shop_price']*$goodsInfo['num']-$order['goods_price'])*1.13;
 
         if($use_point){
             $points = $tax_amount*100;
@@ -309,7 +311,7 @@ class Order extends Base {
             $actual_amount = $tax_amount; // 实付款
         }
         $priceInfo = array(
-            'money' => $goodsInfo['shop_price'], // 商品金额
+            'money' => $goodsInfo['shop_price']*$goodsInfo['num'], // 商品金额
             'deductible_amount' => $order['goods_price'], // 可抵扣金额（原订单价格）
             'tax_rate' => '13%', // 税率
             'tax_amount' =>$tax_amount, // 税后金额
@@ -367,6 +369,7 @@ class Order extends Base {
             'prom_id' => $goodsInfo['act_id'],
             'prom_type' => 0, // 订单类型 普通订单
             'num' => $goodsInfo['num'],
+            'tax_amount' => ($priceInfo['money'] - $priceInfo['deductible_amount'])*0.13
         );
 
 

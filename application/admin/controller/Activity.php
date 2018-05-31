@@ -31,18 +31,19 @@ class Activity extends Base
         );
 
         $count = M('goods_activity')->where($where)->count();
-        $Page = new Page($count, 20);
-        $showPage = $Page->show();
+        $page = new Page($count, 20);
+        $showPage = $page->show();
 
         $lists = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
             ->where($where)
             ->order('act_id desc')
-            ->limit($Page->firstRow.','.$Page->listRows)
+            ->limit($page->firstRow.','.$page->listRows)
             ->select()
             ;
 
-        $this->assign('page', $showPage);
+        $this->assign('page', $page);
+        $this->assign('showPage', $showPage);
         $this->assign('lists', $lists);
         return $this->fetch();
     }
@@ -161,7 +162,32 @@ class Activity extends Base
         return $this->fetch();
     }
 
+    public function orderList()
+    {
+        $act_id = I('act_id/d');
+        $where = array(
+            'prom_type' => '4',
+            'prom_id' => $act_id,
+        );
 
+        $count = M('order')->where($where)->count();
+        $page = new Page($count, 20);
+        $showPage = $page->show();
+
+        $lists = M('order')->alias('o')
+            ->join('users u', 'u.user_id=o.user_id')
+            ->where($where)
+            ->order('order_id desc')
+            ->limit($page->firstRow.','.$page->listRows)
+            ->field('nickname, u.mobile, num, add_time')
+            ->select()
+            ;
+
+        $this->assign('page', $page);
+        $this->assign('showPage', $showPage);
+        $this->assign('lists', $lists);
+        return $this->fetch();
+    }
 
     private function getRobot($act_id, $num){
         $sql = "select user_id from tp_users as u  where not exists(select 1 from tp_order_activity as o where u.user_id=o.user_id and o.act_id = $act_id) and u.robot='1' order by rand() limit $num";
