@@ -121,7 +121,7 @@ class Order extends Base {
             ->field('ga.status, g.goods_name, g.goods_id, g.original_img, ga.win_user_id, ga.lucky_number')
             ->find();
         $result['actInfo'] = $actInfo;
-
+p($actInfo);
         if($actInfo['status'] == '3'){
             $winner = Db::name('users')->where("user_id={$actInfo['win_user_id']}")->field('nickname')->find();
             $result['actInfo']['winner_nickname'] = $winner['nickname'];
