@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 use think\Db;
+use app\api\logic\SmsLogic;
 
 class User extends Base {
 
@@ -65,7 +66,9 @@ class User extends Base {
     	}
 
     	// 验证码检测
-    	// 
+    	$SmsLogic = new SmsLogic();
+        if($SmsLogic->checkCode($mobile, $code, '1', $error) == false) response_error('', $error);
+
 
     	if(empty($password)){
     		response_error('', '密码不能为空');
@@ -94,6 +97,24 @@ class User extends Base {
         return response_success($userInfo, '注册成功');
     }
 
+    /**
+     * [sendMobleCode 发送手机验证码]
+     * @param [scene 1 注册 2 找回密码]
+     * @return [type] [description]
+     */
+    public function sendMobleCode(){
+        $scene = I('scene', 1);
+        $mobile = I('mobile');
+
+        $SmsLogic = new SmsLogic();
+        $code = $SmsLogic->send($mobile, $scene, $error);
+        if($code != false){
+            response_success(array('code'=>$code), '发送成功');
+        } else {
+            response_error('', $error);
+        }
+    }
+
     // 忘记密码
     public function resetPwd(){
         $mobile = I('mobile');
@@ -105,6 +126,8 @@ class User extends Base {
             response_error('', '手机号码有误');
         }
         // 检测验证码
+        $SmsLogic = new SmsLogic();
+        if($SmsLogic->checkCode($mobile, $code, '1', $error) == false) response_error('', $error);
 
         if($password != $password_confirm){
             response_error('', '两次密码输入不一致');
