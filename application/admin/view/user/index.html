@@ -18,8 +18,7 @@
             <span title="收起提示" id="explanationZoom" style="display: block;"></span>
         </div>
         <ul>
-            <li>会员列表管理, 可以给会员群发站内信、邮件等.</li>
-            <li>分销系统可以查看会员上下级信息.</li>
+           
         </ul>
     </div>
     <div class="flexigrid">
@@ -40,7 +39,7 @@
                 <input type="hidden" name="third_leader" value="{$_GET['third_leader']}">
                 <div class="sDiv">
                     <div class="sDiv2">
-                        <input type="text" id="search_key" size="30" class="qsbox" placeholder="手机或者邮箱...">
+                        <input type="text" id="search_key" size="30" class="qsbox" placeholder="手机号">
                         <input type="submit" class="btn" onclick="ajax_get_table('search-form2',1)" value="搜索">
                     </div>
                 </div>
@@ -60,30 +59,16 @@
                         <th align="left" abbr="nickname" axis="col4" class="">
                             <div style="text-align: center; width: 150px;" class="">会员昵称</div>
                         </th>
-                        <th align="center" abbr="level" axis="col5" class="">
-                            <div style="text-align: center; width: 50px;" class="">会员等级</div>
-                        </th>
-                        <th align="center" abbr="total_amount" axis="col6" class="">
+                        <!-- <th align="center" abbr="total_amount" axis="col6" class="">
                             <div style="text-align: center; width: 50px;" class="">累计消费</div>
-                        </th>
-                        <th align="center" abbr="email" axis="col6" class="">
+                        </th> -->
+                        <!-- <th align="center" abbr="email" axis="col6" class="">
                             <div style="text-align: center; width: 150px;" class="">邮件地址</div>
-                        </th>
-                        <th align="center" axis="col6" class="">
-                            <div style="text-align: center; width: 30px;" class="">一级下线数</div>
-                        </th>
-                        <th align="center" axis="col6" class="">
-                            <div style="text-align: center; width: 30px;" class="">二级下线数</div>
-                        </th>
-                        <th align="center" axis="col6" class="">
-                            <div style="text-align: center; width: 30px;" class="">三级下线数</div>
-                        </th>
+                        </th> -->
                         <th align="center" abbr="mobile" axis="col6" class="">
                             <div style="text-align: center; width: 80px;" class="">手机号码</div>
                         </th>
-                        <th align="center" abbr="user_money" axis="col6" class="">
-                            <div style="text-align: center; width: 60px;" class="">余额</div>
-                        </th>
+                        
                         <th align="center" abbr="pay_points" axis="col6" class="">
                             <div style="text-align: center; width: 60px;" class="">积分</div>
                         </th>
@@ -117,20 +102,20 @@
                         </div>
                     </a>
                 </div>
-                <div class="fbutton">
-                    <a onclick="send_message();">
-                        <div class="add" title="发送站内信">
-                            <span><i class="fa fa-send"></i>发送站内信</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="fbutton">
-                    <a onclick="send_mail();">
-                        <div class="add" title="发送邮件">
-                            <span><i class="fa fa-send-o"></i>发送邮件</span>
-                        </div>
-                    </a>
-                </div>
+               <!--  <div class="fbutton">
+                   <a onclick="send_message();">
+                       <div class="add" title="发送站内信">
+                           <span><i class="fa fa-send"></i>发送站内信</span>
+                       </div>
+                   </a>
+               </div>
+               <div class="fbutton">
+                   <a onclick="send_mail();">
+                       <div class="add" title="发送邮件">
+                           <span><i class="fa fa-send-o"></i>发送邮件</span>
+                       </div>
+                   </a>
+               </div> -->
             </div>
             <div style="clear:both"></div>
         </div>

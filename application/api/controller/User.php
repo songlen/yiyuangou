@@ -106,10 +106,7 @@ class User extends Base {
         // 检测用户是否已注册
         $user = Db::name('users')->where("openid=$openid")->find();
         if($user){
-            if(empty($user['mobile'])){
-                $result['complete'] = 0;
-                $result['user_id'] = $user['user_id'];
-            }
+            $user_id = $user['user_id'];
         } else {
             $data = array(
                 'openid' => $openid,
@@ -120,11 +117,11 @@ class User extends Base {
             );
 
             $user_id = Db::name('users')->insertGetId($data);
-            $result['complete'] = 0;
-            $result['user_id'] = $user_id;
         }
 
-        response_success($result);
+        $userInfo = $this->getUserInfo($user_id);
+
+        response_success($userInfo);
     }
 
     /**
