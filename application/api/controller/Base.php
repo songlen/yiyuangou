@@ -13,6 +13,7 @@ class Base extends Controller {
     protected $method = 'GET';
 
     public function __construct(){
+        header("Access-Control-Allow-Origin: *");
         parent::__construct();
 
         // 请求写入log
