@@ -1,11 +1,5 @@
 <?php
-/**
- * tpshop
- * 个人学习免费, 如果商业用途务必到TPshop官网购买授权.
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * ============================================================================
- *
- */ 
+
 namespace app\api\controller;
 use think\Controller;
 
@@ -13,7 +7,8 @@ class Base extends Controller {
     protected $method = 'GET';
 
     public function __construct(){
-        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Origin: *"); // 允许跨域
+        
         parent::__construct();
 
         // 请求写入log
