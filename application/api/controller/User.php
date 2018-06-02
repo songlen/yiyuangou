@@ -132,7 +132,7 @@ class User extends Base {
      * @param [scene 1 注册 2 找回密码]
      * @return [type] [description]
      */
-    public function sendMobleCode(){
+    public function sendMobileCode(){
         $scene = I('scene', 1);
         $mobile = I('mobile');
 
