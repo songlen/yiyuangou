@@ -14,15 +14,15 @@ function response_success($data=[], $msg=''){
 }
 
 function response_error($data=[], $msg=''){
-	header('content-type:application/json; charset=utf-8');
+	// header('content-type:application/json; charset=utf-8');
 	$result = array(
 		'code' => 400,
 		'data' => $data,
 		'msg' => $msg,
 	);
 
-	// json($result, 400)->send();
-	echo json_encode($result);
+	json($result, 200)->send();
+	// echo json_encode($result);
 	exit;
 }
 
