@@ -93,7 +93,7 @@ class Order extends Base {
         $order_id = I('order_id/d');
 
         $orderInfo = Db::name('order')->where("user_id=$user_id and order_id=$order_id")
-            ->field('order_id, order_sn, is_win, consignee, country, province , city, address, prom_id, order_amount')
+            ->field('order_id, order_sn, is_win, consignee, mobile, country, province , city, address, prom_id, order_amount, add_time')
             ->find();
 
         if(empty($orderInfo)) response_error('', '订单不存在');
@@ -105,10 +105,12 @@ class Order extends Base {
             'is_win' => $orderInfo['is_win'],
             'order_amount' => $orderInfo['order_amount'],
             'act_id' => $orderInfo['prom_id'],
+            'add_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
         );
         // 地址信息
         $result['address'] = array(
             'consignee' => $orderInfo['consignee'],
+            'mobile' => $orderInfo['mobile'],
             'country' => $orderInfo['country'],
             'province' => $orderInfo['province'],
             'city' => $orderInfo['city'],

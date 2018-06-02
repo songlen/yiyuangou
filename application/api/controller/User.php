@@ -97,6 +97,36 @@ class User extends Base {
         return response_success($userInfo, '注册成功');
     }
 
+    public function wx_login(){
+        $openid = I('openid');
+        $nickname = I('nickname');
+        $headimgurl = I('headimgurl');
+        $sex = I('sex/d');
+
+        // 检测用户是否已注册
+        $user = Db::name('users')->where("openid=$openid")->find();
+        if($user){
+            if(empty($user['mobile'])){
+                $result['complete'] = 0;
+                $result['user_id'] = $user['user_id'];
+            }
+        } else {
+            $data = array(
+                'openid' => $openid,
+                'nickname' => $nickname,
+                'head_pic' => $headimgurl,
+                'sex' => $sex,
+                'token' => md5(time().mt_rand(1,999999999)),
+            );
+
+            $user_id = Db::name('users')->insertGetId($data);
+            $result['complete'] = 0;
+            $result['user_id'] = $user_id;
+        }
+
+        response_success($result);
+    }
+
     /**
      * [sendMobleCode 发送手机验证码]
      * @param [scene 1 注册 2 找回密码]

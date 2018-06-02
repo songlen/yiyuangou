@@ -425,7 +425,6 @@ class User extends MobileBase
         $this->assign('province', $p);
         $this->assign('source', $source);
         return $this->fetch();
-
     }
 
     /*
