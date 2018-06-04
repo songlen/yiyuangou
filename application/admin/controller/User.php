@@ -58,11 +58,11 @@ class User extends Base {
             $second_leader = convert_arr_key($second_leader,'second_leader');            
             
             $third_leader = DB::query("select third_leader,count(1) as count  from __PREFIX__users where third_leader in(".  implode(',', $user_id_arr).")  group by third_leader");
-            $third_leader = convert_arr_key($third_leader,'third_leader');            
+            $third_leader = convert_arr_key($third_leader,'third_leader');
         }
         $this->assign('first_leader',$first_leader);
         $this->assign('second_leader',$second_leader);
-        $this->assign('third_leader',$third_leader);                                
+        $this->assign('third_leader',$third_leader);
         $show = $Page->show();
         $this->assign('userList',$userList);
         $this->assign('level',M('user_level')->getField('level_id,level_name'));
