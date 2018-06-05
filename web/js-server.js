@@ -5,8 +5,3 @@ function setUserid(params) {
     if (!params) return;
     sessionStorage.setItem('userId', params);
 }
-
-function setGoodsInfo(params) {
-    if (!params) return;
-    sessionStorage.setItem('goodsInfo', params);
-}
