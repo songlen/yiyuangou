@@ -217,6 +217,21 @@ class User extends Base {
         response_success('', '操作成功');
     }
 
+    // 常见问题
+    public function questions(){
+        $user_id = I('user_id/d');
+        
+        $where = array(
+            'cat_id' => '1',
+            'is_open' => '1',
+        );
+        $questions = Db::name('article')->where($where)
+            ->order('article_id desc')
+            ->field('article_id, title, description, content')
+            ->select();
+        response_success($questions);
+    }
+
     /**
      * [getUserInfo 获取用户基本资料]
      * @param  [type] $user_id [description]
