@@ -217,10 +217,30 @@ class User extends Base {
         response_success('', '操作成功');
     }
 
+    // 头像修改 head_pic
+    public function changeHeadPic(){
+        $file = $this->request->file('head_pic');
+
+        $image_upload_limit_size = config('image_upload_limit_size');
+        $validate = ['size'=>$image_upload_limit_size,'ext'=>'jpg,png,gif,jpeg'];
+        $dir = UPLOAD_PATH.'head_pic/';
+        if (!($_exists = file_exists($dir))){
+            $isMk = mkdir($dir);
+        }
+        $parentDir = date('Ymd');
+        $info = $file->validate($validate)->move($dir, true);
+        if($info){
+            $result['head_pic'] = '/'.$dir.$parentDir.'/'.$info->getFilename();
+            response_success($result);
+        }else{
+            response_error('', $file->getError());
+        }
+    }
+
     // 常见问题
     public function questions(){
         $user_id = I('user_id/d');
-        
+
         $where = array(
             'cat_id' => '1',
             'is_open' => '1',
