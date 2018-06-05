@@ -217,8 +217,9 @@ class User extends Base {
         response_success('', '操作成功');
     }
 
-    // 头像修改 head_pic
+    // 头像修改 
     public function changeHeadPic(){
+        $user_id = I('user_id/d');
         $file = $this->request->file('head_pic');
 
         $image_upload_limit_size = config('image_upload_limit_size');
@@ -230,11 +231,47 @@ class User extends Base {
         $parentDir = date('Ymd');
         $info = $file->validate($validate)->move($dir, true);
         if($info){
-            $result['head_pic'] = '/'.$dir.$parentDir.'/'.$info->getFilename();
-            response_success($result);
+            $head_pic = '/'.$dir.$parentDir.'/'.$info->getFilename();
+            Db::name('users')->update(array('user_id'=>$user_id, 'head_pic'=>$head_pic));
+            response_success(array('head_pic'=>$head_pic));
         }else{
             response_error('', $file->getError());
         }
+    }
+
+    // 中英文切换
+    public function changeLanguage(){
+        $user_id = I('user_id/d');
+        $language = I('language');
+
+        $result = Db::name('users')->update(array('user_id'=>$user_id, 'language'=>$language));
+
+        if($result){
+            response_success('', '修改成功');
+        } else {
+            response_error('', '需改失败');
+        }
+    }
+
+    public function point_rules(){
+        $config = tpCache('basic');
+
+        response_success(array('point_rules'=>$config['point_rules']));
+    }
+
+    // 设置页面
+    public function setting(){
+        $user_id = I('user_id');
+
+        $user = Db::name('users')->where("user_id={$user_id}")->field('language')->find();
+        $config = tpCache('basic');
+
+        $result = array(
+            'language' => $user['language'],
+            'hotline' => $config['hotline'],
+        );
+
+        response_success($result);
     }
 
     // 常见问题

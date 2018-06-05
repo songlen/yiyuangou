@@ -137,6 +137,16 @@
                     <p class="notic">附件上传大小限制</p>
                 </dd>
             </dl>
+           <dl class="row">
+               <dt class="tit">
+                   <label for="default_storage">客服电话</label>
+               </dt>
+               <dd class="opt">
+                   <input name="hotline" value="{$config.hotline}" class="input-txt" type="text">
+           
+                   <p class="notic"></p>
+               </dd>
+           </dl>
            <!--  <dl class="row">
                <dt class="tit">
                    <label for="default_storage">默认库存</label>
@@ -206,6 +216,10 @@
                 <dt class="tit">购买规则</dt>
                 <dd class="opt"><textarea name="buy_rules" id="buy_rules">{$config.buy_rules}</textarea></dd>
             </dl>
+            <dl class="row">
+                <dt class="tit">积分规则</dt>
+                <dd class="opt"><textarea name="point_rules" id="point_rules">{$config.point_rules}</textarea></dd>
+            </dl>
 			<!-- <dl class="row">
                             <dt class="tit">第三方登录是否必须绑定账号</dt>
                             <dd class="opt">
@@ -240,6 +254,19 @@
     // 初始化购买规则富文本编辑器
     var url="{:url('Admin/Ueditor/index',array('savePath'=>'goods'))}";
     var ue = UE.getEditor('buy_rules',{
+         serverUrl :url,
+         zIndex: 999,
+         initialFrameWidth: "100%", //初化宽度
+         initialFrameHeight: 300, //初化高度            
+         focus: false, //初始化时，是否让编辑器获得焦点true或false
+         maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+         pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+         autoHeightEnabled: true
+     });    
+
+     // 初始化积分规则富文本编辑器
+    var url="{:url('Admin/Ueditor/index',array('savePath'=>'goods'))}";
+    var ue = UE.getEditor('point_rules',{
          serverUrl :url,
          zIndex: 999,
          initialFrameWidth: "100%", //初化宽度
