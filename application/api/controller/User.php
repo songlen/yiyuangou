@@ -301,4 +301,28 @@ class User extends Base {
        
        return $userInfo;
     }
+
+    public function message(){
+        $user_id = I('user_id/d');
+
+        $message = Db::name('message')->alias('m')
+            ->join('user_message um', 'um.message_id=m.message_id')
+            ->where('user_id', $user_id)
+            ->whereOr('m.type', 0)
+            ->field('m.message_id, message, m.category, send_time, status')
+            ->select();
+
+        if(!empty($message)){
+            $now_date = strtotime(date('Y-m-d')); // 今日凌晨
+            $mid_date = strtotime(date('Y-m-d 12:00:00')) ;// 今日中午
+
+            foreach ($message as &$item) {
+                if($item['send_time'] < $now_date) $item['send_time'] = date('Y-m-d', $item['send_time']);
+                if($item['send_time'] > $now_date && $item['send_time'] < $mid_date) $item['send_time'] = '上午'.date('H:i', $item['send_time']);
+                if($item['send_time'] > $mid_date) $item['send_time'] = '下午'.date('H:i', $item['send_time']);
+            }
+        }
+
+        response_success($message);
+    }
 }

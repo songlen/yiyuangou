@@ -83,7 +83,7 @@
         <dd class="opt">
           <div class="input-file-show">
               <span class="show">
-                  <a id="img_a" target="_blank" class="nyroModal" rel="gal" href="{$info.ad_code}">
+                  <a id="img_a" target="_blank" class="nyroModal" rel="gal" href="{$info.ad_code ? $info.ad_code : 'javascript:;'}">
                     <i id="img_i" class="fa fa-picture-o" onmouseover="layer.tips('<img src={$info.ad_code}>',this,{tips: [1, '#fff']});" onmouseout="layer.closeAll();"></i>
                   </a>
               </span>
