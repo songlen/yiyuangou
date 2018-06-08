@@ -18,7 +18,7 @@
           <label><em>*</em>广告名称：</label>
         </dt>
         <dd class="opt">
-          <input type="text" placeholder="名称" class="input-txt" name="ad_name" value="{$info.ad_name|default='自定义广告名称'}">
+          <input type="text" placeholder="名称" class="input-txt" name="ad_name" value="{$info.ad_name|default='广告名称'}">
 		  <span class="err" id="err_ad_name" style="color:#F00; display:none;">广告名称不能为空</span>                                                  
           <p class="notic"></p>
         </dd>
@@ -28,20 +28,12 @@
           <label>广告类型：</label>
         </dt>
         <dd class="opt">
-          <if condition='$Request.param.is_app_ad eq 1'>
-          			<select name="media_type" id="media_type" class="input-sm" class="form-control">
-		                 <option value="3" <if condition="$info.media_type eq 3 ">selected</if>>商品</option>                                             
-		                 <option value="4" <if condition="$info.media_type eq 4 ">selected</if>>分类</option>
-		                 <option value="5" <if condition="$info.media_type eq 5 ">selected</if>>Web链接</option>
-		            </select>
-          <else/>
-	          	 <div id="gcategory">
-		            <select name="media_type" class="input-sm" class="form-control">
-		                 <option value="0">图片</option>                                             
-		                 <option value="1">flash</option>
-		            </select>                   
-		          </div>  
-          </if>	 
+              <div id="gcategory">
+                <select name="media_type" class="input-sm" class="form-control">
+                     <option value="0">图片</option>                                             
+                     <!-- <option value="1">flash</option> -->
+                </select>                   
+              </div>  
         </dd>
       </dl> 
       <dl class="row">
