@@ -6,6 +6,7 @@
 <div class="page">
 	<div class="fixed-bar">
 		<div class="item-title">
+			<a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
 			<div class="subject">
 				<h3>夺宝管理</h3>
 				<h5>网站系统夺宝活动管理</h5>
@@ -23,7 +24,7 @@
 	<div class="flexigrid">
 		<div class="mDiv">
 			<div class="ftitle">
-				<h3>夺宝活动列表</h3>
+				<h3>夺宝活动续期列表</h3>
 				<h5>(共{$page->totalRows}条记录)</h5>
 			</div>
 			<div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
@@ -77,18 +78,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="tDiv">
-			<div class="tDiv2">
-				<a href="{:U('Activity/duobao_modify')}">
-					<div class="fbutton">
-						<div title="添加活动" class="add">
-							<span><i class="fa fa-plus"></i>添加夺宝</span>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div style="clear:both"></div>
-		</div>
+
 		<div class="bDiv" style="height: auto;">
 			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
 				<table>
@@ -102,17 +92,10 @@
 				                <div style="text-align:left;   min-width:50px !important; max-width:inherit !important;">
 				                  <span class="btn"><em><i class="fa fa-cog"></i>操作<i class="arrow"></i></em>
 				                  <ul>
-				                  	<if condition="$vo.status != '3'">
-									<li><a href="{:U('Activity/duobao_modify',array('id'=>$vo['act_id']))}">编辑</a></li>
-									<else>
-									<li><a href="javascript:layer.msg('发布后不可编辑')">编辑</a></li>
-									</if>
-									<li><a href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}">机器人</a></li>
 									<if condition="$vo.is_publish eq '1'">
 									<li><a href="{:U('Activity/orderList', array('act_id'=>$vo.act_id))}">购买记录</a></li>
 									</if>
-									<li><a href="{:U('Activity/continueList', array('act_id'=>$vo.act_id))}">查看续期列表</a></li>
-									<!-- <li><a href="javascript:void(0)" data-url="{:U('Activity/duobao_del')}" data-id="{$vo.act_id}" onClick="delfun(this)">删除</a></li> -->
+									
 				                   
 				                  </ul>
 				                  </span>

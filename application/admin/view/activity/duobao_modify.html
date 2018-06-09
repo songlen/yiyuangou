@@ -59,6 +59,16 @@
             </dl>
             <dl class="row">
                 <dt class="tit">
+                    <label><em>*</em>续期的结束时间间隔</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="end_time" name="end_time" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" value="<if $info.end_time>{$info.end_time|date='Y-m-d H:i:s',###}</if>" class="input-txt">
+                    <span class="err" id="err_end_time"></span>
+                    <p class="notic">请填写整数，N（小时）</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
                     <label><em>*</em>设定中奖者</label>
                 </dt>
                 <dd class="opt">

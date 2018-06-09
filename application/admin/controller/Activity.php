@@ -25,9 +25,60 @@ use think\Db;
 class Activity extends Base
 {
 
+    // 夺宝列表
     public function index()
     {
         $where = array(
+            'parent_id' => '0',
+        );
+
+        $count = M('goods_activity')->where($where)->count();
+        $page = new Page($count, 20);
+        $showPage = $page->show();
+
+        $lists = M('goods_activity')->alias('ga')
+            ->join('goods g', 'ga.goods_id=g.goods_id')
+            ->where($where)
+            ->order('act_id desc')
+            ->limit($page->firstRow.','.$page->listRows)
+            ->select()
+            ;
+
+        $this->assign('page', $page);
+        $this->assign('showPage', $showPage);
+        $this->assign('lists', $lists);
+        return $this->fetch();
+    }
+
+    // 夺宝列表
+    public function continueList()
+    {
+        $act_id = I('act_id');
+        $where = array(
+            'parent_id' => $act_id,
+        );
+
+        $count = M('goods_activity')->where($where)->count();
+        $page = new Page($count, 20);
+        $showPage = $page->show();
+
+        $lists = M('goods_activity')->alias('ga')
+            ->join('goods g', 'ga.goods_id=g.goods_id')
+            ->where($where)
+            ->order('act_id desc')
+            ->limit($page->firstRow.','.$page->listRows)
+            ->select()
+            ;
+
+        $this->assign('page', $page);
+        $this->assign('showPage', $showPage);
+        $this->assign('lists', $lists);
+        return $this->fetch();
+    }
+
+    public function forRobotList(){
+        $where = array(
+            'status' => ['<>', '3'],
         );
 
         $count = M('goods_activity')->where($where)->count();

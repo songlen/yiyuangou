@@ -7,8 +7,7 @@
 	<div class="fixed-bar">
 		<div class="item-title">
 			<div class="subject">
-				<h3>夺宝管理</h3>
-				<h5>网站系统夺宝活动管理</h5>
+				<h3>机器人管理</h3>
 			</div>
 		</div>
 	</div>
@@ -77,18 +76,7 @@
 				</table>
 			</div>
 		</div>
-		<div class="tDiv">
-			<div class="tDiv2">
-				<a href="{:U('Activity/duobao_modify')}">
-					<div class="fbutton">
-						<div title="添加活动" class="add">
-							<span><i class="fa fa-plus"></i>添加夺宝</span>
-						</div>
-					</div>
-				</a>
-			</div>
-			<div style="clear:both"></div>
-		</div>
+
 		<div class="bDiv" style="height: auto;">
 			<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
 				<table>
@@ -102,18 +90,7 @@
 				                <div style="text-align:left;   min-width:50px !important; max-width:inherit !important;">
 				                  <span class="btn"><em><i class="fa fa-cog"></i>操作<i class="arrow"></i></em>
 				                  <ul>
-				                  	<if condition="$vo.status != '3'">
-									<li><a href="{:U('Activity/duobao_modify',array('id'=>$vo['act_id']))}">编辑</a></li>
-									<else>
-									<li><a href="javascript:layer.msg('发布后不可编辑')">编辑</a></li>
-									</if>
 									<li><a href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}">机器人</a></li>
-									<if condition="$vo.is_publish eq '1'">
-									<li><a href="{:U('Activity/orderList', array('act_id'=>$vo.act_id))}">购买记录</a></li>
-									</if>
-									<li><a href="{:U('Activity/continueList', array('act_id'=>$vo.act_id))}">查看续期列表</a></li>
-									<!-- <li><a href="javascript:void(0)" data-url="{:U('Activity/duobao_del')}" data-id="{$vo.act_id}" onClick="delfun(this)">删除</a></li> -->
-				                   
 				                  </ul>
 				                  </span>
 				                </div>
@@ -141,16 +118,16 @@
 							</td>
 							<td align="left" class="">
 								<div style="text-align: center; width: 50px;">
-									<if condition="$vo.status eq 1"><span style="cursor: pointer;" toggle_text="正常-关闭" toggle_value="1-2" onclick="changeFieldVal('goods_activity', 'act_id', '{$vo.act_id}', 'status', this)">正常</span>
-									<elseif condition="$vo.status eq '2'"><span style="cursor: pointer;" toggle_text="关闭-正常" toggle_value="2-1" onclick="changeFieldVal('goods_activity', 'act_id', '{$vo.act_id}', 'status', this)">关闭</span>
+									<if condition="$vo.status eq 1">正常
+									<elseif condition="$vo.status eq '2'">关闭
 									<else>已结束
 									</if>
 								</div>
 							</td>
 							<td align="left" class="">
 								<div style="text-align: center; width: 50px;">
-									<if condition="$vo.continue eq 1"><span style="cursor: pointer;" toggle_text="已开启-已关闭" toggle_value="1-2" onclick="changeFieldVal('goods_activity', 'act_id', '{$vo.act_id}', 'continue', this)">已开启</span>
-									<elseif condition="$vo.continue eq '2'"><span style="cursor: pointer;" toggle_text="已关闭-已开启" toggle_value="2-1" onclick="changeFieldVal('goods_activity', 'act_id', '{$vo.act_id}', 'continue', this)">已关闭</span>
+									<if condition="$vo.continue eq 1">已开启
+									<elseif condition="$vo.continue eq '2'">已关闭
 									</if>
 								</div>
 							</td>
@@ -159,7 +136,7 @@
 									<if condition="$vo.is_publish eq 1">
 										已发布
 									<else>
-										<span style="cursor: pointer;" onclick="publish({$vo.act_id})">未发布</span>
+										未发布
 									</if>
 								</div>
 							</td>

@@ -75,6 +75,7 @@ return	array(
 			)),
 			array('name' => '夺宝', 'child'=> array(
 					array('name'=> '夺宝列表', 'act'=>'index', 'op'=>'Activity'),
+					array('name'=> '机器人', 'act'=>'forRobotList', 'op'=>'Activity'),
 			)),
 			array('name' => '订单','child'=>array(
 					array('name' => '商品订单', 'act'=>'index', 'op'=>'Order'),
