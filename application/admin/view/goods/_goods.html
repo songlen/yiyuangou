@@ -289,7 +289,7 @@
                 <dd class="opt">
                     <div class="input-file-show">
                         <span class="show">
-                            <a id="img_a" target="_blank" class="nyroModal" rel="gal" href="{$goodsInfo.original_img}">
+                            <a id="img_a" target="_blank" class="nyroModal" rel="gal" href="{$goodsInfo.original_img ? $goodsInfo.original_img : 'javascript:;'}">
                                 <i id="img_i" class="fa fa-picture-o" onMouseOver="layer.tips('<img src={$goodsInfo.original_img}>',this,{tips: [1, '#fff']});" onMouseOut="layer.closeAll();"></i>
                             </a>
                         </span>
@@ -345,30 +345,6 @@
                     <p class="notic"> 务必设置商品体积, 用于计算物流费.以立方米为单位</p>
                 </dd>
             </dl>
-            <dl class="row goods_shipping">
-                <dt class="tit">
-                  <label>是否包邮</label>
-                </dt>
-                <dd class="opt">
-                  <div class="onoff">
-                    <label id="is_free_shipping_label_1" for="is_free_shipping1" class="cb-enable <if condition="$goodsInfo[is_free_shipping] eq 1">selected</if>">是</label>
-                    <label id="is_free_shipping_label_0" for="is_free_shipping0" class="cb-disable <if condition="$goodsInfo[is_free_shipping] eq 0">selected</if>">否</label>
-                    <input id="is_free_shipping1" class="is_free_shipping" name="is_free_shipping" value="1" type="radio" <if condition="$goodsInfo[is_free_shipping] eq 1"> checked="checked"</if>>
-                    <input id="is_free_shipping0" class="is_free_shipping" name="is_free_shipping" value="0" type="radio" <if condition="$goodsInfo[is_free_shipping] eq 0"> checked="checked"</if>>
-                      <div class="freight_template" style="display: none;">
-                          <span>运费模板</span>
-                          <select name="template_id">
-                              <option value="0">请选择运费模板</option>
-                              <volist name="freight_template" id="template">
-                                  <option value="{$template.template_id}"<if condition="$template['template_id'] eq $goodsInfo['template_id'] ">selected="selected"</if>>{$template.template_name}</option>
-                              </volist>
-                          </select>
-                          <empty name="freight_template"><span style="color: red;">没有可选的运费模板，请前去<a href="{:U('Freight/index')}" target="_blank">添加</a></span></empty>
-                      </div>
-                  </div>
-                  <p class="notic"></p>
-                </dd>
-              </dl>              
             <dl class="row">
                 <dt class="tit">
                     <label for="record_no">总库存</label>

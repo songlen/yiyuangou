@@ -27,14 +27,6 @@
                         </select>
                     </div>
                     <div class="sDiv2" style="margin-right: 10px;border:none;">
-                        <select name="brand_id" id="brand_id">
-                            <option value="">所有品牌</option>
-                            <foreach name="brandList" item="v" key="k" >
-                                <option value="{$v['id']}" <if condition="$v[id] eq $Request.param.brand_id">selected</if>>{$v['name']}</option>
-                            </foreach>
-                        </select>
-                    </div>
-                    <div class="sDiv2" style="margin-right: 10px;border:none;">
                         <select name="intro">
                             <option value="0">全部</option>
                             <option value="is_new">新品</option>

@@ -255,8 +255,10 @@ class User extends Base {
 
     public function point_rules(){
         $config = tpCache('basic');
+        $point_rules = html_entity_decode($config['point_rules']);
 
-        response_success(array('point_rules'=>$config['point_rules']));
+
+        response_success(array('point_rules'=>$point_rules));
     }
 
     // 设置页面

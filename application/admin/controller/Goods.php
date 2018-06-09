@@ -548,14 +548,16 @@ class Goods extends Base {
             $goods_count_ids = implode(',',$ordergoods_count);
             $this->ajaxReturn(['status' => -1,'msg' =>"ID为【{$goods_count_ids}】的商品有订单,不得删除!",'data'  =>'']);
         }
-         // 商品团购
-        $groupBuy_goods = M('group_buy')->whereIn('goods_id',$goods_ids)->group('goods_id')->getField('goods_id',true);
+         // 判断此商品是否有夺宝互动
+        $groupBuy_goods = M('goods_activity')->whereIn('goods_id',$goods_ids)->group('goods_id')->getField('goods_id',true);
+
+
         if($groupBuy_goods)
         {
             $groupBuy_goods_ids = implode(',',$groupBuy_goods);
-            $this->ajaxReturn(['status' => -1,'msg' =>"ID为【{$groupBuy_goods_ids}】的商品有团购,不得删除!",'data'  =>'']);
+            $this->ajaxReturn(['status' => -1,'msg' =>"ID为【{$groupBuy_goods_ids}】的商品有活动,不得删除!",'data'  =>'']);
         }
-        
+
         //删除用户收藏商品记录
         M('GoodsCollect')->whereIn('goods_id',$goods_ids)->delete();
         

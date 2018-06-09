@@ -17,7 +17,7 @@ class Goods extends Validate
         'give_integral'         =>'regex:^\d+$',
         'is_virtual'           =>'checkVirtualIndate',
         'exchange_integral'     =>'checkExchangeIntegral',
-        'is_free_shipping'     =>'require|checkShipping'
+        // 'is_free_shipping'     =>'require|checkShipping'
     ];
     //错误信息
     protected $message  = [
