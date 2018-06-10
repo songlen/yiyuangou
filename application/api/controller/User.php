@@ -288,6 +288,12 @@ class User extends Base {
             ->order('article_id desc')
             ->field('article_id, title, description, content')
             ->select();
+
+        if(!empty($questions)){
+            foreach ($questions as &$item) {
+                $item['content'] = html_entity_decode($item['content']);
+            }
+        }
         response_success($questions);
     }
 
