@@ -23,11 +23,7 @@ class Article extends Base {
             ->field('article_id, title, content')
             ->find();
 
-        if($info){
-            $info['content'] = htmlspecialchars_decode($info['content']);
-            response_success($info);
-        } else {
-            response_error('', '文章不存在');
-        }
+        $info['content'] = htmlspecialchars_decode($info['content']);
+        response_success($info);
     }
 }
