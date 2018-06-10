@@ -44,8 +44,19 @@
         	<div id="link_url"> <!-- 网页链接 -->
         		  <input type="text" placeholder="广告链接" class="input-txt" name="ad_link" value="{$info.ad_link}">
 				      <span class="err" id="err_ad_link" style="color:#F00; display:none;"></span>
-		          <p class="notic"></p>
+		          <p class="notic">请填写对应的文章id或者活动id，并选择下面对应链接类型</p>
         	</div>
+        </dd>
+      </dl>
+      <dl class="row">
+        <dt class="tit"><label for="">链接类型：</label></dt>
+        <dd class="opt" id="ad_link_dd">
+          <div id="link_url"> <!-- 网页链接 -->
+              <input type="radio" name="link_type" value="1" <if condition="$info.link_type eq '1'">checked="checked"</if>> 文章
+              <input type="radio" name="link_type" value="2" <if condition="$info.link_type eq '2'">checked="checked"</if>> 夺宝活动
+              <span class="err" id="err_ad_link" style="color:#F00; display:none;"></span>
+              <p class="notic"></p>
+          </div>
         </dd>
       </dl>
  	
@@ -160,37 +171,21 @@
 		 } 
 	}
  
-    $(document).ready(function(){
-		$('#start_time').layDate();
-		$('#end_time').layDate();
+$(document).ready(function(){
+		// $('#start_time').layDate();
+		// $('#end_time').layDate();
 		
-		$("#media_type").on("change",function(){ 
-			 var mediaType = $('#media_type option:selected').val();
-			 console.log(mediaType);
-			 refresh_media_type(mediaType);
-		});
-		
-		<if condition="$Request.param.is_app_ad eq 1">  
-			<if condition="$info.ad_id gt 0">
-				var mtype = "{$info.media_type}";
-				refresh_media_type(mtype);//如果是编辑
-			<else/>
-				refresh_media_type(3);//如果是编辑
-		 	</if> 
-		<else/>
-		 	refresh_media_type(5);//如果是编辑
-		</if>
-		
-		<if condition="$info['cat_id2'] gt 0">
-			 // 商品分类第二个下拉菜单
-			 get_category('{$info[cat_id1]}','cat_id2','{$info[cat_id2]}');
-		</if>
-		<if condition="$info['cat_id3'] gt 0">
-			// 商品分类第二个下拉菜单
-			 get_category('{$info[cat_id2]}','cat_id3','{$info[cat_id3]}');
-		</if>
+		$('input[name=link_type]').change(function(){
+        var link_type = $(this).val();
+
+        if(link_type == '1'){
+            $('input[name=ad_link]').val('/web/#/article?id=');
+        } else {
+            $('input[name=ad_link]').val('/web/#/index?id=');
+        }
+    })
 		 
-	});
+});
     
     function goods_call_back(goodsId,goodsName){
     	//选中的商品 
