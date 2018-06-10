@@ -17,7 +17,7 @@ class Article extends Base {
         $article_id = I('article_id');
 
         // 活动详情
-        $info = M('Article')->field('title, content')->find($article_id);
+        $info = M('Article')->field('article_id, title, content')->find($article_id);
 
         if($info){
             $info['content'] = html_entity_decode($info['content']);
@@ -27,5 +27,5 @@ class Article extends Base {
         }
     }
 
-    
+
 }
