@@ -66,11 +66,11 @@
             </div>
           </div>
          </a> 
-           <div class="fbutton">
+           <!-- <div class="fbutton">
             <div class="add" title="收缩分类">
               <span onclick="tree_open(this);"><i class="fa fa-angle-double-up"></i>收缩分类</span>
             </div>
-          </div>
+          </div> -->
         </div>
         <div style="clear:both"></div>
       </div>      
@@ -89,8 +89,7 @@
                   <span class="btn" style="padding-left:<?php echo ($vo[level] * 4); ?>em"><em><i class="fa fa-cog"></i>设置<i class="arrow"></i></em>
                   <ul>
                      <li><a href="{:U('Article/category',array('act'=>'edit','cat_id'=>$vo['cat_id']))}">编辑分类信息</a></li>                  
-                                     
-                     <li><a href="{:U('Article/category',array('parent_id'=>$vo['cat_id']))}">新增下级分类</a></li>
+                    
                      <if condition="$vo['cat_id'] gt 8">
 	                     <li><a href="javascript:void(0)" data-url="{:U('Article/categoryHandle')}" data-id="{$vo.cat_id}" onClick="delfun(this)">删除当前分类</a></li>
                      </if>                                        
