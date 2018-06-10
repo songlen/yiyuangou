@@ -25,7 +25,7 @@ class Activity extends Base {
         $data['actInfo'] = $info;
         // 购买规则
         $config_basic = tpcache('basic');
-        $data['buy_rules'] = $config_basic['buy_rules'];
+        $data['buy_rules'] = html_entity_decode($config_basic['buy_rules']);
         // 获取累计购买数
         $statistics_buy_count = Db::name('order')
             ->where('prom_id', $act_id)

@@ -16,6 +16,7 @@ class Goods extends Base {
         $goods_id = I('goods_id');
 
         $goodsInfo = Db::name('goods')->field('goods_content')->find($goods_id);
+        $goodsInfo = html_entity_decode($goodsInfo);
 
         response_success($goodsInfo);
     }

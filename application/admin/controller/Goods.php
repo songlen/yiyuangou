@@ -548,7 +548,7 @@ class Goods extends Base {
             $goods_count_ids = implode(',',$ordergoods_count);
             $this->ajaxReturn(['status' => -1,'msg' =>"ID为【{$goods_count_ids}】的商品有订单,不得删除!",'data'  =>'']);
         }
-         // 判断此商品是否有夺宝互动
+         // 判断此商品是否有夺宝活动
         $groupBuy_goods = M('goods_activity')->whereIn('goods_id',$goods_ids)->group('goods_id')->getField('goods_id',true);
 
 
