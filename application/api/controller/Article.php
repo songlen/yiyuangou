@@ -17,7 +17,11 @@ class Article extends Base {
         $article_id = I('article_id');
 
         // 活动详情
-        $info = M('Article')->field('article_id, title, content')->find($article_id);
+        $info = M('Article')
+            ->where('is_open', 1)
+            ->where('article_id', $article_id)
+            ->field('article_id, title, content')
+            ->find();
 
         if($info){
             $info['content'] = htmlspecialchars_decode($info['content']);
@@ -26,6 +30,4 @@ class Article extends Base {
             response_error('', '文章不存在');
         }
     }
-
-
 }

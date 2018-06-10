@@ -36,6 +36,10 @@
 						<th class="sign" axis="col0">
 							<div style="width: 24px;"><i class="ico-check"></i></div>
 						</th>
+
+						<th align="left" abbr="article_time" axis="col6" class="">
+							<div style="text-align: left; width: 30px;" class="">ID</div>
+						</th>
 						<th align="left" axis="col6">
 							<div style="text-align: center; width: 60px;">操作</div>
 						</th>
@@ -98,6 +102,10 @@
 							<td class="sign">
 								<div style="width: 24px;"><i class="ico-check"></i></div>
 							</td>
+
+							<td align="left" class="">
+								<div style="text-align: left; width: 30px;">{$vo.act_id}</div>
+							</td>
 							<td class="handle" >
 				                <div style="text-align:left;   min-width:50px !important; max-width:inherit !important;">
 				                  <span class="btn"><em><i class="fa fa-cog"></i>操作<i class="arrow"></i></em>
@@ -107,7 +115,7 @@
 									<else>
 									<li><a href="javascript:layer.msg('发布后不可编辑')">编辑</a></li>
 									</if>
-									<li><a href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}">机器人</a></li>
+									<!-- <li><a href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}">机器人</a></li> -->
 									<if condition="$vo.is_publish eq '1'">
 									<li><a href="{:U('Activity/orderList', array('act_id'=>$vo.act_id))}">购买记录</a></li>
 									</if>
