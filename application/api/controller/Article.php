@@ -20,7 +20,7 @@ class Article extends Base {
         $info = M('Article')->field('article_id, title, content')->find($article_id);
 
         if($info){
-            $info['content'] = html_entity_decode($info['content']);
+            $info['content'] = stripslashes(html_entity_decode($info['content']));
             response_success($info);
         } else {
             response_error('', '文章不存在');
