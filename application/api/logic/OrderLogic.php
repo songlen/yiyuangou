@@ -90,8 +90,8 @@ class OrderLogic {
                 $order_id = Db::name('order')->insertGetId($orderdata);
 
                 // 活动表增减数量
-                Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num);
-                Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num);
+                Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num); // 减剩余份额
+                Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('freeze_count', $num); // 冻结份额
 
                 // 积分记录
                 if($used_points>0){

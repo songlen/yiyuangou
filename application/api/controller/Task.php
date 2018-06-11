@@ -249,4 +249,17 @@ class Task {
             Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num);
         }
     }
+
+    /**
+     * [cancleOrder 取消下单十分钟未支付的订单 ]
+     * @return [type] [description]
+     */
+    public function cancleOrder(){
+        $where = array(
+            'pay_status' => '0',
+            'add_time' => 
+        );
+        $orders = M('order')->where()
+            ->select();
+    }
 }
