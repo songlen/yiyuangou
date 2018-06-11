@@ -19,7 +19,7 @@ class Activity extends Base {
         // 活动详情
         $info = M('goods_activity')->alias('ga')
                 ->join('goods g', 'g.goods_id=ga.goods_id')
-                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, ga.parent_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
                 ->find($act_id)
                 ;
         $data['actInfo'] = $info;
@@ -95,6 +95,30 @@ class Activity extends Base {
             unset($statistics_buy_process[$k]);
         }
         $data['statistics_buy_process'] = array_values($statistics_buy_process);
+
+        // 查找往期
+        $parent_id = $info['parent_id'];
+        if($parent_id == 0){
+            $data['past_phase'] = array();
+        } else {
+
+            $past_activity = M('goods_activity')->where('parent_id', $parent_id)
+                ->where('phase', ['<', $info['phase']])
+                ->whereOr('act_id', $parent_id)
+                ->order('act_id desc')
+                ->field('act_id, phase, win_user_id, lucky_number')
+                ->find();
+
+
+            $user = M('users')->where('user_id', $past_activity['win_user_id'])->field('nickname')->find();
+            $data['past_phase'] = array(
+                'act_id' => $past_activity['act_id'],
+                'phase' => $past_activity['phase'],
+                'luck_number' => $past_activity['luck_number'],
+                'nickname' => $user['nickname'],
+            );
+
+        }
 
         response_success($data);
     }
