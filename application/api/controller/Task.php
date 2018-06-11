@@ -4,6 +4,12 @@ namespace app\api\controller;
 use think\Db;
 
 class Task {
+    public function __construct(){
+        // 设置所有方法的默认请求方式
+        $this->method = 'GET';
+
+        parent::__construct();
+    }
 
     // public function test(){
     //     file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
@@ -257,9 +263,22 @@ class Task {
     public function cancleOrder(){
         $where = array(
             'pay_status' => '0',
-            'add_time' => 
+            'add_time' => ['>', time()+600], // 下单超过十分钟的
         );
-        $orders = M('order')->where()
+        $orders = M('order')->where($where)
+            ->field('prom_id, num')
             ->select();
+
+        if(!empty($orders)){
+            foreach ($orders as $item) {
+                // 活动表增减数量
+                $act_id = $item['prom_id'];
+                $num = $item['num'];
+                // 剩余份额加回去
+                Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('surplus', $num); 
+                // 冻结份额减掉
+                Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('freeze_count', $num); 
+            }
+        }
     }
 }
