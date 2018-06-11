@@ -147,7 +147,14 @@ class Task {
                         'url' => $url,
                     )),
                 );
-                M('message')->getInsertId($data);
+                $message_id = M('message')->insertGetId($data);
+
+                $user_message = array(
+                    'user_id' => $order['user_id'],
+                    'message_id' => $message_id,
+                    'category' => '1',
+                );
+                M('user_message')->insert($user_message);
             }
         }
 

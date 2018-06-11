@@ -316,11 +316,10 @@ class User extends Base {
 
     public function message(){
         $user_id = I('user_id/d');
-// p(serialize(array('url'=> 'web/#/finishedDetails?id=1&type=1')));
         $message = Db::name('message')->alias('m')
-            ->join('user_message um', 'um.message_id=m.message_id')
+            ->join('user_message um', 'um.message_id=m.message_id', 'left')
             ->where('user_id', $user_id)
-            ->whereOr('m.type', 0)
+            ->whereOr('m.type', 1)
             ->field('m.message_id, message, m.category, data, send_time, status')
             ->select();
 
