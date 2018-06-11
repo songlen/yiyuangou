@@ -254,11 +254,15 @@ class User extends Base {
     }
 
     public function point_rules(){
-        $config = tpCache('basic');
-        $point_rules = html_entity_decode($config['point_rules']);
+        // $where = array(
+        //     'is_open' => '1',
+        //     'article_id' => '1',
+        // );
+        // $article = M('article')->where($where)->field('content')->find();
+        // $point_rules = html_entity_decode($article['content']);
         
 
-        response_success(array('point_rules'=>$point_rules));
+        response_success(array('link'=>'/web/#/article?id=6'));
     }
 
     // 设置页面
@@ -312,12 +316,12 @@ class User extends Base {
 
     public function message(){
         $user_id = I('user_id/d');
-
+// p(serialize(array('url'=> 'web/#/finishedDetails?id=1&type=1')));
         $message = Db::name('message')->alias('m')
             ->join('user_message um', 'um.message_id=m.message_id')
             ->where('user_id', $user_id)
             ->whereOr('m.type', 0)
-            ->field('m.message_id, message, m.category, send_time, status')
+            ->field('m.message_id, message, m.category, data, send_time, status')
             ->select();
 
         if(!empty($message)){
@@ -328,6 +332,8 @@ class User extends Base {
                 if($item['send_time'] < $now_date) $item['send_time'] = date('Y-m-d', $item['send_time']);
                 if($item['send_time'] > $now_date && $item['send_time'] < $mid_date) $item['send_time'] = '上午'.date('H:i', $item['send_time']);
                 if($item['send_time'] > $mid_date) $item['send_time'] = '下午'.date('H:i', $item['send_time']);
+
+                if($item['data']) $item['data'] = unserialize($item['data']);
             }
         }
 
