@@ -261,8 +261,7 @@ class Task extends Base {
      * @return [type] [description]
      */
     public function cancelOrder(){
-        file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
-        return;
+
         $where = array(
             'pay_status' => '0',
             'add_time' => ['<', time()-600], // 下单超过十分钟的
