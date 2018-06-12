@@ -260,7 +260,7 @@ class Cart extends Base {
     public function payCallback($order_sn){
 
         if(strpos($order_sn, '-')){
-            $order_sn
+            // $order_sn
         }
     }
 
