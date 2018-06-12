@@ -264,10 +264,11 @@ class Task extends Base {
 
         $where = array(
             'pay_status' => '0',
+            'order_status' => '0',
             'add_time' => ['<', time()-600], // 下单超过十分钟的
         );
         $orders = M('order')->where($where)
-            ->field('prom_id, num')
+            ->field('order_id, prom_id, num')
             ->select();
 
         if(!empty($orders)){
@@ -279,6 +280,8 @@ class Task extends Base {
                 Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('surplus', $num); 
                 // 冻结份额减掉
                 Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('freeze_count', $num); 
+                // 更改订单状态为 已作废 5
+                Db::name('order')->where('order_id', $item['order_id'])->setField('order_status', 5);
             }
         }
     }
