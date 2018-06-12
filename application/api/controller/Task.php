@@ -3,7 +3,7 @@
 namespace app\api\controller;
 use think\Db;
 
-class Task {
+class Task extends Base {
     public function __construct(){
         // 设置所有方法的默认请求方式
         $this->method = 'GET';
@@ -261,9 +261,11 @@ class Task {
      * @return [type] [description]
      */
     public function cancleOrder(){
+        file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
+        return;
         $where = array(
             'pay_status' => '0',
-            'add_time' => ['>', time()+600], // 下单超过十分钟的
+            'add_time' => ['<', time()-600], // 下单超过十分钟的
         );
         $orders = M('order')->where($where)
             ->field('prom_id, num')
