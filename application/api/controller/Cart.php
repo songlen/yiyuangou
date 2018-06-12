@@ -70,18 +70,6 @@ class Cart extends Base {
     }
 
     /**
-     * 更新购物车，并返回计算结果
-     */
-    /*public function AsyncUpdateCart()
-    {
-        $cart = input('cart/a', []);
-        $cartLogic = new CartLogic();
-        $cartLogic->setUserId($this->user_id);
-        $result = $cartLogic->AsyncUpdateCart($cart);
-        $this->ajaxReturn($result);
-    }*/
-
-    /**
      *  购物车加减
      */
     public function changeNum(){
@@ -265,7 +253,18 @@ class Cart extends Base {
         }
     }
 
-   
+    /**
+     * [payCallback 支付回调]
+     * @return [type] [description]
+     */
+    public function payCallback($order_sn){
+
+        if(strpos($order_sn, '-')){
+            $order_sn
+        }
+    }
+
+
     /**
      * [ajaxCountAmount 计算商品金额]
      * @return [type] [description]

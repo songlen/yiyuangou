@@ -260,7 +260,7 @@ class Task extends Base {
      * [cancleOrder 取消下单十分钟未支付的订单 ]
      * @return [type] [description]
      */
-    public function cancleOrder(){
+    public function cancelOrder(){
         file_put_contents('test.log', date('Y-m-d H:i:s')."\r\n", FILE_APPEND);
         return;
         $where = array(
