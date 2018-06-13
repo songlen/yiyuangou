@@ -123,6 +123,27 @@ class Activity extends Base {
         response_success($data);
     }
 
+    // 支付成功页，推荐的活动
+    public function recommendActivity(){
+        // 商品
+        $ga_where = array(
+            'ga.act_type' => '3',
+            'ga.status' => '1',
+            'is_publish' => '1',
+        );
+
+        $goods_activity = M('goods_activity')->alias('ga')
+            ->join('goods g', 'ga.goods_id=g.goods_id')
+            ->where($ga_where)
+            ->field('ga.act_id, ga.total_count, ga.status, ga.surplus, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->order('act_id desc')
+            ->limit(4)
+            ->select()
+            ;
+
+        response_success($goods_activity);
+    }
+
     /**
      * 即将揭晓
      */

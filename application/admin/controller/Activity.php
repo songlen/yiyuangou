@@ -1,24 +1,9 @@
 <?php
-/**
- * tpshop
-
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * ============================================================================
- * Author: 当燃
- * 专题管理
- * Date: 2016-03-09
- */
 
 namespace app\admin\controller;
 
-use app\admin\model\FlashSale;
 use app\admin\model\Goods;
-use app\admin\model\GoodsActivity;
-use app\admin\model\GroupBuy;
-use app\common\model\PromGoods;
-use think\AjaxPage;
 use think\Page;
-use app\admin\logic\GoodsLogic;
 use think\Loader;
 use think\Db;
 
@@ -102,6 +87,7 @@ class Activity extends Base
     public function duobao_modify(){
         if(IS_POST){
             $data = I('post.');
+            p($data);
             $data['end_time'] = strtotime($data['end_time']);
             $data['total_count'] = floor($data['shop_price']);
             $data['surplus'] = floor($data['shop_price']);
@@ -114,7 +100,7 @@ class Activity extends Base
                 $return = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
                 $this->ajaxReturn($return);
             }
-
+p($data);
             if(empty($data['id'])){
                 // 计算期数
                 $max_phase = Db::name('goods_activity')->max('phase');

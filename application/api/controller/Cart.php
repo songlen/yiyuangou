@@ -4,6 +4,7 @@ namespace app\api\controller;
 // use app\common\logic\CartLogic;
 // use app\common\logic\Integral;
 use app\api\logic\OrderLogic;
+use app\api\logic\OpenPrizeLogic;
 use think\Db;
 
 class Cart extends Base {
@@ -20,16 +21,6 @@ class Cart extends Base {
         $this->user_id = 1;
 
         parent::__construct();
-        // $this->cartLogic = new CartLogic();
-        // if (session('?user')) {
-        //     $user = session('user');
-        //     $user = M('users')->where("user_id", $user['user_id'])->find();
-        //     session('user', $user);  //覆盖session 中的 user
-        //     $this->user = $user;
-        //     $this->user_id = $user['user_id'];
-        // } else {
-        //     response_error('请先登录');
-        // }
     }
 
     public function cartlist(){
@@ -247,8 +238,19 @@ class Cart extends Base {
             $OrderLogic = new OrderLogic();
             $orderResult = $OrderLogic->placeOrder($user_id, $goodsList, $address, $use_point);
             if($orderResult['status'] == '-1') response_error('', $orderResult['error']);
-            $this->payCallback($order_sn);
-            response_success('', '下单成功');
+            
+            // 
+            $order_sn_gather = $orderResult['data']['order_sn_gather'];
+            // 如果使用积分支付，直接返给前端支付成功；，并检查互动是否满额，如果满额，则开奖
+            // 如果使用积分支付的
+            if($use_point){
+                $this->payCallback($order_sn_gather);
+                response_success('', '支付成功');
+            } else {
+                    $this->payCallback($order_sn_gather);
+                 response_success('', '下单成功');
+            }
+           
         } else {
             response_success($data);
         }
@@ -258,12 +260,24 @@ class Cart extends Base {
      * [payCallback 支付回调]
      * @return [type] [description]
      */
-    public function payCallback($order_sn_str = ''){
-        $order_sn_str = '2138093281902';
-        $order_sns = explode('-', trim($order_sn_str));
+    public function payCallback($order_sn_gather = ''){
+        $order_sns = explode('-', trim($order_sn_gather));
         if(!empty($order_sns)){
             foreach ($order_sns as $order_sn) {
+                // 获取订单信息，判断是否已支付
+                $order = M('order')->where('order_sn', $order_sn)->field('pay_status, prom_id')->find();
+                if($order['pay_status'] == '1'){
+                    break;
+                }
                 M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
+                // 判断是否满额，满额开奖
+                $act_id = $order_sn['prom_id'];
+                $activity = M('order')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
+                if($activity['surplus'] == 0 && $activity['freeze_count'] == 0){
+                    // 开奖
+                    $OpenPrizeLogic = new OpenPrizeLogic();
+                    $OpenPrizeLogic->exec($act_id);
+                }
             }
         }
     }
