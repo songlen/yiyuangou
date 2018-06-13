@@ -87,7 +87,6 @@ class Activity extends Base
     public function duobao_modify(){
         if(IS_POST){
             $data = I('post.');
-            p($data);
             $data['end_time'] = strtotime($data['end_time']);
             $data['total_count'] = floor($data['shop_price']);
             $data['surplus'] = floor($data['shop_price']);
@@ -100,7 +99,7 @@ class Activity extends Base
                 $return = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
                 $this->ajaxReturn($return);
             }
-p($data);
+
             if(empty($data['id'])){
                 // 计算期数
                 $max_phase = Db::name('goods_activity')->max('phase');
@@ -131,6 +130,16 @@ p($data);
 
         $this->assign('info', $info);
         return $this->fetch();
+    }
+
+    public function publish(){
+        $act_id = I('act_id');
+
+        $data = array(
+            'is_publish' => '1',
+            'publish_time' => time(),
+        );
+        M('goods_activity')->where('act_id', $act_id)->update($data);
     }
 
     /**

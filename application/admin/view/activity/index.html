@@ -201,7 +201,7 @@
 		layer.confirm('发布后不可再编辑，确定发布吗？', {btn: ['确定','取消']}, function(){
 			$.ajax({
 				type : 'GET',
-				url:"/index.php?m=Admin&c=Index&a=changeTableVal&table=goods_activity&id_name=act_id&id_value="+act_id+"&field=is_publish&value=1",
+				url:"/index.php?m=Admin&c=Activity&a=publish&act_id="+act_id,
 				dataType :'JSON',
 				success : function(res){
 					layer.msg('操作成功', {icon: 1});
