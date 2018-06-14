@@ -39,11 +39,12 @@ class Index extends Base {
             $ga_where['g.goods_name'] = ['like', "%$keyword%"];
         }
 
+        $limit_start = ($page-1)*10;
         $goods_activity = M('goods_activity')->alias('ga')
         	->join('goods g', 'ga.goods_id=g.goods_id')
         	->where($ga_where)
         	->field('ga.act_id, ga.total_count, ga.status, ga.surplus, ga.buy_count, g.goods_id, g.goods_name, g.shop_price, g.original_img')
-            ->limit(($page-1), 10)
+            ->limit($limit_start, 10)
             ->order('act_id desc')
         	->select()
         	;
