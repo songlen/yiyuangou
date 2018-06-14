@@ -28,7 +28,7 @@ class Activity extends Base {
                 ->find()
                 ;
 
-        if($info['buy_count'] == 0 && $info['freeze_count'] == 0){
+        if($info['surplus'] == 0 && $info['freeze_count'] == 0){
             $info['maiman'] = 1;
         } else {
             $info['maiman'] = 0;
