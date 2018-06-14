@@ -17,11 +17,23 @@ class Activity extends Base {
         $act_id = I('act_id');
 
         // 活动详情
+        $where = array(
+            'act_id' => $act_id,
+            'is_publish' => '1',
+        );
         $info = M('goods_activity')->alias('ga')
                 ->join('goods g', 'g.goods_id=ga.goods_id')
-                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, ga.parent_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
-                ->find($act_id)
+                ->where($where)
+                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, ga.surplus, ga.freeze_count, ga.maiman_time, ga.parent_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+                ->find()
                 ;
+
+        if($info['buy_count'] == 0 && $info['freeze_count'] == 0){
+            $info['maiman'] = 1;
+        } else {
+            $info['maiman'] = 0;
+        }
+
         $data['actInfo'] = $info;
         // 购买规则
         $config_basic = tpcache('basic');
