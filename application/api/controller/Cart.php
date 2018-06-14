@@ -288,11 +288,12 @@ class Cart extends Base {
                     ->where('act_id', $act_id)
                     ->inc('buy_count', $order['num'])
                     ->dec('freeze_count', $order['num'])
-                    ->exp('maiman_time', time())
                     ->update();
                 // 判断是否满额，满额开奖
                 $activity = M('goods_activity')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
                 if($activity['surplus'] == 0 && $activity['freeze_count'] == 0){
+                    // 买满时间
+                    M('goods_activity')->where('act_id', $act_id)->setField('maiman_time', time());
                     // 开奖
                     $OpenPrizeLogic = new OpenPrizeLogic();
                     $OpenPrizeLogic->exec($act_id);
