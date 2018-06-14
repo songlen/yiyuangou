@@ -14,8 +14,8 @@ class OpenPrizeLogic {
     function exec($act_id){
          // 计算幸运号
         $luckyInfo =$this->generateLuckyInfo($act_id);
-print_r($luckyInfo);
-        $lucky_number = $luckyInfo[' lucky_number'];
+
+        $lucky_number = $luckyInfo['lucky_number'];
         // 活动表记录中奖信息
         $actUpdateData = array(
             'act_id'=>$act_id,
@@ -29,7 +29,7 @@ print_r($luckyInfo);
         // 订单表中记录是否中奖
         Db::name('order')->where("order_id={$luckyInfo['order_id']}")->update(array('is_win'=>'1'));
         // 给参与用户发送是否中奖消息
-        $this->send_message($act_id, $luckyInfo[' win_user_id'], $item['goods_name']);
+        $this->send_message($act_id, $luckyInfo['win_user_id'], $item['goods_name']);
     }
 
 
