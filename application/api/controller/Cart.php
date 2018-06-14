@@ -269,7 +269,10 @@ class Cart extends Base {
                 if($order['pay_status'] == '1'){
                     break;
                 }
+
+                // 支付成功修改订单状态为已支付，扣除活动表中冻结的份额
                 M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
+                M('goods_activity')->where('act_id', $act_id)->setDec('freeze_count', $order['num']);
                 // 判断是否满额，满额开奖
                 $act_id = $order['prom_id'];
                 $activity = M('goods_activity')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
