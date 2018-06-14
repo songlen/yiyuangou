@@ -24,7 +24,7 @@ class Activity extends Base {
         $info = M('goods_activity')->alias('ga')
                 ->join('goods g', 'g.goods_id=ga.goods_id')
                 ->where($where)
-                ->field('ga.act_id, ga.end_time, ga.phase, ga.total_count, ga.buy_count, ga.surplus, ga.freeze_count, ga.maiman_time, ga.parent_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+                ->field('ga.act_id, ga.end_time, ga.phase, ga.status, ga.total_count, ga.buy_count, ga.surplus, ga.freeze_count, ga.maiman_time, ga.parent_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
                 ->find()
                 ;
 
