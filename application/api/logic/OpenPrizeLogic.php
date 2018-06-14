@@ -14,7 +14,7 @@ class OpenPrizeLogic {
     function exec($act_id){
          // 计算幸运号
         $luckyInfo =$this->generateLuckyInfo($act_id);
-
+print_r($luckyInfo);
         $lucky_number = $luckyInfo[' lucky_number'];
         // 活动表记录中奖信息
         $actUpdateData = array(
