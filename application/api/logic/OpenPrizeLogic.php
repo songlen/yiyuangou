@@ -15,10 +15,11 @@ class OpenPrizeLogic {
          // 计算幸运号
         $luckyInfo =$this->generateLuckyInfo($act_id);
 
+        $lucky_number = $luckyInfo[' lucky_number'];
         // 活动表记录中奖信息
         $actUpdateData = array(
             'act_id'=>$act_id,
-            'lucky_number'=>$luckyInfo[' lucky_number'],
+            'lucky_number'=>$lucky_number,
             'win_user_id'=>$luckyInfo[' win_user_id'],
             'status' => '3',
         );
