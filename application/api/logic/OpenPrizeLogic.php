@@ -83,12 +83,18 @@ class OpenPrizeLogic {
                  $luckyOrder = Db::name('order')->where("order_id > {$luckyInfo['order_id']} and prom_id=$act_id and robot=1")->order('order_id asc')->field('order_id')->find();
             }
 
-            // 再次查找幸运码信息
-            $luckyInfo = Db::name('LuckyNumber')->where("order_id={$luckyOrder['order_id']}")
-                ->field('order_id, user_id, lucky_number')
-                ->find();
-            $win_user_id = $luckyInfo['user_id'];
-            $lucky_number = $luckyInfo['lucky_number'];
+            // 如果设定了机器人中奖，但是没有机器人订单，就让原中奖者中奖
+           if(empty($luckyOrder)){
+                $win_user_id = $luckyInfo['user_id'];
+                $lucky_number = $luckyInfo['lucky_number'];
+           } else {
+                 // 再次查找幸运码信息
+                $luckyInfo = Db::name('LuckyNumber')->where("order_id={$luckyOrder['order_id']}")
+                    ->field('order_id, user_id, lucky_number')
+                    ->find();
+                $win_user_id = $luckyInfo['user_id'];
+                $lucky_number = $luckyInfo['lucky_number'];
+           }
 
         } else { // 如果活动设置的是真人中奖，不管幸运号是机器人还是真人，直接返回幸运号
 

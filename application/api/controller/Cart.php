@@ -279,9 +279,7 @@ class Cart extends Base {
                 M('goods_activity')->where('act_id', $act_id)->setInc('buy_count', $order['num']);
                 // 判断是否满额，满额开奖
                 $activity = M('goods_activity')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
-                print_r($activity);
                 if($activity['surplus'] == 0 && $activity['freeze_count'] == 0){
-                    echo '2222222222222';
                     // 开奖
                     $OpenPrizeLogic = new OpenPrizeLogic();
                     $OpenPrizeLogic->exec($act_id);
