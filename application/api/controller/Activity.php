@@ -158,6 +158,7 @@ class Activity extends Base {
             'ga.act_type' => '3',
             'ga.is_publish' => '1',
             'ga.status' => '1',
+            'surplus' => ['<=', 10],
         );
         
         if($cat_id){
