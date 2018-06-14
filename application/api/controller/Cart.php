@@ -275,8 +275,21 @@ class Cart extends Base {
                 M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
 
                 $act_id = $order['prom_id'];
-                M('goods_activity')->where('act_id', $act_id)->setDec('freeze_count', $order['num']);
-                M('goods_activity')->where('act_id', $act_id)->setInc('buy_count', $order['num']);
+                // M('goods_activity')->where('act_id', $act_id)->setDec('freeze_count', $order['num']);
+                // M('goods_activity')->where('act_id', $act_id)->setInc('buy_count', $order['num']);
+
+                // $updatedata = array(
+                //     'freeze_count' => 
+                // );
+                // M('goods_activity')->where('act_id', $act_id)
+                //     ->update($updatedata);
+
+                Db::name('goods_activity')
+                    ->where('act_id', $act_id)
+                    ->inc('buy_count', $order['num'])
+                    ->dec('freeze_count', $order['num'])
+                    ->exp('maiman_time', time())
+                    ->update();
                 // 判断是否满额，满额开奖
                 $activity = M('goods_activity')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
                 if($activity['surplus'] == 0 && $activity['freeze_count'] == 0){
