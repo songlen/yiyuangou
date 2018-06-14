@@ -20,7 +20,7 @@ print_r($luckyInfo);
         $actUpdateData = array(
             'act_id'=>$act_id,
             'lucky_number'=>$lucky_number,
-            'win_user_id'=>$luckyInfo[' win_user_id'],
+            'win_user_id'=>$luckyInfo['win_user_id'],
             'status' => '3',
         );
         Db::name('goods_activity')->update($actUpdateData);
@@ -85,11 +85,7 @@ print_r($luckyInfo);
             }
 
             // 如果设定了机器人中奖，但是没有机器人订单，就让原中奖者中奖
-           if(empty($luckyOrder)){
-                $win_user_id = $luckyInfo['user_id'];
-                $lucky_number = $luckyInfo['lucky_number'];
-           } else {
-                 // 再次查找幸运码信息
+           if( ! empty($luckyOrder)){
                 $luckyInfo = Db::name('LuckyNumber')->where("order_id={$luckyOrder['order_id']}")
                     ->field('order_id, user_id, lucky_number')
                     ->find();
