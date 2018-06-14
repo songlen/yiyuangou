@@ -247,8 +247,8 @@ class Cart extends Base {
                 $this->payCallback($order_sn_gather);
                 response_success('', '支付成功');
             } else {
-                    $this->payCallback($order_sn_gather);
-                 response_success('', '下单成功');
+                $this->payCallback($order_sn_gather);
+                response_success('', '下单成功');
             }
            
         } else {
@@ -271,7 +271,7 @@ class Cart extends Base {
                 }
                 M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
                 // 判断是否满额，满额开奖
-                $act_id = $order_sn['prom_id'];
+                $act_id = $order['prom_id'];
                 $activity = M('order')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
                 if($activity['surplus'] == 0 && $activity['freeze_count'] == 0){
                     // 开奖
