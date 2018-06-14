@@ -244,6 +244,7 @@ class Cart extends Base {
             // 如果使用积分支付，直接返给前端支付成功；，并检查互动是否满额，如果满额，则开奖
             // 如果使用积分支付的
             if($use_point){
+
                 $this->payCallback($order_sn_gather);
                 response_success('', '支付成功');
             } else {
@@ -270,11 +271,12 @@ class Cart extends Base {
                     break;
                 }
 
-                // 支付成功修改订单状态为已支付，扣除活动表中冻结的份额
+                // 支付成功修改订单状态为已支付，扣除活动表中冻结的份额，增加被购买份数
                 M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
 
                 $act_id = $order['prom_id'];
                 M('goods_activity')->where('act_id', $act_id)->setDec('freeze_count', $order['num']);
+                M('goods_activity')->where('act_id', $act_id)->setInc('buy_count', $order['num']);
                 // 判断是否满额，满额开奖
                 $activity = M('goods_activity')->where('act_id', $act_id)->field('surplus, freeze_count')->find();
                 print_r($activity);
