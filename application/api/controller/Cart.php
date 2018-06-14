@@ -266,7 +266,7 @@ class Cart extends Base {
         if(!empty($order_sns)){
             foreach ($order_sns as $order_sn) {
                 // 获取订单信息，判断是否已支付
-                $order = M('order')->where('order_sn', $order_sn)->field('pay_status, prom_id')->find();
+                $order = M('order')->where('order_sn', $order_sn)->field('pay_status, prom_id, num')->find();
                 if($order['pay_status'] == '1'){
                     break;
                 }
