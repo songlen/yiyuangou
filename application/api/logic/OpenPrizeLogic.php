@@ -7,6 +7,7 @@
 namespace app\api\logic;
 
 use think\Db;
+use app\api\logic\MessageLogic;
 
 // 开奖
 class OpenPrizeLogic {
@@ -29,7 +30,8 @@ class OpenPrizeLogic {
         // 订单表中记录是否中奖
         Db::name('order')->where("order_id={$luckyInfo['order_id']}")->update(array('is_win'=>'1'));
         // 给参与用户发送是否中奖消息
-        $this->send_message($act_id, $luckyInfo['win_user_id'], $item['goods_name']);
+        $MessageLogic = new MessageLogic();
+        $MessageLogic->send_message($act_id);
     }
 
 
@@ -105,44 +107,5 @@ class OpenPrizeLogic {
         );
     }
 
-    private function send_message($act_id, $win_user_id, $goods_id, $goods_name){
-        // 获取活动参与的订单
-        $orders = Db::name('order')
-            ->where('prom_id', $act_id)
-            ->where('robot', 0)
-            ->where('pay_status', 1)
-            ->field('user_id, num')
-            ->select();
 
-        if(!empty($orders)){
-            foreach ($orders as $item) {
-                $message = $item['user_id'] == $win_user_id ? '恭喜您中奖' : '很遗憾您购买的'.$goods_name.'商品未中奖';
-                if($item['user_id'] == $win_user_id){
-                    $url = '/web/#/finishedDetails?id='.$item['order_id'].'&type=1';
-                }
-                
-                if($item['user_id'] != $win_user_id){
-                    $url = '/web/#/buyAgain?order_id='.$item['order_id'].'&goods_id='.$goods_id.'&num='.$item['num'];
-                }
-                $data = array(
-                    'message' => $message,
-                    'goods_name' => $goods_name,
-                    'category' => '1',
-                    'send_time' => time(),
-                    'data' => serialize(array(
-                        'url' => $url,
-                    )),
-                );
-                $message_id = M('message')->insertGetId($data);
-
-                $user_message = array(
-                    'user_id' => $order['user_id'],
-                    'message_id' => $message_id,
-                    'category' => '1',
-                );
-                M('user_message')->insert($user_message);
-            }
-        }
-
-    }
 }
