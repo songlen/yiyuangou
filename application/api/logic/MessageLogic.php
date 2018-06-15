@@ -46,7 +46,7 @@ class MessageLogic {
                             'id' => $item['order_id'],
                             'type' => '1',
                         ),
-                    )
+                    );
                 } else {
                     $message = '很遗憾，您购买的'.$activity['goods_name'].'商品未中奖，点击进行';
                     $jsondata = array(
@@ -57,7 +57,7 @@ class MessageLogic {
                             'goods_id' => $activity['goods_id'],
                             'num' => $item['num']
                         ),
-                    )
+                    );
                 }
 
                 $data = array(
