@@ -132,5 +132,7 @@ class OpenPrizeLogic {
             'publish_time' => time(),
             'continue_hour_step' => $activity['continue_hour_step'],
         );
+
+        M('goods_activity')->insert($data);
     }
 }
