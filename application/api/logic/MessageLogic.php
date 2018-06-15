@@ -30,7 +30,7 @@ class MessageLogic {
             ->where('prom_id', $act_id)
             ->where('robot', 0)
             ->where('pay_status', 1)
-            ->field('user_id, num')
+            ->field('user_id, order_id, num')
             ->select();
 
         if(!empty($orders)){

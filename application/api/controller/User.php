@@ -322,6 +322,7 @@ class User extends Base {
             ->where('user_id', $user_id)
             ->whereOr('m.type', 1)
             ->field('m.message_id, message, m.category, data, send_time, status')
+            ->order('message_id desc')
             ->select();
 
         if(!empty($message)){
