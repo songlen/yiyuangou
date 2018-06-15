@@ -114,7 +114,7 @@ class OpenPrizeLogic {
         if($activity['status'] != '3') return false;
         if($activity['continue'] == 0) return false;
 
-        $end_time = $activity['end_time'] + $activity['continue_hour_step']*3600;
+        $end_time = time() + $activity['continue_hour_step']*3600;
         $phase = $activity['phase']+1;
 
         $data = array(

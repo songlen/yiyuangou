@@ -36,21 +36,35 @@ class MessageLogic {
         if(!empty($orders)){
             foreach ($orders as $item) {
                 $message = $item['user_id'] == $win_user_id ? '恭喜您中奖' : '很遗憾您购买的'.$goods_name.'商品未中奖';
+
                 if($item['user_id'] == $win_user_id){
-                    $url = '/web/#/finishedDetails?id='.$item['order_id'].'&type=1';
+                    $message = '恭喜您中奖，点击';
+                    $jsondata = array(
+                        'hrefValue' => '查看中奖详情',
+                        'router' => 'finishedDetails',
+                        'param' => array(
+                            'id' => $item['order_id'],
+                            'type' => '1',
+                        ),
+                    )
+                } else {
+                    $message = '很遗憾，您购买的'.$activity['goods_name'].'商品未中奖，点击进行';
+                    $jsondata = array(
+                        'hrefValue' => '补价购买',
+                        'router' => 'buyAgain',
+                        'param' => array(
+                            'order_id' => $item['order_id'],
+                            'goods_id' => $activity['goods_id'],
+                            'num' => $item['num']
+                        ),
+                    )
                 }
-                
-                if($item['user_id'] != $win_user_id){
-                    $url = '/web/#/buyAgain?order_id='.$item['order_id'].'&goods_id='.$goods_id.'&num='.$item['num'];
-                }
+
                 $data = array(
                     'message' => $message,
-                    'goods_name' => $goods_name,
                     'category' => '1',
                     'send_time' => time(),
-                    'data' => serialize(array(
-                        'url' => $url,
-                    )),
+                    'data' => serialize($jsondata),
                 );
                 $message_id = M('message')->insertGetId($data);
 
