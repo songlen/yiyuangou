@@ -317,12 +317,17 @@ class User extends Base {
 
     public function message(){
         $user_id = I('user_id/d');
+        $page = I('page/d', 1);
+
+        $limit_start = ($page-1)*20;
+
         $message = Db::name('message')->alias('m')
             ->join('user_message um', 'um.message_id=m.message_id', 'left')
             ->where('user_id', $user_id)
             ->whereOr('m.type', 1)
             ->field('m.message_id, message, m.category, data, send_time, status')
             ->order('message_id desc')
+            ->limit($limit_start, 20)
             ->select();
 
         if(!empty($message)){
