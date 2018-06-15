@@ -19,7 +19,7 @@ class MessageLogic {
      * @return [type]              [description]
      */
     public function winningMessage($act_id){
-        $activity = M('activity')->where('act_id', $act_id)->find();
+        $activity = M('goods_activity')->where('act_id', $act_id)->find();
         if($activity['status'] != 3) return false;
 
         $win_user_id = $activity['win_user_id'];
