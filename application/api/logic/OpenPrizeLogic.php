@@ -33,7 +33,7 @@ class OpenPrizeLogic {
         $this->continueActivity($act_id);
         // 给参与用户发送是否中奖消息
         $MessageLogic = new MessageLogic();
-        $MessageLogic->send_message($act_id);
+        $MessageLogic->winningMessage($act_id);
     }
 
 
