@@ -55,7 +55,7 @@ class MessageLogic {
                 $message_id = M('message')->insertGetId($data);
 
                 $user_message = array(
-                    'user_id' => $order['user_id'],
+                    'user_id' => $item['user_id'],
                     'message_id' => $message_id,
                     'category' => '1',
                 );
