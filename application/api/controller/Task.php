@@ -52,15 +52,15 @@ class Task extends Base {
         $time = time();
         $where = array(
             'ready_time'=>[['>', $time-60], ['<=', $time+60]],
-            'status' => ['<>', '1'],
+            'status' => '0', // 未执行
         );
         $robot_detail = Db::name('robot_detail')->where($where)->select();
 
         if($robot_detail){
             foreach ($robot_detail as $item) {
                 $actinfo = Db::name('goods_activity')->find($item['act_id']);
-                $surplus_num = $actinfo['total_count']-$actinfo['buy_count'];
-                if($item['num'] > $surplus_num){
+               
+                if($item['num'] > $actinfo['surplus']){
                     $data = array(
                         'id'=>$item['id'],
                         'exec_time' => time(),
@@ -83,53 +83,93 @@ class Task extends Base {
         }
     }
 
-    /**
-     * [addRobotOrder 机器人下单]
-     */
-    private function addRobotOrder($act_id=1, $user_id=1, $num=2){
-        $actinfo = Db::name('goods_activity')->find($act_id);
 
-        // 判断
-        $actinfo = Db::name('goods_activity')->find($act_id);
-        $phase_num = $actinfo['total_count']-$actinfo['buy_count'];
-        if($num > $phase_num){
+    /**
+     * [addRobotOrder 执行机器人下单流程]
+     * @param [type] $act_id  [description]
+     * @param [type] $user_id [description]
+     * @param [type] $num     [description]
+     */
+    private function addRobotOrder($act_id, $user_id, $num){
+        $user = Db::name('users')->field('mobile')->find($user_id);
+        if(empty($user_id)){
             return false;
         }
 
-        // 用户资料
-        $userinfo = Db::name('users')->find($user_id);
+        $commit_result = true;
 
-        $order_sn = date('YmdHis').mt_rand(1000,9999);
+        $order_sn = generateOrderSn(); // 生成订单号
+
+        // 时间戳和毫秒数
+        list($usec, $sec) = explode(" ", microtime());
+        $usec = round($usec *1000);
+
         $orderdata = array(
             'order_sn' => $order_sn,
             'user_id' => $user_id,
-            'pay_status' => 1,
-            'mobile' => $userinfo['mobile'],
-            'goods_price' => $num,
-            'add_time' => time(),
-            'robot' => 1,
-            'prom_type' => 4, // 订单类型
+            'mobile' => $user['mobile'],
+            'add_time' => $sec,
+            'add_time_ms' => $usec,
+            'prom_id' => $act_id,
+            'prom_type' => 4, // 订单类型 夺宝活动
+            'num' => $num,
         );
 
-        $order_id = Db::name('order')->insertGetId($orderdata);
+        // 计算各种价格
+        $goods_price = $num; // 商品价格等于购买份额
+        $tax_amount = $goods_price*0.13; // 税额
+        $total_amount = $goods_price+$tax_amount; // 订单总额（商品价格+税额）
 
-        // 活动订单附加表
-        if($order_id){
-            $activityData = array(
-                'order_id' => $order_id,
-                'order_sn' => $order_sn,
-                'user_id' => $user_id,
-                'act_id' => $act_id,
-                'num' => $num,
-                'add_time' => time(),
-                'add_time_ms' => 0,
-            );
+        $used_points = 0;
+        $order_amount = $total_amount;
 
-            Db::name('order_activity')->insert($activityData);
+        $orderdata['goods_price'] =  $goods_price;
+        $orderdata['tax_amount'] =  $tax_amount;
+        $orderdata['order_amount'] =  $order_amount;
+        $orderdata['total_amount'] =  $total_amount;
+
+        Db::startTrans(); // 开启事物
+        try {
+            // 订单写入数据库
+            $order_id = Db::name('order')->insertGetId($orderdata);
 
             // 活动表增减数量
-            Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num);
-            Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num);
+            Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num); // 减剩余份额
+            Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num); // 加已购份额
+
+            $i = 1;
+            while ($i <= $num) {
+                // 找出最大的幸运码
+               $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$act_id))->max('lucky_number');
+               $lucky_number = $max_lucky_number ? $max_lucky_number+1 : 10000001;
+               // 更新附加表
+               $luckynumber = array(
+                   'order_id' => $order_id,
+                   'order_sn' => $order_sn,
+                   'user_id' => $user_id,
+                   'act_id' => $act_id,
+                   'num' => $num,
+                   'add_time' => $sec,
+                   'add_time_ms' => $usec,
+                   'lucky_number' => $lucky_number,
+               );
+               Db::name('LuckyNumber')->insert($luckynumber);
+               $i++;
+            }
+
+            // 提交事务
+            Db::commit();
+        } catch (\Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $commit_result = false;
+            break;
+        }
+
+        if($commit_result){
+            return true;
+        }  else {
+            return false;
         }
     }
 
