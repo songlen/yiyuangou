@@ -124,7 +124,7 @@ class OpenPrizeLogic {
             'end_time' => $end_time,
             'phase' => $phase,
             'total_count' => $activity['total_count'],
-            'surplus' => $activity['surplus'],
+            'surplus' => $activity['total_count'],
             'set_win' => $activity['set_win'],
             'is_publish' => 1,
             'parent_id' => $act_id,
