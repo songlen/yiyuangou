@@ -29,6 +29,8 @@ class OpenPrizeLogic {
         Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->update(array('is_win'=>'1'));
         // 订单表中记录是否中奖
         Db::name('order')->where("order_id={$luckyInfo['order_id']}")->update(array('is_win'=>'1'));
+        // 进行滚期
+        $this->continueActivity($act_id);
         // 给参与用户发送是否中奖消息
         $MessageLogic = new MessageLogic();
         $MessageLogic->send_message($act_id);
@@ -107,5 +109,28 @@ class OpenPrizeLogic {
         );
     }
 
+    private function continueActivity($act_id){
+        $activity = M('goods_activity')->where('act_id', $act_id)->find();
+        if($activity['status'] != '3') return false;
+        if($activity['continue'] == 0) return false;
 
+        $end_time = $activity['end_time'] + $activity['continue_hour_step']*3600;
+        $phase = $activity['phase']+1;
+
+        $data = array(
+            'act_type' => '3',
+            'goods_id' => $activity['goods_id'],
+            'goods_name' => $activity['goods_name'],
+            'end_time' => $end_time,
+            'phase' => $phase,
+            'total_count' => $activity['total_count'],
+            'surplus' => $activity['surplus'],
+            'set_win' => $activity['set_win'],
+            'is_publish' => 1,
+            'parent_id' => $act_id,
+            'add_time' => time(),
+            'publish_time' => time(),
+            'continue_hour_step' => $activity['continue_hour_step'],
+        );
+    }
 }

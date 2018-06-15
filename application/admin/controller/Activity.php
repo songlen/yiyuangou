@@ -104,6 +104,8 @@ class Activity extends Base
                 // 计算期数
                 $max_phase = Db::name('goods_activity')->max('phase');
                 $data['phase'] = $max_phase+1;
+                $data['add_time'] = time();
+
                 $insertId = Db::name('goods_activity')->insert($data);
 
                 adminLog("添加夺宝 " . $data['goods_name']);
