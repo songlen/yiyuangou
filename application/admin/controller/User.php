@@ -135,7 +135,7 @@ class User extends Base {
     /**
      * [add_robot 添加机器人]
      */
-    public function add_robot(){
+    public function generateRobot(){
         // 随机生成昵称
         $config = Config::load(APP_PATH.'admin/conf/nickname.php');
         $tou = $config['tou'];
