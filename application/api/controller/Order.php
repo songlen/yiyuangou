@@ -129,7 +129,7 @@ class Order extends Base {
             $result['actInfo']['winner_nickname'] = $winner['nickname'];
         }
 
-        $my_lucky_number = Db::name('lucky_number')->where("user_id=$user_id")
+        $my_lucky_number = Db::name('lucky_number')->where("user_id=$user_id and order_id=$order_id")
             ->field("lucky_number, add_time, add_time_ms")
             ->select();
         if($my_lucky_number){
