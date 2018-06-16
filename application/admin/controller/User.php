@@ -141,7 +141,6 @@ class User extends Base {
         $tou = $config['tou'];
         $do = $config['do'];
         $wei = $config['wei'];
-        return;
         // Db::query('SET AUTOCOMMIT=0');
         $start_time = time();
         for($i=1; $i<10000; $i++){
