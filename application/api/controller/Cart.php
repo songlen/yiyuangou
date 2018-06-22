@@ -240,7 +240,7 @@ class Cart extends Base {
             if($orderResult['status'] == '-1') response_error('', $orderResult['error']);
             
             // 清除购物车商品
-            if($item['cart_id'] != 0){
+            if(isset($item['cart_id']) && ($item['cart_id'] != 0)){
                 M('cart')->where('id', $item['cart_id'])->delete();    
             } 
             $order_sn_gather = $orderResult['data']['order_sn_gather'];
