@@ -133,7 +133,7 @@ class Cart extends Base {
 
     /**
      * 购物车第二步确定页面/立即购买/下单
-     * goodsInfo json 数组 [{"act_id":"1","goods_id":"1","num":"1"}]
+     * goodsInfo json 数组 [{“cart_id”:"1","act_id":"1","goods_id":"1","num":"1"}]
      */
     public function prepareOrder(){
         $user_id = I('user_id/d');
@@ -239,12 +239,14 @@ class Cart extends Base {
             $orderResult = $OrderLogic->placeOrder($user_id, $goodsList, $address, $use_point);
             if($orderResult['status'] == '-1') response_error('', $orderResult['error']);
             
-            // 
+            // 清除购物车商品
+            if($item['cart_id'] != 0){
+                M('cart')->where('id', $item['cart_id'])->delete();    
+            } 
             $order_sn_gather = $orderResult['data']['order_sn_gather'];
             // 如果使用积分支付，直接返给前端支付成功；，并检查互动是否满额，如果满额，则开奖
             // 如果使用积分支付的
             if($use_point){
-
                 $this->payCallback($order_sn_gather);
                 response_success('', '支付成功');
             } else {
