@@ -44,17 +44,17 @@ class OpenPrizeLogic {
      * @return [type]         [array order_id, win_user_id, lucky_number]
      */
     private function generateLuckyInfo($act_id){
-        $actInfo = Db::name('goods_activity')->field('set_win')->find($act_id);
+        $actInfo = Db::name('goods_activity')->field('total_count, set_win')->find($act_id);
          // 购买最后100条记录
-        $lastlist100 = Db::name('order')->where(array('prom_id'=>$act_id))->limit('0, 100')->field('add_time, add_time_ms')->order('order_id desc')->select();
+        $lastlist100 = Db::name('lucky_number')->where(array('act_id'=>$act_id))->limit('0, 100')->field('add_time, add_time_ms')->order('id desc')->select();
         // 时间加起来
         $sumTime = 0;
         foreach ($lastlist100 as $item) {
             $sumTime += date('YmdHis', $item['add_time']).$item['add_time_ms'];
         }
         // 参与人次
-        $count = Db::name('order')->where("prom_id=$act_id")->count();
-        $mod = fmod($sumTime, $count);
+        // $count = Db::name('order')->where("prom_id=$act_id")->count();
+        $mod = fmod($sumTime, $actInfo['total_count']);
         $lucky_number = $mod + 10000001;  // 诞生中奖幸运号
 
         // 查找中奖者
