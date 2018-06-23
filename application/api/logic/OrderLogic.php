@@ -106,6 +106,9 @@ class OrderLogic {
                    $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$act_id))->max('lucky_number');
                    $lucky_number = $max_lucky_number ? $max_lucky_number+1 : 10000001;
                    // 更新附加表
+                   // 时间戳和毫秒数
+                    list($usec, $sec) = explode(" ", microtime());
+                    $usec = round($usec *1000);
                    $luckynumber = array(
                        'order_id' => $order_id,
                        'order_sn' => $order_sn,
