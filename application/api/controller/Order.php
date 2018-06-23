@@ -234,7 +234,7 @@ class Order extends Base {
             ->join('users u', 'ln.user_id=u.user_id')
             ->where("act_id=$act_id")
             ->order('id desc')
-            ->group('ln.user_id')
+            // ->group('ln.user_id')
             ->limit(100)
             ->field('lucky_number, nickname, ln.add_time, add_time_ms')
             ->select();
