@@ -309,7 +309,7 @@ class User extends Base {
      */
     private function getUserInfo($user_id){
     	$userInfo = M('users')->where("user_id", $user_id)
-    		->field('user_id, mobile, nickname, head_pic')
+    		->field('user_id, sex, mobile, nickname, head_pic')
     		->find();
        
        return $userInfo;
