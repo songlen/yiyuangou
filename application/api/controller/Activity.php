@@ -180,7 +180,7 @@ class Activity extends Base {
         $goods_activity = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
             ->where($ga_where)
-            ->field('ga.act_id, ga.phase, ga.surplus, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->field('ga.act_id, ga.phase, ga.buy_count, ga.surplus, g.goods_id, g.goods_name, g.shop_price, g.original_img')
             ->select()
             ;
 
