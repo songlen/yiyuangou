@@ -4,7 +4,6 @@
  */
 
 namespace app\api\logic;
-
 use think\Db;
 
 class SmsLogic {
@@ -27,13 +26,13 @@ class SmsLogic {
         }
 
         // 注册场景检测是否注册
-        if($scene == '1'){
-            $count = Db::name('users')->where("mobile=$mobile")->count();
-            if($count){
-                $error = '该手机号已注册';
-                return false;
-            }
-        }
+        // if($scene == '1'){
+        //     $count = Db::name('users')->where("mobile=$mobile")->count();
+        //     if($count){
+        //         $error = '该手机号已注册';
+        //         return false;
+        //     }
+        // }
 
         // 找回密码场景检测是否注册
         if($scene == '2'){
@@ -52,10 +51,10 @@ class SmsLogic {
             ->where('add_time', ['>', $day_time_start], ['<', $day_time_end])
             ->count();
 
-        if($count >= $this->day_count){
-            $error = '您的次数已超限';
-            return false;
-        }
+        // if($count >= $this->day_count){
+        //     $error = '您的次数已超限';
+        //     return false;
+        // }
 
         $code = rand(100000, 999999);
         $data = array(
@@ -67,10 +66,15 @@ class SmsLogic {
 
         $smsLogid = Db::name('sms_log')->insertGetId($data);
 
-        // 执行短信网关发送
-        $this->exec();
+        // 执行短信网关发送 12269890032
+        $result = $this->exec($mobile, '您的验证码是：'.$code);
+        if($result['status'] == 1){
+            Db::name('sms_log')->where("id=$smsLogid")->update(array('status'=>'1'));
+        } else {
+            $error = $result['error'];
+            return false;
+        }
 
-        Db::name('sms_log')->where("id=$smsLogid")->update(array('status'=>'1'));
         
         return $code;
     }
@@ -106,27 +110,56 @@ class SmsLogic {
         return true;
     }
 
-    private exec(){
-        require __DIR__ . '/vendor/autoload.php';
-        use Twilio\Rest\Client;
-
+    private function exec($to_phone, $message){
+        $to_phone = '+86'.$to_phone;
         // Your Account SID and Auth Token from twilio.com/console
-        $account_sid = 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
-        $auth_token = 'your_auth_token';
+        $account_sid = 'AC39ff2cf9521cd38011ff0bd3602a8494';
+        $auth_token = '1a2e0aa20c3572106e790f1364a0cd5d';
         // In production, these should be environment variables. E.g.:
         // $auth_token = $_ENV["TWILIO_ACCOUNT_SID"]
+        $from_phone = '+12268943988';
 
         // A Twilio number you own with SMS capabilities
-        $twilio_number = "+15017122661";
 
-        $client = new Client($account_sid, $auth_token);
-        $client->messages->create(
-            // Where to send a text message (your cell phone?)
-            '+15558675310',
-            array(
-                'from' => $twilio_number,
-                'body' => 'I sent this message in under 10 minutes!'
-            )
-        );
+        vendor('Twilio.Deserialize');
+        vendor('Twilio.InstanceResource');
+        vendor('Twilio.Rest.Api.V2010.Account.MessageInstance');
+        vendor('Twilio.Exceptions.TwilioException');
+        vendor('Twilio.Exceptions.ConfigurationException');
+        vendor('Twilio.Exceptions.TwilioException');
+        vendor('Twilio.Exceptions.RestException');
+        vendor('Twilio.Http.Response');
+        vendor('Twilio.Exceptions.TwilioException');
+        vendor('Twilio.Exceptions.EnvironmentException');
+        vendor('Twilio.VersionInfo');
+        vendor('Twilio.Rest.Client');
+        vendor('Twilio.Http.Client');
+        vendor('Twilio.Http.CurlClient');
+        vendor('Twilio.Domain');
+        vendor('Twilio.Rest.Api');
+        vendor('Twilio.Version');
+        vendor('Twilio.InstanceContext');
+        vendor('Twilio.ListResource');
+        vendor('Twilio.Values');
+        vendor('Twilio.Serialize');
+        vendor('Twilio.Rest.Api.V2010.Account.MessageList');
+        vendor('Twilio.Rest.Api.V2010.AccountContext');
+        vendor('Twilio.Rest.Api.V2010');
+
+        $client = new \Twilio\Rest\Client($account_sid, $auth_token);
+
+        try{
+            $result = $client->messages->create(
+                // Where to send a text message (your cell phone?)
+                $to_phone,
+                array(
+                    'from' => $from_phone,
+                    'body' => $message
+                )
+            );
+            return array('status'=>1);
+        } catch (\Exception $e){
+            return array('status'=>0, 'error'=>$e->getMessage());
+        }
     }
 }
