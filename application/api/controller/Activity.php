@@ -161,6 +161,7 @@ class Activity extends Base {
      */
     public function publishSoon(){
         $cat_id = I('cat_id/d');
+        $page = I('page', 1);
 
         $categoryList = $this->getAllCategory();
         $data['categoryList'] = $categoryList;
@@ -177,10 +178,13 @@ class Activity extends Base {
             $ga_where['g.cat_id'] = $cat_id;
         }
 
+        $pernum = 10;
+        $start_limit = ($page-1)*$pernum;
         $goods_activity = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
             ->where($ga_where)
             ->field('ga.act_id, ga.phase, ga.buy_count, ga.surplus, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->limit($start_limit, $pernum)
             ->select()
             ;
 
