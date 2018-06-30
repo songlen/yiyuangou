@@ -41,7 +41,7 @@ class Activity extends Base {
         // 获取累计购买数
         $statistics_buy_count = Db::name('order')
             ->where('prom_id', $act_id)
-            ->where('pay_status', '0')
+            ->where('pay_status', '1')
             ->field('num, FROM_UNIXTIME(add_time, "%Y-%m-%d %H:%i:%s") time')
             ->select();
 
@@ -49,7 +49,7 @@ class Activity extends Base {
         // 购买过程数据
         $buy_harf_hour = Db::name('order')
             ->where('prom_id', $act_id)
-            ->where('pay_status', '0')
+            ->where('pay_status', '1')
             ->where('add_time', ['>=', time()-1800])
             ->field('num, add_time')
             ->select();
