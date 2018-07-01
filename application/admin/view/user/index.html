@@ -39,6 +39,10 @@
                 <input type="hidden" name="third_leader" value="{$_GET['third_leader']}">
                 <div class="sDiv">
                     <div class="sDiv2">
+                        <select name="robot" id="robot" class="select">
+                            <option value="0">真实用户</option>
+                            <option value="1">机器人</option>
+                        </select>
                         <input type="text" id="search_key" size="30" class="qsbox" placeholder="手机号">
                         <input type="submit" class="btn" onclick="ajax_get_table('search-form2',1)" value="搜索">
                     </div>
@@ -106,6 +110,13 @@
                    <a onclick="send_message();">
                        <div class="add" title="发送站内信">
                            <span><i class="fa fa-send"></i>发送站内信</span>
+                       </div>
+                   </a>
+               </div>
+                <div class="fbutton">
+                   <a onclick="add_points();">
+                       <div class="add" title="赠送积分">
+                           <span><i class="fa fa-send"></i>赠送积分</span>
                        </div>
                    </a>
                </div>
@@ -278,6 +289,31 @@
             layer.open({
                 type: 2,
                 title: '站内信',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['580px', '480px'],
+                content: url
+            });
+        }else{
+            layer.msg('请选择会员',{icon:2});
+        }
+
+    }    
+
+    //赠送积分
+    function add_points()
+    {
+        var obj = $('.trSelected');
+        var url = "{:U('Admin/User/addPoints')}";
+        if(obj.length > 0){
+            var check_val = [];
+            obj.each(function(){
+                check_val.push($(this).attr('data-id'));
+            });
+            url += "?user_id_array="+check_val;
+            layer.open({
+                type: 2,
+                title: '赠送积分',
                 shadeClose: true,
                 shade: 0.8,
                 area: ['580px', '480px'],

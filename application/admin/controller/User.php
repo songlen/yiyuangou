@@ -32,6 +32,7 @@ class User extends Base {
         $condition = array();
         I('mobile') ? $condition['mobile'] = I('mobile') : false;
         I('email') ? $condition['email'] = I('email') : false;
+        $condition['robot'] = I('robot', 0);
 
         I('first_leader') && ($condition['first_leader'] = I('first_leader')); // 查看一级下线人有哪些
         I('second_leader') && ($condition['second_leader'] = I('second_leader')); // 查看二级下线人有哪些
@@ -502,6 +503,50 @@ class User extends Base {
                 }
             }
         }
+        echo "<script>parent.{$call_back}(1);</script>";
+        exit();
+    }
+
+    // 赠送积分
+    public function addPoints()
+    {
+        $user_id_array = I('get.user_id_array');
+        $users = array();
+        if (!empty($user_id_array)) {
+            $users = M('users')->field('user_id,nickname')->where(array('user_id' => array('IN', $user_id_array)))->select();
+        }
+        $this->assign('users',$users);
+        return $this->fetch();
+    }
+
+    public function doAddPoints(){
+
+        $call_back = I('call_back');//回调方法
+        $points= I('post.points');//积分
+        $type = I('post.type', 0);//个体or全体
+        $admin_id = session('admin_id');
+        $users = I('post.user/a');//
+
+        if ($type == 1) {
+            ini_set('memory_limit','256M');
+            //全体用户赠送积分
+            $where = array('robot'=>'0');
+            M('users')->where($where)->setInc('pay_points', $points);
+
+            $users = M('users')->where($where)->field('user_id')->select();
+            foreach ($users as $item) {
+                accountLog($item['user_id'], 0,$points, '系统赠送积分'); // 记录日志流水
+            }
+        } else {
+            //赠送给选中的人
+            if (!empty($users)) {
+                foreach ($users as $key) {
+                    M('users')->where(array('user_id' => $key, 'robot'=>'0'))->setInc('pay_points', $points);
+                    accountLog($key, 0,$points, '系统赠送积分'); // 记录日志流水
+                }
+            }
+        }
+
         echo "<script>parent.{$call_back}(1);</script>";
         exit();
     }
