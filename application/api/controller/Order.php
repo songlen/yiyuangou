@@ -161,6 +161,7 @@ class Order extends Base {
         $orderList = M('order')->alias('o')
             ->join('order_goods og', 'o.order_id=og.order_id')
             ->where($where)
+            ->whereOr('is_win', 1)
             ->order('order_id DESC')
             ->limit(($page-1)*10 . ',' . 10)
             ->field('o.order_id, order_sn, goods_id, goods_num, order_status, shipping_status, pay_status, total_amount')

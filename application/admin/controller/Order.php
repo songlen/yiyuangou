@@ -73,7 +73,7 @@ class Order extends Base {
         I('shipping_status') != '' ? $condition['shipping_status'] = I('shipping_status') : false;
         I('user_id') ? $condition['user_id'] = trim(I('user_id')) : false;
         $sort_order = I('order_by','DESC').' '.I('sort');
-        $count = M('order')->where($condition)->count();
+        $count = M('order')->where($condition)->whereOr('is_win', 1)->count();
         $Page  = new AjaxPage($count,20);
         $show = $Page->show();
         //获取订单列表
