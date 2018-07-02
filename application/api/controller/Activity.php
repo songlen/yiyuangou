@@ -43,6 +43,10 @@ class Activity extends Base {
         $total_count = $info['total_count'];
         $step = floor($total_count/5);
         $statistics_bingtu = array();
+        $total_order = M('order')
+            ->where('prom_id', $act_id)
+            ->where('pay_status', 1);
+            ->count();
         for($i = 1; $i <= 5; $i ++){
             $num_start = ($i-1)*$step;
 
@@ -52,10 +56,16 @@ class Activity extends Base {
                 $num_end = $i*$step;
             }
 
-            $count = M('order')->where('num', array('>', $num_start), array('<=', $num_end), 'and')->count();
+            $count = M('order')
+                ->where('num', array('>', $num_start), array('<=', $num_end), 'and')
+                ->where('prom_id', $act_id)
+                ->where('pay_status', '1')
+                ->count();
+
+            $count_percent = $total_order ? round($count/$total_order, 2) : 0;
             $statistics_bingtu[] = array(
                 'title' => $num_start.'-'.$num_end,
-                'count' => $count,
+                'count' => $count_percent,
             );
         }
         $data['statistics_bingtu'] = $statistics_bingtu;
