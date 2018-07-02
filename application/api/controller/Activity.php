@@ -45,7 +45,7 @@ class Activity extends Base {
         $statistics_bingtu = array();
         $total_order = M('order')
             ->where('prom_id', $act_id)
-            ->where('pay_status', 1);
+            ->where('pay_status', 1)
             ->count();
         for($i = 1; $i <= 5; $i ++){
             $num_start = ($i-1)*$step;
