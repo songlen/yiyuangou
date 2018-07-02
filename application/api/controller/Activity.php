@@ -65,7 +65,7 @@ class Activity extends Base {
             $count_percent = $total_order ? round($count/$total_order, 2) : 0;
             $statistics_bingtu[] = array(
                 'title' => $num_start.'-'.$num_end,
-                'count' => $count_percent,
+                'count_percent' => $count_percent,
             );
         }
         $data['statistics_bingtu'] = $statistics_bingtu;
