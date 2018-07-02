@@ -22,7 +22,7 @@ class OrderLogic
      * @param int $page_size  获取数量
      */
     public function getOrderList($condition,$order='',$start=0,$page_size=20){
-        $res = M('order')->where($condition)->limit("$start,$page_size")->order($order)->select();
+        $res = M('order')->where($condition)->whereOr('is_win', '1')->limit("$start,$page_size")->order($order)->select();
         return $res;
     }
     /*
