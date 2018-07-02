@@ -38,6 +38,27 @@ class Activity extends Base {
         // 购买规则
         $config_basic = tpcache('basic');
         $data['buy_rules'] = html_entity_decode($config_basic['buy_rules']);
+
+        // 饼图数据
+        $total_count = $info['total_count'];
+        $step = floor($total_count/5);
+        $statistics_bingtu = array();
+        for($i = 1; $i <= 5; $i ++){
+            $num_start = ($i-1)*$step;
+
+            if($i == 5){
+                $num_end = $total_count;
+            } else {
+                $num_end = $i*$step;
+            }
+
+            $count = M('order')->where('num', array('>', $num_start), array('<=', $num_end), 'and')->count();
+            $statistics_bingtu[] = array(
+                'title' => $num_start.'-'.$num_end,
+                'count' => $count,
+            );
+        }
+
         // 获取累计购买数
         $statistics_buy_count = Db::name('order')
             ->where('prom_id', $act_id)
