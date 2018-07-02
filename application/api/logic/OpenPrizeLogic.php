@@ -117,6 +117,11 @@ class OpenPrizeLogic {
         $end_time = time() + $activity['continue_hour_step']*3600;
         $phase = $activity['phase']+1;
 
+        if($activity['parent_id'] == '0'){
+            $parent_id = $act_id
+        } else {
+            $parent_id = $activity['parent_id'];
+        }
         $data = array(
             'act_type' => '3',
             'goods_id' => $activity['goods_id'],
@@ -127,7 +132,7 @@ class OpenPrizeLogic {
             'surplus' => $activity['total_count'],
             'set_win' => $activity['set_win'],
             'is_publish' => 1,
-            'parent_id' => $act_id,
+            'parent_id' => $parent_id,
             'add_time' => time(),
             'publish_time' => time(),
             'continue_hour_step' => $activity['continue_hour_step'],
