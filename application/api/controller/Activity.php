@@ -58,6 +58,7 @@ class Activity extends Base {
                 'count' => $count,
             );
         }
+        $data['statistics_bingtu'] = $statistics_bingtu;
 
         // 获取累计购买数
         $statistics_buy_count = Db::name('order')
