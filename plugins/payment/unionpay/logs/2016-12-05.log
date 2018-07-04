@@ -1,9 +1,9 @@
-2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[15]------ =====签名报文开始====== 
-2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[21]------ 签名key=val&...串 >accessType=0&backUrl=http://www.tpshop2.0.com/index.php/home/Payment/notifyUrl/pay_code/unionpay.html&bizType=000201&certId=40220995861346480087409489142384722381&channelType=08&currencyCode=156&encoding=utf-8&frontUrl=http://www.tpshop2.0.com/index.php/home/Payment/returnUrl/pay_code/unionpay.html&merId=&orderId=201612051628404371&signMethod=01&txnAmt=300&txnSubType=01&txnTime=20161205162840&txnType=01&version=5.0.0 
-2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[24]------ 摘要sha1x16 >4359cd1b74ba691fc7ec11df22b3872e097ed63f 
-2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[31]------ 签名串为 >c5eqS1olZentOccoh+d76erRoMs/RlMe4B3aUfgOaR+jUGKwnsMr+dtRw+MF7a13PJs0umAjWC6bvsscV7FdHgbZ5vXtEkRgu3yuc71yGDSLMftjx5zhBkTg+bTQbtq9cQy0OsVGGw11bQNQsFqIcqdKGmZCLHOcoLjENGP2ZSk= 
-2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[36]------ =====签名报文结束====== 
-2016-12-05 18:01:52, INFO, 127.0.0.1, File[ D:\wamp\www\TPshop2.0\www\public\plugins\payment\unionpay\sdk\acp_service.php ], Line[163]------ 自动跳转html><html>
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ \www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[15]------ =====签名报文开始====== 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ \www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[21]------ 签名key=val&...串 >accessType=0&backUrl=http://www.tpshop2.0.com/index.php/home/Payment/notifyUrl/pay_code/unionpay.html&bizType=000201&certId=40220995861346480087409489142384722381&channelType=08&currencyCode=156&encoding=utf-8&frontUrl=http://www.tpshop2.0.com/index.php/home/Payment/returnUrl/pay_code/unionpay.html&merId=&orderId=201612051628404371&signMethod=01&txnAmt=300&txnSubType=01&txnTime=20161205162840&txnType=01&version=5.0.0 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ \www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[24]------ 摘要sha1x16 >4359cd1b74ba691fc7ec11df22b3872e097ed63f 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ \www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[31]------ 签名串为 >c5eqS1olZentOccoh+d76erRoMs/RlMe4B3aUfgOaR+jUGKwnsMr+dtRw+MF7a13PJs0umAjWC6bvsscV7FdHgbZ5vXtEkRgu3yuc71yGDSLMftjx5zhBkTg+bTQbtq9cQy0OsVGGw11bQNQsFqIcqdKGmZCLHOcoLjENGP2ZSk= 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ \www\public\plugins\payment\unionpay\sdk\secureUtil.php ], Line[36]------ =====签名报文结束====== 
+2016-12-05 18:01:52, INFO, 127.0.0.1, File[ \www\public\plugins\payment\unionpay\sdk\acp_service.php ], Line[163]------ 自动跳转html><html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
