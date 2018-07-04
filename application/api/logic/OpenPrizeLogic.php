@@ -118,7 +118,7 @@ class OpenPrizeLogic {
         $phase = $activity['phase']+1;
 
         if($activity['parent_id'] == '0'){
-            $parent_id = $act_id
+            $parent_id = $act_id;
         } else {
             $parent_id = $activity['parent_id'];
         }
