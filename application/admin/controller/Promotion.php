@@ -1,9 +1,6 @@
 <?php
 /**
- * tpshop
 
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * ============================================================================
  * Author: 当燃
  * 专题管理
  * Date: 2016-03-09
@@ -511,7 +508,7 @@ class Promotion extends Base
     public function pre_sell_list()
     {
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");	
+exit("功能未开发");	
     }
 
     /**
@@ -520,7 +517,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
     public function pre_sell_info()
     {
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");	
+exit("功能未开发");	
     }
 
     /**
@@ -529,7 +526,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
     public function pre_sell_del()
     {
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
 
     /**
@@ -538,7 +535,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
     public function pre_sell_success()
     {
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
 
     /**
@@ -547,7 +544,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
     public function pre_sell_fail()
     {
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
 
 }

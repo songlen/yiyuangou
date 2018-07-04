@@ -162,7 +162,7 @@ class alipay extends Model
     // 支付宝批量申请提现转款
     function transfer($data){
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
     // 批量申请提现转账回调
     function transfer_response(){
@@ -209,7 +209,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
     // 支付宝退款原路退回
     public function payment_refund($data){
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
     // 退款原路回调
     public function  refund_respose(){

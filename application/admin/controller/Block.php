@@ -18,24 +18,24 @@ class Block extends Base{
 
 	public function index(){
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");  
+exit("暂未开发");  
 	}
 
 	//自定义页面列表页
 	public function pageList(){
             header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");    
+exit("暂未开发");    
 	}
 
 	public function ajaxGoodsList(){
             header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("暂未开发");
     }
 
     //商品列表板块参数设置
     public function goods_list_block(){
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("暂未开发");
     }
 
 	/*
@@ -43,13 +43,13 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
 	*/
 	public function add_data(){
             header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("暂未开发");
 	}
 
 	//设置首页
 	public function set_index(){
             header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("暂未开发");
 	}
 
 	//删除页面
@@ -65,7 +65,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
 	//获取秒杀活动数据
 	public function get_flash(){
             header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("暂未开发");
 	}
 
 }

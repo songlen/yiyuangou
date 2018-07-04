@@ -31,7 +31,7 @@ class Invoice extends Base {
      */
     public function index() {
        header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
     
     /**
@@ -40,19 +40,19 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
      */
     public function ajaxindex() {
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
     
      //开票时间
     function changetime(){
      header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
     
     public function export_invoice()
     {
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
 
 }

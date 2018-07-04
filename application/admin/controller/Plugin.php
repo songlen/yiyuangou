@@ -1,9 +1,6 @@
 <?php
 /**
- * tpshop
 
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * ============================================================================
  * 插件管理类
  * Date: 2015-10-20
  */
@@ -194,8 +191,8 @@ class Plugin extends Base {
         $condition['type'] = I('get.type');
         $condition['code'] = I('get.code');
         $model = M('plugin');
-        if(($condition["code"] == "unionpay")){ header("Content-type: text/html; charset=utf-8");exit("请联系TPshop官网客服购买高级版支持此功能"); } 	
-        if($condition["type"] == "login"  && $condition["code"] == "weixin"){ header("Content-type: text/html; charset=utf-8");exit("请联系TPshop官网客服购买高级版支持此功能"); } 	
+        if(($condition["code"] == "unionpay")){ header("Content-type: text/html; charset=utf-8");exit("功能未开发"); } 	
+        if($condition["type"] == "login"  && $condition["code"] == "weixin"){ header("Content-type: text/html; charset=utf-8");exit("功能未开发"); } 	
         $row = $model->where($condition)->find();
         if(!$row){
             exit($this->error("不存在该插件"));

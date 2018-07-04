@@ -1,12 +1,5 @@
 <?php
-/**
- * tpshop
 
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * ============================================================================
- * Author: 当燃      
- * Date: 2015-09-21
- */
 
 namespace app\admin\controller;
 use think\Db;

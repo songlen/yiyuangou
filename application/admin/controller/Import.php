@@ -1,9 +1,6 @@
 <?php
 /**
- * tpshop
 
- * 采用最新Thinkphp5助手函数特性实现单字母函数M D U等简写方式
- * ============================================================================
  * Author: 聂晓克     
  * Date: 2017-12-12
  */
@@ -15,18 +12,18 @@ class Import extends Base {
 
  	public function index(){
             header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
   	}
 
   	//上传的csv文件及图片文件 返回数组结果
 	public function upload_data(){
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
 	}
 
 	public function add_data(){
         header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
 	}
 
 	/**

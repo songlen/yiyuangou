@@ -147,7 +147,7 @@ EOF;
     // 微信提现批量转账
     function transfer($data){
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
     
     /**
@@ -210,7 +210,7 @@ exit("请联系TPshop官网客服购买高级版支持此功能");
      // 微信订单退款原路退回
     public function payment_refund($data){
     header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
 
 }

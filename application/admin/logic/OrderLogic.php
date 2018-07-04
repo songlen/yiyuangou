@@ -450,7 +450,7 @@ class OrderLogic
 
     //订单发货在线下单、电子面单
     public function submitOrderExpress($data,$orderGoods){
-		return array('status'=>0,'msg'=>'请联系TPshop官网客服购买高级版支持此功能');
+		return array('status'=>0,'msg'=>'功能未开发');
     }
     
     //识别单号

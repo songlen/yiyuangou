@@ -35,7 +35,7 @@ class TeamActivityLogic extends Model
      */
     public function lottery(){
 		header("Content-type: text/html; charset=utf-8");
-exit("请联系TPshop官网客服购买高级版支持此功能");
+exit("功能未开发");
     }
 
     /**
