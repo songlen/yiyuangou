@@ -156,7 +156,11 @@ class OpenPrizeLogic {
         list($usec, $sec) = explode(" ", microtime());
         $usec = round($usec *1000);
         // 商品信息
-        $goodsInfo = M('goods')->where('goods_id', $orderInfo['prom_id'])->field('goods_id, goods_name, shop_price')->find();
+        $goodsInfo = M('goods_activity')->alias('ga')
+            ->join('goods g', 'ga.goods_id=g.goods_id', 'left')
+            ->where('ga.act_id', $orderInfo['prom_id'])
+            ->field('g.goods_id, g.goods_name, g.shop_price')
+            ->find();
 
         $order_sn = date('YmdHis').mt_rand(1000,9999);
         $orderdata = array(
