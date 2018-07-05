@@ -106,10 +106,6 @@ a.green:hover { color: #FFF; background-color: #1BBC9D; border-color: #16A086; }
 		            <dd>
 		            	<select id="send_type" name="send_type" onchange="change_send();">
 		            		<option value="0">手填物流单号</option>
-		            		<if condition="($order['shipping_status'] eq 0) && ($express_switch eq 1)">
-		            		<option value="1">在线预约发货</option>
-		            		<option value="2">电子面单发货</option>
-		            		</if>
 		            		<option value="3">无需物流</option>
 		            	</select>
 		            </dd>
@@ -137,15 +133,15 @@ a.green:hover { color: #FFF; background-color: #1BBC9D; border-color: #16A086; }
           <dl>
            		<dt>电话：</dt>
             	<dd>{$order.mobile}</dd>
-            	<dt>发票抬头：</dt>
+            	<!-- <dt>发票抬头：</dt>
             	<dd>{$order.invoice_title}</dd>
                 <dt>纳税人识别号：</dt>
-                <dd>{$order.taxpayer}</dd>
+                <dd>{$order.taxpayer}</dd> -->
           	</dl>
-            <dl>
+            <!-- <dl>
            		<dt>用户备注：</dt>
             	<dd>{$order.user_note}</dd>
-          	</dl>
+          	</dl> -->
         </div>
   
          
@@ -155,25 +151,23 @@ a.green:hover { color: #FFF; background-color: #1BBC9D; border-color: #16A086; }
             <thead>
               <tr>
                 <th colspan="2">商品</th>
-                <th>规格属性</th>
                 <th>购买数量</th>
                 <th>商品单价</th>
-                <th>选择发货</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
             <volist name="orderGoods" id="good">
            	<tr>
-                <td class="w30"><div class="goods-thumb"><a href="{:U('Goods/addEditGoods',array('id'=>$good[goods_id]))}" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /> </a></div></td>
-                <td style="text-align: left;"><a href="{:U('Goods/addEditGoods',array('id'=>$good[goods_id]))}" target="_blank">{$good.goods_name}</a><br/></td>
-                <td class="w80">{$good.spec_key_name}</td>
+                <td class="w30"><div class="goods-thumb"><a href="javascript:;" target="_blank"><img alt="" src="{$good['goods_id']|goods_thum_images=200,200}" /> </a></div></td>
+                <td style="text-align: left;">{$good.goods_name}<br/></td>
                 <td class="w60">{$good.goods_num}</td>
                 <td class="w100">{$good.goods_price}</td>
                 <td class="w60">
                 	<if condition="$good['is_send'] eq 1">
                         	已发货
                    <else />
-                        	<input type="checkbox" name="goods[]" value="{$good.rec_id}" checked="checked">
+                        	<input style="display: none" type="checkbox" name="goods[]" value="{$good.rec_id}" checked="checked">
                     </if>
                 </td>
               </tr>

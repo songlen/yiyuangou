@@ -130,7 +130,11 @@ class Order extends Model
         $ps = $data['pay_status'];//支付状态
         $pt = $data['prom_type'];//订单类型：0默认1抢购2团购3优惠4预售5虚拟6拼团
         $btn = array();
-        if($data['pay_code'] == 'cod') {
+
+        if($ps == '1'){
+            $btn['delivery'] = '去发货';
+        }
+        /*if($data['pay_code'] == 'cod') {
             if($os == 0 && $ss == 0){
                 if($pt != 6){
                     $btn['confirm'] = '确认';
@@ -173,7 +177,7 @@ class Order extends Model
         }
         if($os != 5){
             $btn['invalid'] = '无效';
-        }
+        }*/
         return $btn;
     }
 
