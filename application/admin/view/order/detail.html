@@ -244,26 +244,26 @@ a.green:hover { color: #FFF; background-color: #1BBC9D; border-color: #16A086; }
                   <dd class="opt" style="margin-left:10px">
                    <textarea id="note" name="note" style="width:600px" rows="6"  placeholder="请输入操作备注" class="tarea">{$keyword.text}</textarea>
                   </dd>
-                </dl> 
-                <dl class="row">
+          </dl> 
+           <dl class="row">
                   <dt class="tit">
                     <label for="note">可执行操作</label>
                   </dt>
                   <dd class="opt" style="margin-left:10px">
                      <foreach name="$order.adminOrderButton" item="vo" key="k">
-                   <if condition="$k eq 'pay_cancel'">
-                     <a class="ncap-btn-big ncap-btn-green" href="javascript:void(0)" data-url="{:U('Order/pay_cancel',array('order_id'=>$order['order_id']))}" onclick="pay_cancel(this)">{$vo}</a>
-                        <a class="ncap-btn-big ncap-btn-green" onclick="verifyForm('order-action','{:U('Admin/order/order_action',array('order_id'=>$order['order_id'],'type'=>$k))}');" >{$vo}</a>
-                   <elseif condition="$k eq 'delivery'"/>                                                 
-                     <a class="ncap-btn-big ncap-btn-green" href="{:U('Order/delivery_info',array('order_id'=>$order['order_id']))}">{$vo}</a>
-                   <elseif condition="$k eq 'refund'"/>
-                   <else/>
-                   <a class="ncap-btn-big ncap-btn-green" onclick="verifyForm('order-action','{:U('Admin/order/order_action',array('order_id'=>$order['order_id'],'type'=>$k))}');" >
-                   {$vo}</a>
-                   </if>
-                 </foreach>
+                     <if condition="$k eq 'pay_cancel'">
+                       <a class="ncap-btn-big ncap-btn-green" href="javascript:void(0)" data-url="{:U('Order/pay_cancel',array('order_id'=>$order['order_id']))}" onclick="pay_cancel(this)">{$vo}</a>
+                          <a class="ncap-btn-big ncap-btn-green" onclick="verifyForm('order-action','{:U('Admin/order/order_action',array('order_id'=>$order['order_id'],'type'=>$k))}');" >{$vo}</a>
+                     <elseif condition="$k eq 'delivery'"/>                                                 
+                       <a class="ncap-btn-big ncap-btn-green" href="{:U('Order/delivery_info',array('order_id'=>$order['order_id']))}">{$vo}</a>
+                     <elseif condition="$k eq 'refund'"/>
+                     <else/>
+                     <a class="ncap-btn-big ncap-btn-green" onclick="verifyForm('order-action','{:U('Admin/order/order_action',array('order_id'=>$order['order_id'],'type'=>$k))}');" >
+                     {$vo}</a>
+                     </if>
+                   </foreach>
                   </dd>
-                </dl> 
+           </dl> 
         </div>
         <div class="goods-info">
           <h4>操作记录</h4>
