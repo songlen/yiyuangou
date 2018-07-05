@@ -29,6 +29,8 @@ class OpenPrizeLogic {
         Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->update(array('is_win'=>'1'));
         // 订单表中记录是否中奖
         Db::name('order')->where("order_id={$luckyInfo['order_id']}")->update(array('is_win'=>'1'));
+        // 给中奖用户下商品订单
+        $this->winningGoodsOrder($luckyInfo['win_user_id'], $luckyInfo['order_id']);
         // 进行滚期
         $this->continueActivity($act_id);
         // 给参与用户发送是否中奖消息
@@ -139,5 +141,137 @@ class OpenPrizeLogic {
         );
 
         M('goods_activity')->insert($data);
+    }
+
+    private function winningGoodsOrder($user_id, $order_id){
+        // 如果是真实用户，才下订单
+        $userInfo = M('users')->where('user_id', $user_id)->field('robot')->find();
+        if(empty($userInfo) || $userInfo['robot'] = '1') return true;
+
+        // 查询原订单信息
+        $orderInfo = M('order')->alias('o')
+            ->join('order_goods og', 'o.order_id=og.order_id', 'left')
+            ->where('o.order_id', $order_id)
+            ->find();
+        $order_sn = date('YmdHis').mt_rand(1000,9999);
+        $orderdata = array(
+            'order_sn' => $order_sn,
+            'user_id' => $user_id,
+            'consignee' => $address['consignee'],
+            'country' => $address['country'],
+            'province' => $address['province'],
+            'city' => $address['city'],
+            'address' => $address['address'],
+            'zipcode' => $address['zipcode'],
+            'mobile' => $address['mobile'],
+            'goods_price' => $priceInfo['money'],
+            'order_amount' => $priceInfo['actual_amount'], // 实付款
+            'total_amount' => $priceInfo['tax_amount'], // 税后金额就是总金额
+            'deductible_amount' => $priceInfo['deductible_amount'], // 可抵扣金额（原订单价格）
+            'add_time' => $sec,
+            'add_time_ms' => $usec,
+            'prom_id' => $goodsInfo['act_id'],
+            'prom_type' => 5, // 订单类型 中奖下单
+            'num' => '1',
+            'tax_amount' => 0,
+        );
+
+        $commit_result = true;
+        Db::startTrans(); // 开启事物
+        try {
+
+            $order_id = Db::name('order')->insertGetId($orderdata);
+
+            // 商品表减库存
+            Db::name('goods')->where('goods_id', $goodsInfo['goods_id'])->setDec('store_count', $goodsInfo['num']);
+
+            // 如果使用了积分
+            if($priceInfo['points']>0){
+                accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
+            } else {
+                accountLog($user_id, 0, -$priceInfo['points'], '下单', 0,$order_id, $order_sn);
+            }
+
+            // 更新订单商品附加表
+            $orderGoods = array(
+               'order_id' => $order_id,
+               'goods_id' => $goodsInfo['goods_id'],
+               'goods_name' => $goodsInfo['goods_name'],
+               'goods_num' => $goodsInfo['num'],
+            );
+            Db::name('OrderGoods')->insert($orderGoods);
+            // 提交事务
+            Db::commit();
+        } catch(\Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $commit_result = false;
+            break;
+        }
+    }
+
+    // 中奖订单自动下单
+    public function winningGoodsOrder($user_id, $order_id){
+        // 如果是真实用户，才下订单
+        $userInfo = M('users')->where('user_id', $user_id)->field('robot')->find();
+        if(empty($userInfo) || $userInfo['robot'] == '1') return true;
+
+        // 查询原订单信息
+        $orderInfo = M('order')->where('order_id', $order_id)->find();
+
+        // 时间
+        list($usec, $sec) = explode(" ", microtime());
+        $usec = round($usec *1000);
+        // 商品信息
+        $goodsInfo = M('goods')->where('goods_id', $orderInfo['prom_id'])->field('goods_id, goods_name, shop_price')->find();
+
+        $order_sn = date('YmdHis').mt_rand(1000,9999);
+        $orderdata = array(
+            'order_sn' => $order_sn,
+            'user_id' => $user_id,
+            'consignee' => $orderInfo['consignee'],
+            'country' => $orderInfo['country'],
+            'province' => $orderInfo['province'],
+            'city' => $orderInfo['city'],
+            'address' => $orderInfo['address'],
+            'zipcode' => $orderInfo['zipcode'],
+            'mobile' => $orderInfo['mobile'],
+            'goods_price' => $goodsInfo['shop_price'],
+            'order_amount' => 0, // 实付款
+            'total_amount' => 0, // 税后金额就是总金额
+            'deductible_amount' => 0, // 可抵扣金额（原订单价格）
+            'add_time' => $sec,
+            'add_time_ms' => $usec,
+            'prom_id' => $orderInfo['prom_id'],
+            'prom_type' => 5, // 订单类型 中奖下单
+            'num' => '1',
+            'tax_amount' => 0,
+            'original_order_id' => $order_id,
+        );
+
+        $commit_result = true;
+        Db::startTrans(); // 开启事物
+        try {
+
+            $order_id = Db::name('order')->insertGetId($orderdata);
+
+            // 商品表减库存
+            Db::name('goods')->where('goods_id', $goodsInfo['goods_id'])->setDec('store_count', '1');
+
+            // 更新订单商品附加表
+            $orderGoods = array(
+               'order_id' => $order_id,
+               'goods_id' => $goodsInfo['goods_id'],
+               'goods_name' => $goodsInfo['goods_name'],
+               'goods_num' => '1',
+            );
+            Db::name('OrderGoods')->insert($orderGoods);
+            // 提交事务
+            Db::commit();
+        } catch(\Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $commit_result = false;
+        }
     }
 }

@@ -26,13 +26,13 @@ class SmsLogic {
         }
 
         // 注册场景检测是否注册
-        // if($scene == '1'){
-        //     $count = Db::name('users')->where("mobile=$mobile")->count();
-        //     if($count){
-        //         $error = '该手机号已注册';
-        //         return false;
-        //     }
-        // }
+        if($scene == '1'){
+            $count = Db::name('users')->where("mobile=$mobile")->count();
+            if($count){
+                $error = '该手机号已注册';
+                return false;
+            }
+        }
 
         // 找回密码场景检测是否注册
         if($scene == '2'){
@@ -51,10 +51,10 @@ class SmsLogic {
             ->where('add_time', ['>', $day_time_start], ['<', $day_time_end])
             ->count();
 
-        // if($count >= $this->day_count){
-        //     $error = '您的次数已超限';
-        //     return false;
-        // }
+        if($count >= $this->day_count){
+            $error = '您的次数已超限';
+            return false;
+        }
 
         $code = rand(100000, 999999);
         $data = array(

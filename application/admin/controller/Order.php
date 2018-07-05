@@ -60,7 +60,7 @@ class Order extends Base {
         if($begin && $end){
         	$condition['add_time'] = array('between',"$begin,$end");
         }
-        $condition['prom_type'] = '0';
+        $condition['prom_type'] = array('in', '0,5');
         $order_sn = ($keyType && $keyType == 'order_sn') ? $keywords : I('order_sn') ;
         $order_sn ? $condition['order_sn'] = trim($order_sn) : false;
         
@@ -182,8 +182,8 @@ class Order extends Base {
     	I('order_sn') != '' ? $condition['order_sn'] = trim(I('order_sn')) : false;
     	$shipping_status = I('shipping_status');
     	$condition['shipping_status'] = empty($shipping_status) ? array('neq',1) : $shipping_status;
-        $condition['order_status'] = array('in','1,2,4');
-        $condition['prom_type'] = ['neq',5];
+        $condition['order_status'] = array('in','0,1,2,4');
+        $condition['prom_type'] = ['in','0,5']; // 0 普通订单 5 中奖下单
     	$count = M('order')->where($condition)->count();
     	$Page  = new AjaxPage($count,10);
     	//搜索条件下 分页赋值
