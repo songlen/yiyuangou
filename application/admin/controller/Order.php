@@ -287,7 +287,6 @@ class Order extends Base {
             ->field('og.goods_num, g.goods_id, g.goods_name, shop_price, (goods_num * shop_price) AS goods_total')
             ->select();
 
-
         $express = Db::name('delivery_doc')->where("order_id" , $order_id)->select();  //发货信息（可能多个）
         $user = Db::name('users')->where(['user_id'=>$order['user_id']])->find();
         $this->assign('order',$order);
