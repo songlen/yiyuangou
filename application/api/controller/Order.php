@@ -410,7 +410,6 @@ class Order extends Base {
             // 回滚事务
             Db::rollback();
             $commit_result = false;
-            break;
         }
 
         if($commit_result){
