@@ -182,6 +182,7 @@ class Task extends Base {
         $where = array(
             'pay_status' => '0',
             'order_status' => '0',
+            'prom_type' => '4',
             'add_time' => ['<', time()-600], // 下单超过十分钟的
         );
         $orders = M('order')->where($where)
