@@ -20,15 +20,15 @@ class Pay extends Base {
 
         /**************************** Request Variables *******************************/
 
-        $store_id='gwca009685';
-        $api_token='68YZOsyDH90DKGSxdasc';
+        $store_id='store5';
+        $api_token='yesguy';
 
         /************************* Transactional Variables ****************************/
 
         $type='purchase';
         $cust_id=$user_id;
         $order_id='ord-'.date("dmy-G:i:s");
-        $amount='1.00';
+        $amount='0.1';
         $pan='4242424242424242';
         $expiry_date='1111';
         $crypt='7';
