@@ -270,7 +270,7 @@ class Cart extends Base {
         $user_id = I('user_id');
         $order_sn = I('order_sn');
         $order_sns = explode('-', trim($order_sn_gather));
-        $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, prom_id, num')->find();
+        // $order = M('order')->whereIn('order_sn', $order_sns)->field('')->find();
     }
 
     /**
