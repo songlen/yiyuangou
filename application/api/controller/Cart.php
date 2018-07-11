@@ -248,15 +248,29 @@ class Cart extends Base {
             // 如果使用积分支付的
             if($use_point){
                 $this->payCallback($order_sn_gather);
-                response_success('', '支付成功');
+                $data = array(
+                    'type' => 'pay_success',
+                );
+                response_success($data, '支付成功');
             } else {
-                $this->payCallback($order_sn_gather);
-                response_success('', '下单成功');
+                // $this->payCallback($order_sn_gather);
+                $data = array(
+                    'type' => 'order_success',
+                    'order_sn' => $order_sn_gather,
+                );
+                response_success($data, '下单成功');
             }
            
         } else {
             response_success($data);
         }
+    }
+
+    public function pay(){
+        $user_id = I('user_id');
+        $order_sn = I('order_sn');
+        $order_sns = explode('-', trim($order_sn_gather));
+        $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, prom_id, num')->find();
     }
 
     /**

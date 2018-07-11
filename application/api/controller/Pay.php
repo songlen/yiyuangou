@@ -16,8 +16,6 @@ class Pay extends Base {
 
         vendor('eCommerce.mpgClass');
 
-
-
         /**************************** Request Variables *******************************/
 
         $store_id='store5';
@@ -28,7 +26,7 @@ class Pay extends Base {
         $type='purchase';
         $cust_id=$user_id;
         $order_id='ord-'.date("dmy-G:i:s");
-        $amount='0.01';
+        $amount='0.001';
         $pan='4242424242424242';
         $expiry_date='1111';
         $crypt='7';
