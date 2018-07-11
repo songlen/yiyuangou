@@ -28,7 +28,7 @@ class Pay extends Base {
         $type='purchase';
         $cust_id=$user_id;
         $order_id='ord-'.date("dmy-G:i:s");
-        $amount='0.1';
+        $amount='0.01';
         $pan='4242424242424242';
         $expiry_date='1111';
         $crypt='7';
