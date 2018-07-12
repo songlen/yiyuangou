@@ -468,6 +468,6 @@ class Order extends Base {
         }
 
         // 支付成功修改订单状态为已支付
-        M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
+        M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time()));
     }
 }
