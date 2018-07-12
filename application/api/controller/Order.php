@@ -2,6 +2,7 @@
 
 namespace app\api\controller;
 use think\Db;
+use app\api\logic\PayLogic;
 
 class Order extends Base {
 
