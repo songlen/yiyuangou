@@ -5,6 +5,7 @@ namespace app\api\controller;
 // use app\common\logic\Integral;
 use app\api\logic\OrderLogic;
 use app\api\logic\OpenPrizeLogic;
+use app\api\logic\PayLogic;
 use think\Db;
 
 class Cart extends Base {
@@ -269,8 +270,21 @@ class Cart extends Base {
     public function pay(){
         $user_id = I('user_id');
         $order_sn = I('order_sn');
-        $order_sns = explode('-', trim($order_sn_gather));
-        // $order = M('order')->whereIn('order_sn', $order_sns)->field('')->find();
+        $order_sns = explode('-', trim($order_sn));
+        $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, order_amount')->select();
+
+        $order_amount = 0;
+        if(is_array($order)){
+            foreach ($order as $item) {
+                if($item['pay_status'] == '1'){
+                    response_error('', '该订单已支付');
+                }
+
+                $order_amount += $item['order_amount'];
+            }
+        }
+        $PayLogic = new PayLogic();
+        $PayLogic->doPay($user_id, $order_sn);
     }
 
     /**
