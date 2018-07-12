@@ -420,6 +420,12 @@ function check_mobile($mobile){
         return true;
     return false;
 }
+// 检测加拿大手机号格式 10位
+function check_ca_mobile($mobile){
+    if(preg_match('/\d{10}$/',$mobile))
+        return true;
+    return false;
+}
 
 /**
  * 检查固定电话

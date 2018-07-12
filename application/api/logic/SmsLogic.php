@@ -20,7 +20,7 @@ class SmsLogic {
      */
     public function send($mobile, $scene, &$error){
         // 检测手机号
-        if(check_mobile($mobile) == false){
+        if(check_ca_mobile($mobile) == false){
             $error = '手机号格式错误';
             return false;
         }

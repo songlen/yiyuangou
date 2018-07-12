@@ -30,7 +30,7 @@ class PayLogic {
 
         /************************** AVS Variables *****************************/
 
-        $avs_street_number = '201';
+        $avs_street_number = '211';
         $avs_street_name = 'Michigan Ave';
         $avs_zipcode = 'M1M1M1';
         $avs_email = 'test@host.com';

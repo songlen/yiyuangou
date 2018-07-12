@@ -56,7 +56,7 @@ class User extends Base {
     	$password = trim(I('password'));
     	// $password_confirm = trim(I('password_confirm'));
 
-    	if(check_mobile($mobile) == false){
+    	if(check_ca_mobile($mobile) == false){
     		response_error('', '手机号格式错误');
     	}
 
@@ -136,7 +136,7 @@ class User extends Base {
         $SmsLogic = new SmsLogic();
         $code = $SmsLogic->send($mobile, $scene, $error);
         if($code != false){
-            response_success(array('code'=>$code), '发送成功');
+            response_success('', '发送成功');
         } else {
             response_error('', $error);
         }
@@ -149,7 +149,7 @@ class User extends Base {
         $password = I('password');
         $password_confirm = I('password_confirm');
 
-        if(check_mobile($mobile) == false){
+        if(check_ca_mobile($mobile) == false){
             response_error('', '手机号码有误');
         }
         // 检测验证码
