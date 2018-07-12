@@ -286,6 +286,7 @@ class Cart extends Base {
         $PayLogic = new PayLogic();
         $pay_result = $PayLogic->doPay($user_id, $order_sn, $error);
         if($pay_result == true){
+            $this->payCallback($order_sn);
             response_success('', '支付成功');
         } else {
             response_error('', $error);

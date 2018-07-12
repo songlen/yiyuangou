@@ -252,7 +252,6 @@ class Order extends Base {
         response_success($lists);
     }
 
-
     /**
      * [buy_goods 补差价购买商品]
      * @return [type] [description]
@@ -327,9 +326,17 @@ class Order extends Base {
         $result['priceInfo'] = $priceInfo;
 
         if($submit_order){
-            if ($this->placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo) == true){
-                response_success('', '下单成功');
+            $result = $this->placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo));
+            // 如果下单失败，返回失败信息
+            if ($result['status'] ==  '-1') response_error('', $result['error']);
+            // 则 下单成功
+             // 如果使用了积分 直接返回支付成功
+            if($priceInfo['points'] > 0){
+                response_success(array('type'=>'pay_success'), '支付成功');
+            } else {
+                response_success(array('type' => 'order_success'), '下单成功');
             }
+
         } else {
             response_success($result);
         }
@@ -417,5 +424,49 @@ class Order extends Base {
         } else {
             return array('status'=>'-1', 'error' => '下单失败');
         }
+    }
+
+
+
+    // 商品支付
+    public function pay(){
+        $user_id = I('user_id');
+        $order_sn = I('order_sn');
+        $order_sns = explode('-', trim($order_sn));
+        $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, order_amount')->select();
+
+        $order_amount = 0;
+        if(is_array($order)){
+            foreach ($order as $item) {
+                if($item['pay_status'] == '1'){
+                    response_error('', '该订单已支付');
+                }
+
+                $order_amount += $item['order_amount'];
+            }
+        }
+        $PayLogic = new PayLogic();
+        $pay_result = $PayLogic->doPay($user_id, $order_sn, $error);
+        if($pay_result == true){
+            $this->payCallback($order_sn);
+            response_success('', '支付成功');
+        } else {
+            response_error('', $error);
+        }
+    }
+
+    /**
+     * [payCallback 支付回调]
+     * @return [type] [description]
+     */
+    public function payCallback($order_sn = ''){
+        // 获取订单信息，判断是否已支付
+        $order = M('order')->where('order_sn', $order_sn)->field('pay_status, prom_id, num')->find();
+        if($order['pay_status'] == '1'){
+            break;
+        }
+
+        // 支付成功修改订单状态为已支付
+        M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
     }
 }
