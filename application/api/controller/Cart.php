@@ -308,7 +308,7 @@ class Cart extends Base {
                 }
 
                 // 支付成功修改订单状态为已支付，扣除活动表中冻结的份额，增加被购买份数
-                M('order')->where('order_sn', $order_sn)->setfield('pay_status', '1');
+                M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time()));
 
                 $act_id = $order['prom_id'];
                 // M('goods_activity')->where('act_id', $act_id)->setDec('freeze_count', $order['num']);

@@ -326,7 +326,7 @@ class Order extends Base {
         $result['priceInfo'] = $priceInfo;
 
         if($submit_order){
-            $result = $this->placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo));
+            $result = $this->placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo);
             // 如果下单失败，返回失败信息
             if ($result['status'] ==  '-1') response_error('', $result['error']);
             // 则 下单成功
