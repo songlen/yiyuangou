@@ -10,7 +10,7 @@ use think\Db;
 // 开奖
 class PayLogic {
 
-    public function doPay($user_id, $order_sn){
+    public function doPay($user_id, $order_sn, &$error){
         // 加载类
         vendor('eCommerce.mpgClass');
         /************************ Request Variables ***************************/
@@ -44,7 +44,7 @@ class PayLogic {
         /************************** CVD Variables *****************************/
 
         $cvd_indicator = '1';
-        $cvd_value = '1980666';
+        $cvd_value = '198';
 
         /********************** AVS Associative Array *************************/
 
@@ -109,26 +109,33 @@ class PayLogic {
         /*************************** Response *********************************/
 
         $mpgResponse=$mpgHttpPost->getMpgResponse();
+        $complete = $mpgResponse->getComplete();
+        if($complete == true){
+            return true;
+        } else {
+            $error = $mpgResponse->getMessage();
+            return false;
+        }
 
-        print("\nCardType = " . $mpgResponse->getCardType());
-        print("\nTransAmount = " . $mpgResponse->getTransAmount());
-        print("\nTxnNumber = " . $mpgResponse->getTxnNumber());
-        print("\nReceiptId = " . $mpgResponse->getReceiptId());
-        print("\nTransType = " . $mpgResponse->getTransType());
-        print("\nReferenceNum = " . $mpgResponse->getReferenceNum());
-        print("\nResponseCode = " . $mpgResponse->getResponseCode());
-        print("\nISO = " . $mpgResponse->getISO());
-        print("\nMessage = " . $mpgResponse->getMessage());
-        print("\nIsVisaDebit = " . $mpgResponse->getIsVisaDebit());
-        print("\nAuthCode = " . $mpgResponse->getAuthCode());
-        print("\nComplete = " . $mpgResponse->getComplete());
-        print("\nTransDate = " . $mpgResponse->getTransDate());
-        print("\nTransTime = " . $mpgResponse->getTransTime());
-        print("\nTicket = " . $mpgResponse->getTicket());
-        print("\nTimedOut = " . $mpgResponse->getTimedOut());
-        print("\nAVSResponse = " . $mpgResponse->getAvsResultCode());
-        print("\nCVDResponse = " . $mpgResponse->getCvdResultCode());
-        print("\nITDResponse = " . $mpgResponse->getITDResponse());
+        // print("\nCardType = " . $mpgResponse->getCardType());
+        // print("\nTransAmount = " . $mpgResponse->getTransAmount());
+        // print("\nTxnNumber = " . $mpgResponse->getTxnNumber());
+        // print("\nReceiptId = " . $mpgResponse->getReceiptId());
+        // print("\nTransType = " . $mpgResponse->getTransType());
+        // print("\nReferenceNum = " . $mpgResponse->getReferenceNum());
+        // print("\nResponseCode = " . $mpgResponse->getResponseCode());
+        // print("\nISO = " . $mpgResponse->getISO());
+        // print("\nMessage = " . $mpgResponse->getMessage());
+        // print("\nIsVisaDebit = " . $mpgResponse->getIsVisaDebit());
+        // print("\nAuthCode = " . $mpgResponse->getAuthCode());
+        // print("\nComplete = " . $mpgResponse->getComplete());
+        // print("\nTransDate = " . $mpgResponse->getTransDate());
+        // print("\nTransTime = " . $mpgResponse->getTransTime());
+        // print("\nTicket = " . $mpgResponse->getTicket());
+        // print("\nTimedOut = " . $mpgResponse->getTimedOut());
+        // print("\nAVSResponse = " . $mpgResponse->getAvsResultCode());
+        // print("\nCVDResponse = " . $mpgResponse->getCvdResultCode());
+        // print("\nITDResponse = " . $mpgResponse->getITDResponse());
 
     }
 }

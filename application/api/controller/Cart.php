@@ -284,7 +284,12 @@ class Cart extends Base {
             }
         }
         $PayLogic = new PayLogic();
-        $PayLogic->doPay($user_id, $order_sn);
+        $pay_result = $PayLogic->doPay($user_id, $order_sn, $error);
+        if($pay_result == true){
+            response_success('', '支付成功');
+        } else {
+            response_error('', $error);
+        }
     }
 
     /**
