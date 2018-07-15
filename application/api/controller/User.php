@@ -33,15 +33,7 @@ class User extends Base {
         } elseif ($user['is_lock'] == 1) {
             response_error('', '账号异常已被锁定！');
         }
-        
-        // $res['url'] = htmlspecialchars_decode(I('referurl'));
-        session('user', $res['result']);
-        setcookie('user_id', $res['result']['user_id'], null, '/');
-        setcookie('nickname', urlencode($nickname), null, '/');
 
-        // $orderLogic = new OrderLogic();
-        // $orderLogic->setUserId($res['result']['user_id']);//登录后将超时未支付订单给取消掉
-        // $orderLogic->abolishOrder();
         
         $userInfo = $this->getUserInfo($user['user_id']);
        	response_success($userInfo);
