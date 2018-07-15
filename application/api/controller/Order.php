@@ -461,7 +461,7 @@ class Order extends Base {
         $pay_result = $PayLogic->doPay($user_id, $order_sn, $param, $error);
         if($pay_result == true){
             $this->payCallback($order_sn);
-            response_success(array('order_id'=>$order['order_id']), '支付成功');
+            response_success('', '支付成功');
         } else {
             response_error('', $error);
         }
