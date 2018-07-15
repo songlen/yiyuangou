@@ -10,7 +10,7 @@ use think\Db;
 // 开奖
 class PayLogic {
 
-    public function doPay($user_id, $order_sn, &$error){
+    public function doPay($user_id, $order_sn, $param, &$error){
         // 加载类
         vendor('eCommerce.mpgClass');
         /************************ Request Variables ***************************/
@@ -21,12 +21,12 @@ class PayLogic {
         /********************* Transactional Variables ************************/
 
         $type='purchase';
-        $order_id='ord-'.date("dmy-G:i:s");
-        $cust_id='my cust id';
-        $amount='10.30';
+        $order_id = $order_sn;
+        $cust_id = $user_id;
+        $amount = '0.01';
         $pan='4242424242424242';
-        $expiry_date='0812';        //December 2008
-        $crypt='7';
+        $expiry_date = '0812';        //December 2008
+        $crypt = '7';
 
         /************************** AVS Variables *****************************/
 

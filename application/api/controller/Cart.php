@@ -270,6 +270,15 @@ class Cart extends Base {
     public function pay(){
         $user_id = I('user_id');
         $order_sn = I('order_sn');
+        $param['card_number'] = I('card_number'); // 卡号
+        $param['expiry_date'] = I('expiry_date'); // 有效期
+        $param['cvd_value'] = I('cvd_value'); // CVD
+        $param['street_number'] = I('street_number'); // 街道号
+        $param['street_name'] = I('street_name'); // 街道地址
+        $param['zipcode'] = I('zipcode'); // 邮编
+        $param['email'] = I('email'); // 邮箱
+        $param['custphone'] = I('custphone'); // 手机号
+
         $order_sns = explode('-', trim($order_sn));
         $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, order_amount')->select();
 
@@ -284,7 +293,7 @@ class Cart extends Base {
             }
         }
         $PayLogic = new PayLogic();
-        $pay_result = $PayLogic->doPay($user_id, $order_sn, $error);
+        $pay_result = $PayLogic->doPay($user_id, $order_sn, $param, $error);
         if($pay_result == true){
             $this->payCallback($order_sn);
             response_success('', '支付成功');
