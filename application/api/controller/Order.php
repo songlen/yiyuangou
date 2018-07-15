@@ -421,7 +421,7 @@ class Order extends Base {
         }
 
         if($commit_result){
-            return array('status'=>'1', 'order_sn'=>$order_sn);
+            return array('status'=>'1', 'order_sn'=>$order_sn, 'order_id'=>$order_id);
         } else {
             return array('status'=>'-1', 'error' => '下单失败');
         }

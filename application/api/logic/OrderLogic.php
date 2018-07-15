@@ -135,7 +135,7 @@ class OrderLogic {
         }
 
         if($commit_result){
-            return array('status'=>'1', 'data'=>array('order_sn_gather'=>$order_sn_gather));
+            return array('status'=>'1', 'data'=>array('order_sn_gather'=>$order_sn_gather, 'order_id'=>$order_id));
         }  else {
             return array('status'=>'-1', '提交失败');
         }
