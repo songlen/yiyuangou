@@ -227,7 +227,7 @@ class Activity extends Base
             ->where($where)
             ->order('order_id desc')
             ->limit($page->firstRow.','.$page->listRows)
-            ->field('nickname, u.mobile, num, add_time')
+            ->field('nickname, u.mobile, num, add_time, pay_status')
             ->select()
             ;
 
