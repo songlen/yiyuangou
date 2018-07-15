@@ -333,7 +333,7 @@ class Order extends Base {
             // 则 下单成功
              // 如果使用了积分 直接返回支付成功
             if($priceInfo['points'] > 0){
-                response_success(array('type'=>'pay_success'), '支付成功');
+                response_success(array('type'=>'pay_success', 'order_id' => $result['order_id']), '支付成功');
             } else {
                 response_success(array('type' => 'order_success', 'order_sn'=>$result['order_sn']), '下单成功');
             }
@@ -442,7 +442,7 @@ class Order extends Base {
         $param['custphone'] = I('custphone'); // 手机号
 
         $order_sns = explode('-', trim($order_sn));
-        $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, order_amount')->select();
+        $order = M('order')->whereIn('order_sn', $order_sns)->field('order_id, pay_status, order_amount')->select();
 
 
         $order_amount = 0;
@@ -461,7 +461,7 @@ class Order extends Base {
         $pay_result = $PayLogic->doPay($user_id, $order_sn, $param, $error);
         if($pay_result == true){
             $this->payCallback($order_sn);
-            response_success('', '支付成功');
+            response_success(array('order_id'=>$order['order_id']), '支付成功');
         } else {
             response_error('', $error);
         }

@@ -251,6 +251,7 @@ class Cart extends Base {
                 $this->payCallback($order_sn_gather);
                 $data = array(
                     'type' => 'pay_success',
+                    'order_id' => $result['order_id'],
                 );
                 response_success($data, '支付成功');
             } else {
@@ -280,7 +281,7 @@ class Cart extends Base {
         $param['custphone'] = I('custphone'); // 手机号
 
         $order_sns = explode('-', trim($order_sn));
-        $order = M('order')->whereIn('order_sn', $order_sns)->field('pay_status, order_amount')->select();
+        $order = M('order')->whereIn('order_sn', $order_sns)->field('order_id, pay_status, order_amount')->select();
 
         $order_amount = 0;
         if(is_array($order)){
@@ -296,7 +297,7 @@ class Cart extends Base {
         $pay_result = $PayLogic->doPay($user_id, $order_sn, $param, $error);
         if($pay_result == true){
             $this->payCallback($order_sn);
-            response_success('', '支付成功');
+            response_success(array('order_id'=>$order['order_id']), '支付成功');
         } else {
             response_error('', $error);
         }
