@@ -238,7 +238,7 @@ class Activity extends Base
     }
 
     private function getRobot($act_id, $num){
-        $sql = "select user_id from tp_users as u  where not exists(select 1 from tp_order_activity as o where u.user_id=o.user_id and o.act_id = $act_id) and u.robot='1' order by rand() limit $num";
+        $sql = "select user_id from tp_users as u  where not exists(select 1 from tp_order as o where u.user_id=o.user_id and o.prom_id = $act_id and prom_type='4') and u.robot='1' order by rand() limit $num";
         return Db::query($sql);
     }
 
