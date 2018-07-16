@@ -113,6 +113,7 @@ class Task extends Base {
             'prom_id' => $act_id,
             'prom_type' => 4, // 订单类型 夺宝活动
             'num' => $num,
+            'pay_status' => '1',
         );
 
         // 计算各种价格

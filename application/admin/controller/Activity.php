@@ -201,6 +201,7 @@ class Activity extends Base
         }
 
         $act_id = I('act_id');
+        p($act_id);
         $info = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
             ->find($id)
