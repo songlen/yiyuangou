@@ -299,7 +299,9 @@ class Order extends Base {
         $order = Db::name('order')->where("order_id=$order_id")->find();
         if(empty($order)) response_error('', '订单不存在');
 
-        $tax_amount = ($goodsInfo['shop_price']*$goodsInfo['num']-$order['goods_price'])*1.13;
+        $maxDeductible = round($goodsInfo['shop_price'] * 0.1, 2); // 最多可抵扣原商品价格的10%
+        $deductible_amount = $order['goods_price'] > $maxDeductible ? $maxDeductible : $order['goods_price'];
+        $tax_amount = ($goodsInfo['shop_price']*$goodsInfo['num']-$deductible_amount)*1.13;
 
         if($use_point){
             $points = $tax_amount*100;
@@ -312,9 +314,11 @@ class Order extends Base {
             $points = 0;
             $actual_amount = $tax_amount; // 实付款
         }
+
+
         $priceInfo = array(
             'money' => $goodsInfo['shop_price']*$goodsInfo['num'], // 商品金额
-            'deductible_amount' => $order['goods_price'], // 可抵扣金额（原订单价格）
+            'deductible_amount' => $deductible_amount, // 可抵扣金额（原订单价格）
             'tax_rate' => '13%', // 税率
             'tax_amount' =>$tax_amount, // 税后金额
             'actual_amount' =>$tax_amount, // 实付金额
