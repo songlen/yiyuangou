@@ -3,9 +3,7 @@
  */
 function setUserid(params) {
     if (!params) return;
-    if(!sessionStorage.userId){
         sessionStorage.setItem('userId', params);
-    }
 }
 
 function removeUserid() {
