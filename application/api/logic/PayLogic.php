@@ -3,7 +3,6 @@
  * 订单处理类
  */
 
-
 namespace app\api\logic;
 use think\Db;
 
@@ -38,8 +37,8 @@ class PayLogic {
         $avs_browser = 'Mozilla';
         $avs_shiptocountry = 'Canada';
         $avs_merchprodsku = '123456';
-        $avs_custip = '192.168.0.1';
-        $avs_custphone = '5556667777';
+        $avs_custip = $param['ip'];
+        $avs_custphone = $param['custphone'];//'5556667777';
 
         /************************** CVD Variables *****************************/
 

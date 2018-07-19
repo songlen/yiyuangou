@@ -269,6 +269,7 @@ class Cart extends Base {
     }
 
     public function pay(){
+
         $user_id = I('user_id');
         $order_sn = I('order_sn');
         $param['card_number'] = I('card_number'); // 卡号
@@ -279,6 +280,7 @@ class Cart extends Base {
         $param['zipcode'] = I('zipcode'); // 邮编
         $param['email'] = I('email'); // 邮箱
         $param['custphone'] = I('custphone'); // 手机号
+        $param['ip'] = $this->request->ip();
 
         $order_sns = explode('-', trim($order_sn));
         $order = M('order')->whereIn('order_sn', $order_sns)->field('order_id, pay_status, order_amount')->select();
