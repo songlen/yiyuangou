@@ -111,7 +111,7 @@ class SmsLogic {
     }
 
     private function exec($to_phone, $message){
-        $to_phone = '+86'.$to_phone;
+        $to_phone = '+1'.$to_phone;
         // Your Account SID and Auth Token from twilio.com/console
         $account_sid = 'AC39ff2cf9521cd38011ff0bd3602a8494';
         $auth_token = 'ad2016cee4e6c67f882be74254dc43c5'; // 1a2e0aa20c3572106e790f1364a0cd5d
