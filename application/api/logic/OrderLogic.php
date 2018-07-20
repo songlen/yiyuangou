@@ -103,8 +103,8 @@ class OrderLogic {
                 $i = 1;
                 while ($i <= $num) {
                     // 找出最大的幸运码
-                   $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$act_id))->max('lucky_number');
-                   $lucky_number = $max_lucky_number ? $max_lucky_number+1 : 10000001;
+                   
+                   $lucky_number = $this->generateLuckyNumber($act_id);
                    // 更新附加表
                    // 时间戳和毫秒数
                     list($usec, $sec) = explode(" ", microtime());
@@ -139,5 +139,14 @@ class OrderLogic {
         }  else {
             return array('status'=>'-1', '提交失败');
         }
+    }
+
+
+    public function generateLuckyNumber($act_id){
+        $actInfo = Db::name('goods_activity')->where('act_id', $act_id)->field('total_amount')->find();
+
+        $num = mt_rand(1, $actInfo['total_amount']);
+        $lucky_number = 10000000 + $num;
+        $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$act_id))->max('lucky_number');
     }
 }
