@@ -143,9 +143,9 @@ class OrderLogic {
 
 
     public function generateLuckyNumber($act_id){
-        $actInfo = Db::name('goods_activity')->where('act_id', $act_id)->field('total_amount')->find();
+        $actInfo = Db::name('goods_activity')->where('act_id', $act_id)->field('total_count')->find();
 
-        $num = mt_rand(1, $actInfo['total_amount']);
+        $num = mt_rand(1, $actInfo['total_count']);
         $lucky_number = 10000000 + $num;
         $count = Db::name('lucky_number')->where(array('act_id'=>$act_id, 'lucky_number'=>$lucky_number))->count();
         if($count) $this->generateLuckyNumber($act_id);
