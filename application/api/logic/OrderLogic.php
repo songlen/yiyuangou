@@ -26,6 +26,11 @@ class OrderLogic {
 
         $commit_result = true;
         $order_sn_gather = ''; // 订单号集合
+        // 当一个商品的时候控制商品数量不能为0
+        if(count($goodsList) == 0){
+            $currentGood = current($goodsList);
+            if($currentGood['num'] == 0) return array('status'=>'-1', '商品数量不能为0');
+        }
         foreach ($goodsList as $item) {
             $act_id = $item['act_id'];
             $num = $item['num'];

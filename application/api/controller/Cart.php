@@ -174,6 +174,7 @@ class Cart extends Base {
         $money = 0; // 商品金额总额
 
         foreach ($goodsInfo as $item) {
+            if($item['num'] == '0') response_error('', '商品数量不能为0');
             $where = array(
                 'ga.act_id' => $item['act_id'],
             );
