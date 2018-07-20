@@ -147,6 +147,9 @@ class OrderLogic {
 
         $num = mt_rand(1, $actInfo['total_amount']);
         $lucky_number = 10000000 + $num;
-        $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$act_id))->max('lucky_number');
+        $count = Db::name('lucky_number')->where(array('act_id'=>$act_id, 'lucky_number'=>$lucky_number))->count();
+        if($count) $this->generateLuckyNumber($act_id);
+
+        return $lucky_number;
     }
 }
