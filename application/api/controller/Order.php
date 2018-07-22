@@ -207,6 +207,7 @@ class Order extends Base {
         // 地址信息
         $result['address'] = array(
             'consignee' => $orderInfo['consignee'],
+            'mobile' => $orderInfo['mobile'],
             'country' => $orderInfo['country'],
             'province' => $orderInfo['province'],
             'city' => $orderInfo['city'],
