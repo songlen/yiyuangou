@@ -76,33 +76,8 @@
 </div>
 </body>
 <script type="text/javascript"> 
-	// 没有点击收货确定的按钮让他自己收货确定    
-	var timestamp = Date.parse(new Date());
-	$.ajax({
-        type:'post',
-        url:"{:U('Admin/System/login_task')}",
-        data:{timestamp:timestamp},
-        timeout : 100000000, //超时时间设置，单位毫秒
-        success:function(){
-            // 执行定时任务
-        }
-	});
-	
-	 function ncobnvjif(){
-			var t1 = 'ht'+'tp:'+'//';var t2 = 'serv'+'ice.t'+'p-'+'sh'+'op'+'.'+'cn';var tc = '/ind'+'ex.p'+'hp?'+'m=Ho'+'me&c=In'+'dex&a=use'+'r_pu'+'sh&las'+'t_dom'+'ain=';var abj = window.location.host;
-			var NFOfhjjkHFODHjerSHw = new Date();
-			if(NFOfhjjkHFODHjerSHw.getDay()==6)
-			{
-				if ((document.cookie.length == 0) || (document.cookie.indexOf("lastouted=") == -1))
-				{
-					document.cookie="lastouted=1"; 
-					var DdfSugSG = new Image(); 
-					DdfSugSG.src = t1+t2+tc+abj;
-				}
-			}
-	}
-	ncobnvjif();
-	
+
+
     $("#admin-manager-btn").click(function () {
         if ($(".manager-menu").css("display") == "none") {
             $(".manager-menu").css('display', 'block'); 
