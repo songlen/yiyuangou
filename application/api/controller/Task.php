@@ -201,6 +201,7 @@ class Task extends Base {
                 Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('freeze_count', $num); 
                 // 更改订单状态为 已作废 5
                 Db::name('order')->where('order_id', $item['order_id'])->setField('order_status', 5);
+                Db::name('lucky_number')->where('order_id', $item['orders'])->delete();
             }
         }
     }

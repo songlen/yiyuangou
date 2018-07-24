@@ -405,8 +405,6 @@ class Order extends Base {
             // 如果使用了积分
             if($priceInfo['points']>0){
                 accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
-            } else {
-                accountLog($user_id, 0, -$priceInfo['points'], '下单', 0,$order_id, $order_sn);
             }
 
             // 更新订单商品附加表
@@ -478,12 +476,14 @@ class Order extends Base {
      */
     public function payCallback($order_sn = ''){
         // 获取订单信息，判断是否已支付 
-        $order = M('order')->where('order_sn', $order_sn)->field('pay_status, prom_id, num')->find();
+        $order = M('order')->where('order_sn', $order_sn)->field('user_id, order_id, goods_price, pay_status, prom_id, num')->find();
         if($order['pay_status'] == '1'){
             break;
         }
 
         // 支付成功修改订单状态为已支付
         M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time()));
+        // 支付获得积分
+         accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0,$order['order_id'], $order_sn);
     }
 }

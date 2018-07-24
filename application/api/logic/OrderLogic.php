@@ -101,8 +101,6 @@ class OrderLogic {
                 // 积分记录
                 if($used_points>0){
                     accountLog($user_id, 0, -$used_points, '订单使用积分', 0,$order_id, $order_sn);
-                } else {
-                    accountLog($user_id, 0, $goods_price, '订单获得积分', 0, $order_id, $order_sn);
                 }
 
                 $i = 1;
