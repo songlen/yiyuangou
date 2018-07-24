@@ -25,6 +25,7 @@ class Index extends Base {
     }
     
     public function index(){
+
         $page = I('page', 1);
         $keyword = I('keyword');
 
