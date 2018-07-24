@@ -8,7 +8,8 @@ class Base extends Controller {
 
     public function __construct(){
         header("Access-Control-Allow-Origin: *"); // 允许跨域
-        date_default_timezone_set("Etc/GMT+8");//这里比林威治标准时间慢8小时 
+        // date_default_timezone_set("Etc/GMT+12");//这里比林威治标准时间慢8小时 
+        ini_set('date.timezone','Etc/GMT+12');
         parent::__construct();
 
         // 请求写入log
