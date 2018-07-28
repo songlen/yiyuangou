@@ -71,10 +71,11 @@ class Activity extends Base {
         $data['statistics_bingtu'] = $statistics_bingtu;
 
         // 获取累计购买数
-        $statistics_buy_count = Db::name('order')
+        $statistics_buy_count = Db::name('order')->alias('o')
+            ->join('users u', 'o.user_id=u.user_id', 'left')
             ->where('prom_id', $act_id)
             ->where('pay_status', '1')
-            ->field('num, FROM_UNIXTIME(add_time, "%Y-%m-%d %H:%i:%s") time')
+            ->field('nickname, num, FROM_UNIXTIME(o.add_time, "%Y-%m-%d %H:%i:%s") time')
             ->select();
 
         $data['statistics_buy_count'] = $statistics_buy_count;
