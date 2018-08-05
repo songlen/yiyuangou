@@ -34,8 +34,8 @@ class ModuleLogic
             [
                 'name'  => 'admin', 'title' => '平台后台', 'show' => 1,
                 'privilege' => [
-                    'system'=>'系统设置','content'=>'内容管理','goods'=>'商品中心','member'=>'会员中心','finance'=>'财务管理',
-                    'order'=>'订单中心','marketing'=>'营销推广','tools'=>'插件工具','count'=>'统计报表','distribut'=>'分销中心','weixin'=>'微信管理'
+                    'system'=>'系统设置','content'=>'内容管理','goods'=>'商品中心','member'=>'会员中心',
+                    'order'=>'订单中心'
                 ],
             ],
             [

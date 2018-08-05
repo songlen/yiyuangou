@@ -10,7 +10,6 @@ return	array(
 						//array('name'=>'验证码设置','act'=>'index4','op'=>'System'),
 						// array('name'=>'自定义导航栏','act'=>'navigationList','op'=>'System'),
 						// array('name'=>'友情链接','act'=>'linkList','op'=>'Article'),
-						array('name'=>'清除缓存','act'=>'cleanCache','op'=>'System'),
 						// array('name'=>'自提点','act'=>'index','op'=>'Pickup'),
 						// array('name' => '运费模板', 'act'=>'index', 'op'=>'Freight'),
 						// array('name' => '快递公司', 'act'=>'index', 'op'=>'Shipping'),
