@@ -43,22 +43,7 @@ class User extends Base {
         }
         
         $userList = $model->where($condition)->order($sort_order)->limit($Page->firstRow.','.$Page->listRows)->select();
-                
-        $user_id_arr = get_arr_column($userList, 'user_id');
-        if(!empty($user_id_arr))
-        {
-            $first_leader = DB::query("select first_leader,count(1) as count  from __PREFIX__users where first_leader in(".  implode(',', $user_id_arr).")  group by first_leader");
-            $first_leader = convert_arr_key($first_leader,'first_leader');
-            
-            $second_leader = DB::query("select second_leader,count(1) as count  from __PREFIX__users where second_leader in(".  implode(',', $user_id_arr).")  group by second_leader");
-            $second_leader = convert_arr_key($second_leader,'second_leader');            
-            
-            $third_leader = DB::query("select third_leader,count(1) as count  from __PREFIX__users where third_leader in(".  implode(',', $user_id_arr).")  group by third_leader");
-            $third_leader = convert_arr_key($third_leader,'third_leader');
-        }
-        $this->assign('first_leader',$first_leader);
-        $this->assign('second_leader',$second_leader);
-        $this->assign('third_leader',$third_leader);
+
         $show = $Page->show();
         $this->assign('userList',$userList);
         $this->assign('level',M('user_level')->getField('level_id,level_name'));

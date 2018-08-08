@@ -231,13 +231,7 @@
     function ajax_get_table(tab,page){
         var search_key = $.trim($('#search_key').val());
         if(search_key.length > 0){
-            if(checkEmail(search_key)){
-                $('#input-email').val(search_key);
-            }else if(checkMobile(search_key)){
-                $('#input-mobile').val(search_key);
-            }else{
-                layer.alert('请输入正确的邮箱或者手机号码', {icon: 2});
-            }
+            $('#input-mobile').val(search_key);
         }
         cur_page = page; //当前页面 保存为全局变量
         $.ajax({
