@@ -6,6 +6,7 @@ function setUserid(params) {
         sessionStorage.setItem('userId', params);
 }
 
-function removeUserid() {
-   delete sessionStorage.userId;
-}
+// function setGoodsInfo(params) {
+//     if (!params) return;
+//     sessionStorage.setItem('goodsInfo', params);
+// }
