@@ -6,8 +6,8 @@
     <div class="fixed-bar">
         <div class="item-title">
             <div class="subject">
-                <h3>账户资金记录列表</h3>
-                <h5>网站系统会员账户资金记录列表</h5>
+                <h3>积分记录列表</h3>
+                <h5></h5>
             </div>
         </div>
     </div>
@@ -18,14 +18,14 @@
             <span title="收起提示" id="explanationZoom" style="display: block;"></span>
         </div>
         <ul>
-            <li>会员账户资金记录列表, 由平台设置管理.</li>
+            <li></li>
         </ul>
     </div>
     <div class="flexigrid">
         <div class="mDiv">
             <div class="ftitle">
-                <h3>会员账户资金记录列表</h3>
-                <h5>(共{$lists|count}条记录)</h5>
+                <h3>会员积分记录列表</h3>
+                <h5>(共{$lists|count}条记录)（总积分：{$total_points}）</h5>
             </div>
             <div title="刷新数据" class="pReload"><i class="fa fa-refresh"></i></div>
         </div>
@@ -43,14 +43,8 @@
                         <th align="left" axis="col4" class="">
                             <div style="text-align: center; width: 100px;" class="">描述</div>
                         </th>
-                        <th align="center" axis="col5" class="">
-                            <div style="text-align: center; width: 100px;" class="">用户资金</div>
-                        </th>
-                        <th align="center" axis="col6" class="" hidden>
-                            <div style="text-align: center; width: 100px;" class="">冻结资金</div>
-                        </th>
                         <th align="center" axis="col6" class="">
-                            <div style="text-align: center; width: 100px;" class="">用户积分</div>
+                            <div style="text-align: center; width: 100px;" class="">变动积分</div>
                         </th>
                         <th style="width:100%" axis="col7">
                             <div></div>
@@ -62,13 +56,13 @@
         </div>
         <div class="tDiv">
             <div class="tDiv2">
-                <div class="fbutton">
+                <!-- <div class="fbutton">
                     <a href="{:U('Admin/User/account_edit',array('user_id'=>$user_id))}">
                         <div class="add" title="资金调节">
                             <span><i class="fa fa-plus"></i>资金调节</span>
                         </div>
                     </a>
-                </div>
+                </div> -->
                 <div class="fbutton">
                     <a href="{:U('Admin/User/index')}">
                         <div class="up" title="返回会员列表">
@@ -93,18 +87,6 @@
                             </td>
                             <td align="left" class="">
                                 <div style="text-align: center; width: 100px;">{$list.desc}</div>
-                            </td>
-                            <td align="center" class="">
-                                <div style="text-align: center; width: 100px;">
-                                    <if condition="$list[user_money] gt 0">+</if>
-                                    {$list.user_money}
-                                </div>
-                            </td>
-                            <td align="center" class="" hidden>
-                                <div style="text-align: center; width: 100px;">
-                                    <if condition="$list[frozen_money] gt 0">+</if>
-                                    {$list.frozen_money}
-                                </div>
                             </td>
                             <td align="center" class="">
                                 <div style="text-align: center; width: 100px;">

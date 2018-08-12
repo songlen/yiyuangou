@@ -245,6 +245,7 @@ class User extends Base {
         }
     }
 
+    // 积分规则
     public function point_rules(){
         // $where = array(
         //     'is_open' => '1',
@@ -256,6 +257,14 @@ class User extends Base {
 
         response_success(array('link'=>'/web/#/article?id=6'));
     }
+
+    // 条款约定
+    public function agreement(){
+
+        response_success(array('link'=>'/web/#/article?id=7'));
+    }
+
+
 
     // 设置页面
     public function setting(){
@@ -317,7 +326,7 @@ class User extends Base {
             ->join('user_message um', 'um.message_id=m.message_id', 'left')
             ->where('user_id', $user_id)
             ->whereOr('m.type', 1)
-            ->field('m.message_id, message, m.category, data, send_time, status')
+            ->field('m.message_id, message, m.category, data, send_time, IFNULL(status,0) as status')
             ->order('message_id desc')
             ->limit($limit_start, 20)
             ->select();
@@ -336,5 +345,47 @@ class User extends Base {
         }
 
         response_success($message);
+    }
+
+    // 标记读消息
+    public function readMessage(){
+        $user_id = I('user_id');
+        $message_id = I('message_id');
+
+        $count = M('user_message')->where(array('user_id'=>$user_id, 'message_id'=>$message_id))->count();
+        if($count){
+            M('user_message')->where(array('user_id'=>$user_id, 'message_id'=>$message_id))->setField('status', 1);
+        } else {
+            $data = array(
+                'user_id' => $user_id,
+                'message_id' => $message_id,
+                'status' => '1',
+            );
+            M('user_message')->insert($data);
+        }
+
+        response_success();
+    }
+
+    // 获得是否有未读消息
+    public function isReadMessage(){
+        $user_id = I('user_id/d');
+
+
+        $count = Db::name('message')->alias('m')
+            ->join('user_message um', 'um.message_id=m.message_id', 'left')
+            ->where(function ($query) use ($user_id){
+                $query->where(array('user_id'=>$user_id, 'type'=>'0', 'status'=>'0'));
+            })
+            ->whereOr(function($query) use ($user_id){
+                $query->where('type', '1')->where('status', null);
+            })
+            ->select();
+
+        if($count){
+            response_success(array('exists'=>1));
+        } else {
+            response_success(array('exists'=>0));
+        }
     }
 }
