@@ -31,7 +31,6 @@ class Task extends Base {
         );
 
         $activits = Db::name('goods_activity')->where($where)->field('act_id, goods_id, goods_name')->select();
-
         if(empty($activits)){
             exit();
         }
