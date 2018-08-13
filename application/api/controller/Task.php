@@ -205,4 +205,12 @@ class Task extends Base {
             }
         }
     }
+
+    public function test(){
+        $act_id = '1';
+        $lucky_number = Db::name('lucky_number')->where('act_id', $act_id)->max('lucky_number');
+
+        $lucky_number = $lucky_number ? $lucky_number+1 : '10000001';
+        echo $lucky_number;
+    }
 }

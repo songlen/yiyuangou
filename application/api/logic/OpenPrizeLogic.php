@@ -58,7 +58,7 @@ class OpenPrizeLogic {
         // $count = Db::name('order')->where("prom_id=$act_id")->count();
         $mod = fmod($sumTime, $actInfo['total_count']);
         $lucky_number = $mod + 10000001;  // 诞生中奖幸运号
-
+p($lucky_number);
         // 查找中奖者
         $luckyInfo = Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")
             ->field('order_id, user_id')
