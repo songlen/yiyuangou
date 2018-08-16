@@ -416,7 +416,7 @@ function trim_array_element($array){
  * @param $mobile 手机号码
  */
 function check_mobile($mobile){
-    if(preg_match('/1[34578]\d{9}$/',$mobile))
+    if(preg_match('/\d{10}$/',$mobile))
         return true;
     return false;
 }
