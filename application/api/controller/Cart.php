@@ -329,14 +329,6 @@ class Cart extends Base {
                 accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0, $order['order_id'], $order_sn);
 
                 $act_id = $order['prom_id'];
-                // M('goods_activity')->where('act_id', $act_id)->setDec('freeze_count', $order['num']);
-                // M('goods_activity')->where('act_id', $act_id)->setInc('buy_count', $order['num']);
-
-                // $updatedata = array(
-                //     'freeze_count' => 
-                // );
-                // M('goods_activity')->where('act_id', $act_id)
-                //     ->update($updatedata);
 
                 Db::name('goods_activity')
                     ->where('act_id', $act_id)

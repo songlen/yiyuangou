@@ -74,8 +74,6 @@ class OrderLogic {
                 }
                 $used_points = $points; // 使用的积分
                 // 如果可以使用积分
-                $orderdata['pay_status'] = '1';
-                $orderdata['pay_time'] = $sec;
                 $orderdata['integral'] = $points; // 使用积分
                 $orderdata['integral_money'] = $total_amount; // 积分抵扣金额（购买夺宝，全部抵扣）
                 $order_amount = 0; // 实付款就为0
