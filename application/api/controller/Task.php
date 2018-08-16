@@ -195,10 +195,12 @@ class Task extends Base {
                 // 活动表增减数量
                 $act_id = $item['prom_id'];
                 $num = $item['num'];
-                // 剩余份额加回去
-                Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('surplus', $num); 
-                // 冻结份额减掉
-                Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('freeze_count', $num); 
+                // 剩余份额加回去、冻结份额减掉
+                Db::name('GoodsActivity')->where('act_id', $act_id)
+                    ->inc('surplus', $num)
+                    ->dec('freeze_count', $num)
+                    ->update();
+
                 // 更改订单状态为 已作废 5
                 Db::name('order')->where('order_id', $item['order_id'])->setField('order_status', 5);
                 Db::name('lucky_number')->where('order_id', $item['orders'])->delete();
