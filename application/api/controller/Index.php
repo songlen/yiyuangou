@@ -28,6 +28,7 @@ class Index extends Base {
 
         $page = I('page', 1);
         $keyword = I('keyword');
+        $cat_id = I('cat_id');
 
         // 商品
         $ga_where = array(
@@ -39,6 +40,7 @@ class Index extends Base {
         if($keyword){
             $ga_where['g.goods_name'] = ['like', "%$keyword%"];
         }
+        if($cat_id) $ga_where['cat_id'] = $cat_id;
 
         $limit_start = ($page-1)*10;
         $goods_activity = M('goods_activity')->alias('ga')
@@ -50,7 +52,16 @@ class Index extends Base {
         	->select()
         	;
 
+        
+        $data['categoryList'] = $categoryList;
+
 
         response_success($goods_activity);
+    }
+
+    public function getCategory(){
+        $categoryList = $this->getAllCategory();
+
+        response_success($categoryList);
     }
 }

@@ -43,4 +43,19 @@ class Base extends Controller {
 
         file_put_contents('runtime/log/request.log', $data, FILE_APPEND);
     }
+
+     /**
+     * [getAllCategory 获取活动分类]
+     * @return [type] [description]
+     */
+    protected function getAllCategory(){
+        $where = array(
+            'is_show' => '1',
+            'parent_id' => '0',
+        );
+
+        $categoryList = M('goods_category')->where($where)->field('id, name')->order('sort_order desc')->select();
+
+        return $categoryList;
+    }
 }

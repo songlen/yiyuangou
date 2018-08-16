@@ -236,9 +236,6 @@ class Activity extends Base {
         $cat_id = I('cat_id/d');
         $page = I('page/d', 1);
 
-        $categoryList = $this->getAllCategory();
-        $data['categoryList'] = $categoryList;
-
         // 商品
         $ga_where = array(
             'ga.act_type' => '3', // 活动类别、夺宝
@@ -253,7 +250,7 @@ class Activity extends Base {
         $goods_activity = M('goods_activity')->alias('ga')
             ->join('goods g', 'ga.goods_id=g.goods_id')
             ->where($ga_where)
-            ->field('ga.act_id, ga.win_user_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
+            ->field('ga.act_id, ga.win_user_id, g.goods_id, g.goods_name, g.shop_price, g.original_img, phase')
             ->limit(($page-1)*10, 10)
             ->order('open_time desc')
             ->select()
@@ -269,21 +266,9 @@ class Activity extends Base {
 
         $data['goods_activity'] = $goods_activity;
 
+        $categoryList = $this->getAllCategory();
+        $data['categoryList'] = $categoryList;
+
         response_success($data);
-    }
-
-    /**
-     * [getAllCategory description]
-     * @return [type] [description]
-     */
-    private function getAllCategory(){
-        $where = array(
-            'is_show' => '1',
-            'parent_id' => '0',
-        );
-
-        $categoryList = Db::name('goods_category')->where($where)->field('id, name')->order('sort_order desc')->select();
-
-        return $categoryList;
     }
 }
