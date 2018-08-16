@@ -285,11 +285,14 @@ class Cart extends Base {
         $param['ip'] = $this->request->ip();
 
         $order_sns = explode('-', trim($order_sn));
-        $order = M('order')->whereIn('order_sn', $order_sns)->field('order_id, pay_status, order_amount')->select();
+        $order = M('order')->whereIn('order_sn', $order_sns)->field('order_id, order_status, pay_status, order_amount')->select();
 
         $order_amount = 0;
         if(is_array($order)){
             foreach ($order as $item) {
+                if($item['order_status'] == '5'){
+                    response_error('', '由于您长时间没支付，订单被取消');
+                }
                 if($item['pay_status'] == '1'){
                     response_error('', '该订单已支付');
                 }
