@@ -218,6 +218,7 @@ class Activity extends Base {
             ->where($ga_where)
             ->field('ga.act_id, ga.phase, ga.buy_count, ga.surplus, g.goods_id, g.goods_name, g.shop_price, g.original_img')
             ->limit($start_limit, $pernum)
+            ->order('ga.act_id desc')
             ->select()
             ;
 
@@ -254,6 +255,7 @@ class Activity extends Base {
             ->where($ga_where)
             ->field('ga.act_id, ga.win_user_id, g.goods_id, g.goods_name, g.shop_price, g.original_img')
             ->limit(($page-1)*10, 10)
+            ->order('open_time desc')
             ->select()
             ;
 

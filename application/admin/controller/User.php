@@ -419,13 +419,14 @@ class User extends Base {
         } else {
             //赠送给选中的人
             if (!empty($users)) {
-                foreach ($users as $key) {
-                    M('users')->where(array('user_id' => $key, 'robot'=>'0'))->setInc('pay_points', $points);
-                    accountLog($key, 0,$points, '系统赠送积分'); // 记录日志流水
+                foreach ($users as $user_id) {
+                    // M('users')->where("user_id=".$user_id)->setField('pay_points');
+                    Db::execute("update tp_users set pay_points=pay_points+? where user_id=?", [$points, $user_id]);
+                    // accountLog($user_id, 0,$points, '系统赠送积分'); // 记录日志流水
                 }
             }
         }
-
+echo M('users')->getLastSql();die();
         echo "<script>parent.{$call_back}(1);</script>";
         exit();
     }

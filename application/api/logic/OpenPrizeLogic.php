@@ -23,6 +23,7 @@ class OpenPrizeLogic {
             'lucky_number'=>$lucky_number,
             'win_user_id'=>$luckyInfo['win_user_id'],
             'status' => '3',
+            'open_time' => time(),
         );
         Db::name('goods_activity')->update($actUpdateData);
         // 幸运码表记录中奖信息
