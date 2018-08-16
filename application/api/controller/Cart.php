@@ -159,7 +159,7 @@ class Cart extends Base {
         if(empty($address)){
             $address = M('user_address')->where(['user_id'=>$user_id])->find();
         }
-        if(empty($address)) response_error('', '请填写收货地址');
+        if(empty($address)) response_error('', '请编辑地址');
         $address = array(
             'address_id' => $address['address_id'],
             'consignee' => $address['consignee'],
