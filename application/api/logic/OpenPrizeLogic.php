@@ -55,7 +55,7 @@ class OpenPrizeLogic {
         // 写入文件
         $data = "<?php \r\n return ".var_export($lastlist100, true);
 
-        $filename = RUNTIME_PATH.'luckyNumber/act_'.$act_id.'.php';
+        $filename = RUNTIME_PATH.'last100/act_'.$act_id.'.php';
         $File = new \Common\Util\File();
         $File->writeFile($filename, $data);
         // 时间加起来
