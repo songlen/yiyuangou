@@ -53,7 +53,7 @@ class OpenPrizeLogic {
          // 全站购买最后100条记录
         $lastlist100 = Db::name('lucky_number')->limit(100)->field('user_id, lucky_number, add_time, add_time_ms')->order('id desc')->select();
         // 写入文件
-        $data = "<?php \r\n return ".var_export($lastlist100, true);
+        $data = "<?php \r\n return ".var_export($lastlist100, true).';';
 
         $filename = RUNTIME_PATH.'last100/act_'.$act_id.'.php';
         $File = new \Common\Util\File();

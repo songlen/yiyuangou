@@ -151,11 +151,12 @@ class Task extends Base {
         } else {
             return array($usableLucky[$keys]);
         }*/
-        $data = "<?php \r\n return ".var_export($arr, true);
+       $filename = RUNTIME_PATH.'last100/act_29.php';
 
-        $filename = RUNTIME_PATH.'luckyNumber/act.php';
-        $File = new \Common\Util\File();
-
-        $File->writeFile($filename, $data);
+        $lists = include ($filename);
+        p($lists);
+        foreach ($lists as $key => $value) {
+            p($value);
+        }
     }
 }

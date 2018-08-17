@@ -244,9 +244,7 @@ class Order extends Base {
             ->field('lucky_number, nickname, ln.add_time, add_time_ms')
             ->select();
 
-        $filename = RUNTIME_PATH.'luckyNumber/act_'.$act_id.'.php';
-        $File = new \Common\Util\File();
-
+        $filename = RUNTIME_PATH.'last100/act_'.$act_id.'.php';
         $lists = $File->readFile($filename);
         if(is_array($lists)){
             foreach ($lists as $k => $item) {
