@@ -167,4 +167,101 @@ class OrderLogic {
     //     $lucky_number = $lucky_number ? $lucky_number+1 : '10000001';
     //     return $lucky_number;
     // }
+    // 
+    // 
+     /**
+     * [addRobotOrder 执行机器人下单流程]
+     * @param [type] $act_id  [description]
+     * @param [type] $user_id [description]
+     * @param [type] $num     [description]
+     * @param [type] $[lucky_number] [如何传入了lucky_number 说明是开奖时添加的机器人下单]
+     */
+    public function placeRobotOrder($act_id, $user_id, $num, $lucky_number = false){
+        $user = Db::name('users')->field('mobile')->find($user_id);
+        if(empty($user_id)){
+            return false;
+        }
+
+        $commit_result = true;
+
+        $order_sn = generateOrderSn(); // 生成订单号
+
+        // 时间戳和毫秒数
+        list($usec, $sec) = explode(" ", microtime());
+        $usec = round($usec *1000);
+
+        $orderdata = array(
+            'order_sn' => $order_sn,
+            'user_id' => $user_id,
+            'mobile' => $user['mobile'],
+            'add_time' => $sec,
+            'add_time_ms' => $usec,
+            'prom_id' => $act_id,
+            'prom_type' => 4, // 订单类型 夺宝活动
+            'num' => $num,
+            'pay_status' => '1',
+        );
+
+        // 计算各种价格
+        $goods_price = $num; // 商品价格等于购买份额
+        $tax_amount = $goods_price*0.13; // 税额
+        $total_amount = $goods_price+$tax_amount; // 订单总额（商品价格+税额）
+
+        $used_points = 0;
+        $order_amount = $total_amount;
+
+        $orderdata['goods_price'] =  $goods_price;
+        $orderdata['tax_amount'] =  $tax_amount;
+        $orderdata['order_amount'] =  $order_amount;
+        $orderdata['total_amount'] =  $total_amount;
+
+        Db::startTrans(); // 开启事物
+        try {
+            // 订单写入数据库
+            $order_id = Db::name('order')->insertGetId($orderdata);
+
+            // 活动表增减数量
+            Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num); // 减剩余份额
+            Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num); // 加已购份额
+
+            $i = 0;
+            // 批量生成随机幸运号 $num（幸运号数量)
+            if($lucky_number && ($num == 1)){
+                $lucky_numbers = array($lucky_number);
+            } else {
+                $lucky_numbers = $this->generateLuckyNumber($act_id, $num);
+            }
+            while ($i < $num) {
+                // 生成幸运码
+               $lucky_number = $lucky_numbers[$i];
+               // 更新附加表
+               $luckynumber = array(
+                   'order_id' => $order_id,
+                   'order_sn' => $order_sn,
+                   'user_id' => $user_id,
+                   'act_id' => $act_id,
+                   'num' => $num,
+                   'add_time' => $sec,
+                   'add_time_ms' => $usec,
+                   'lucky_number' => $lucky_number,
+               );
+               Db::name('LuckyNumber')->insert($luckynumber);
+               $i++;
+            }
+
+            // 提交事务
+            Db::commit();
+        } catch (\Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $commit_result = false;
+            break;
+        }
+
+        if($commit_result){
+            return true;
+        }  else {
+            return false;
+        }
+    }
 }

@@ -8,6 +8,7 @@ namespace app\api\logic;
 
 use think\Db;
 use app\api\logic\MessageLogic;
+use app\api\logic\OrderLogic;
 
 // 开奖
 class OpenPrizeLogic {
@@ -48,8 +49,8 @@ class OpenPrizeLogic {
      */
     private function generateLuckyInfo($act_id){
         $actInfo = Db::name('goods_activity')->field('total_count, set_win')->find($act_id);
-         // 购买最后100条记录
-        $lastlist100 = Db::name('lucky_number')->where(array('act_id'=>$act_id))->limit('0, 100')->field('add_time, add_time_ms')->order('id desc')->select();
+         // 全站购买最后100条记录
+        $lastlist100 = Db::name('lucky_number')->limit(100)->field('add_time, add_time_ms')->order('id desc')->select();
         // 时间加起来
         $sumTime = 0;
         foreach ($lastlist100 as $item) {
@@ -59,6 +60,28 @@ class OpenPrizeLogic {
         // $count = Db::name('order')->where("prom_id=$act_id")->count();
         $mod = fmod($sumTime, $actInfo['total_count']);
         $lucky_number = $mod + 10000001;  // 诞生中奖幸运号
+
+        // 检测中奖号码是否存在
+        $number_exist = Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->count();
+        // 如果不存在，则说明没有被买满，这种情况下一定是机器人中奖
+        if(!$number_exist){
+             // 判断订单中是否有机器人，如果有机器人订单就随机找一个机器人订单，并修改他的中奖号为该中奖号，如果没有机器人就，插入一个机器人
+            $exist_robot_order = Db::name('order')->where("prom_id=$act_id and robot=1")->count();
+            if($exist_robot_order){
+                $robotOrder = Db::name('order')->where("prom_id=$act_id and robot=1")->getField('order_id');
+                $randOrderId = array_rand($robotOrder);
+                $order_id = $robotOrder[$randOrderId];
+                // 设置该机器人的幸运号为中奖幸运号
+                $luckyId = Db::name('LuckyNumber')->where('order_id')->field('id')->find();
+                Db::name('LuckyNumber')->where('id', $luckyId['id'])->setField('lucky_number', $lucky_number);
+            } else {
+                $sql = "select user_id from tp_users where robot=1 order by rand() limit 1";
+                $robotuser = Db::query($sql);
+                $user_id = $robotuser[0]['user_id'];
+                $OrderLogic = new OrderLogic();
+                $OrderLogic->placeRobotOrder($act_id, $user_id, 1, $lucky_number);
+            }
+        }
 
         // 查找中奖者
         $luckyInfo = Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")
@@ -77,7 +100,7 @@ class OpenPrizeLogic {
 
             // 如果抽中的幸运号不是机器人，则继续抽机器人
              // 判断订单中是否有机器人，如果没有机器人就停止，如果有机器人就找最近的机器人
-            $exist_robot_order = Db::name('order')->where("prom_id=$act_id and prom_type=4 and robot=1")->field('count(1)')->find();
+            $exist_robot_order = Db::name('order')->where("prom_id=$act_id and robot=1")->count();
 
             if( ! $exist_robot_order){
                 goto returnResult;

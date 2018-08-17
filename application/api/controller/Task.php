@@ -3,6 +3,7 @@
 namespace app\api\controller;
 use think\Db;
 use app\api\logic\OpenPrizeLogic;
+use app\api\logic\OrderLogic;
 
 class Task extends Base {
     public function __construct(){
@@ -57,6 +58,7 @@ class Task extends Base {
         $robot_detail = Db::name('robot_detail')->where($where)->select();
 
         if($robot_detail){
+            $OrderLogic = new OrderLogic();
             foreach ($robot_detail as $item) {
                 $actinfo = Db::name('goods_activity')->find($item['act_id']);
                
@@ -68,7 +70,7 @@ class Task extends Base {
                     );
                     Db::name('robot_detail')->update($data);
                 } else {
-                    $this->addRobotOrder($item['act_id'], $item['user_id'], $item['num']);
+                    $OrderLogic->placeRobotOrder($item['act_id'], $item['user_id'], $item['num']);
 
                     $data = array(
                         'id'=>$item['id'],
@@ -84,95 +86,7 @@ class Task extends Base {
     }
 
 
-    /**
-     * [addRobotOrder 执行机器人下单流程]
-     * @param [type] $act_id  [description]
-     * @param [type] $user_id [description]
-     * @param [type] $num     [description]
-     */
-    private function addRobotOrder($act_id, $user_id, $num){
-        $user = Db::name('users')->field('mobile')->find($user_id);
-        if(empty($user_id)){
-            return false;
-        }
-
-        $commit_result = true;
-
-        $order_sn = generateOrderSn(); // 生成订单号
-
-        // 时间戳和毫秒数
-        list($usec, $sec) = explode(" ", microtime());
-        $usec = round($usec *1000);
-
-        $orderdata = array(
-            'order_sn' => $order_sn,
-            'user_id' => $user_id,
-            'mobile' => $user['mobile'],
-            'add_time' => $sec,
-            'add_time_ms' => $usec,
-            'prom_id' => $act_id,
-            'prom_type' => 4, // 订单类型 夺宝活动
-            'num' => $num,
-            'pay_status' => '1',
-        );
-
-        // 计算各种价格
-        $goods_price = $num; // 商品价格等于购买份额
-        $tax_amount = $goods_price*0.13; // 税额
-        $total_amount = $goods_price+$tax_amount; // 订单总额（商品价格+税额）
-
-        $used_points = 0;
-        $order_amount = $total_amount;
-
-        $orderdata['goods_price'] =  $goods_price;
-        $orderdata['tax_amount'] =  $tax_amount;
-        $orderdata['order_amount'] =  $order_amount;
-        $orderdata['total_amount'] =  $total_amount;
-
-        Db::startTrans(); // 开启事物
-        try {
-            // 订单写入数据库
-            $order_id = Db::name('order')->insertGetId($orderdata);
-
-            // 活动表增减数量
-            Db::name('GoodsActivity')->where('act_id', $act_id)->setDec('surplus', $num); // 减剩余份额
-            Db::name('GoodsActivity')->where('act_id', $act_id)->setInc('buy_count', $num); // 加已购份额
-
-            $i = 1;
-            while ($i <= $num) {
-                // 找出最大的幸运码
-               $max_lucky_number = Db::name('lucky_number')->where(array('act_id'=>$act_id))->max('lucky_number');
-               $lucky_number = $max_lucky_number ? $max_lucky_number+1 : 10000001;
-               // 更新附加表
-               $luckynumber = array(
-                   'order_id' => $order_id,
-                   'order_sn' => $order_sn,
-                   'user_id' => $user_id,
-                   'act_id' => $act_id,
-                   'num' => $num,
-                   'add_time' => $sec,
-                   'add_time_ms' => $usec,
-                   'lucky_number' => $lucky_number,
-               );
-               Db::name('LuckyNumber')->insert($luckynumber);
-               $i++;
-            }
-
-            // 提交事务
-            Db::commit();
-        } catch (\Exception $e){
-            // 回滚事务
-            Db::rollback();
-            $commit_result = false;
-            break;
-        }
-
-        if($commit_result){
-            return true;
-        }  else {
-            return false;
-        }
-    }
+   
 
     /**
      * [cancleOrder 取消下单十分钟未支付的订单 ]
@@ -220,7 +134,7 @@ class Task extends Base {
         // array_filter($arr, function($item){
         //     return $item['status'] == 1;
         // });
-$act_id = 1; $num = 5;
+        /*$act_id = 1; $num = 5;
         $actInfo = Db::name('goods_activity')->where('act_id', $act_id)->field('total_count')->find();
         // 所有的幸运号
         $allLuckys = range(10000001, 10000000+$actInfo['total_count']);
@@ -234,6 +148,10 @@ $act_id = 1; $num = 5;
             return array_values(array_intersect_key($usableLucky, array_flip($keys)));
         } else {
             return array($usableLucky[$keys]);
-        }
+        }*/
+
+         $sql = "select user_id from tp_users where robot=1 order by rand() limit 1";
+        $robotuser = Db::query($sql);
+        p($robotuser);
     }
 }
