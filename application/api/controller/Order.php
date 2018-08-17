@@ -245,7 +245,7 @@ class Order extends Base {
             ->select();
 
         $filename = RUNTIME_PATH.'last100/act_'.$act_id.'.php';
-        $lists = $File->readFile($filename);
+        $lists = include ($filename);
         if(is_array($lists)){
             foreach ($lists as $k => $item) {
                 $user = Db::name('users')->where('user_id', $item['user_id'])->field('nickname')->find();
