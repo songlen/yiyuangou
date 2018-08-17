@@ -148,7 +148,7 @@ class Cart extends Base {
 
         // 登录判断
         $user = Db::name('users')->find($user_id);
-        if(empty($user)) response_error('用户不存在');
+        if(empty($user)) response_error('', '用户不存在');
 
         // 收货地址
         if($address_id){
