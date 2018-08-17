@@ -4,6 +4,8 @@ namespace app\api\controller;
 use think\Db;
 use app\api\logic\PayLogic;
 
+include APP_PATH.'common/util/File.class.php';
+
 class Order extends Base {
 
 	public function __construct(){
@@ -241,6 +243,17 @@ class Order extends Base {
             ->limit(100)
             ->field('lucky_number, nickname, ln.add_time, add_time_ms')
             ->select();
+
+        $filename = RUNTIME_PATH.'luckyNumber/act_'.$act_id.'.php';
+        $File = new \Common\Util\File();
+
+        $lists = $File->readFile($filename);
+        if(is_array($lists)){
+            foreach ($lists as $k => $item) {
+                $user = Db::name('users')->where('user_id', $item['user_id'])->field('nickname')->find();
+                $lists[$k]['nickname'] = $user['nickname'];
+            }
+        }
 
         if($lists){
             foreach ($lists as &$item) {
