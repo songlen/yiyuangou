@@ -9,6 +9,7 @@ namespace app\api\logic;
 use think\Db;
 use app\api\logic\MessageLogic;
 use app\api\logic\OrderLogic;
+include APP_PATH.'common/util/File.class.php';
 
 // 开奖
 class OpenPrizeLogic {
@@ -50,7 +51,13 @@ class OpenPrizeLogic {
     private function generateLuckyInfo($act_id){
         $actInfo = Db::name('goods_activity')->field('total_count, set_win')->find($act_id);
          // 全站购买最后100条记录
-        $lastlist100 = Db::name('lucky_number')->limit(100)->field('add_time, add_time_ms')->order('id desc')->select();
+        $lastlist100 = Db::name('lucky_number')->limit(100)->field('user_id, lucky_number, add_time, add_time_ms')->order('id desc')->select();
+        // 写入文件
+        $data = "<?php \r\n return ".var_export($lastlist100, true);
+
+        $filename = RUNTIME_PATH.'luckyNumber/act_'.$act_id.'.php';
+        $File = new \Common\Util\File();
+        $File->writeFile($filename, $data);
         // 时间加起来
         $sumTime = 0;
         foreach ($lastlist100 as $item) {

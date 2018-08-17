@@ -5,6 +5,8 @@ use think\Db;
 use app\api\logic\OpenPrizeLogic;
 use app\api\logic\OrderLogic;
 
+include APP_PATH.'common/util/File.class.php';
+
 class Task extends Base {
     public function __construct(){
         // 设置所有方法的默认请求方式
@@ -123,13 +125,13 @@ class Task extends Base {
     }
 
     public function test(){
-        // $arr = array(
-        //     array('number'=>'1001', 'status'=>0),
-        //     array('number'=>'1002', 'status'=>0),
-        //     array('number'=>'1003', 'status'=>1),
-        //     array('number'=>'1004', 'status'=>0),
-        //     array('number'=>'1005', 'status'=>1),
-        // );
+        $arr = array(
+            array('number'=>'1001', 'status'=>0),
+            array('number'=>'1002', 'status'=>0),
+            array('number'=>'1003', 'status'=>1),
+            array('number'=>'1004', 'status'=>0),
+            array('number'=>'1005', 'status'=>1),
+        );
 
         // array_filter($arr, function($item){
         //     return $item['status'] == 1;
@@ -149,9 +151,11 @@ class Task extends Base {
         } else {
             return array($usableLucky[$keys]);
         }*/
+        $data = "<?php \r\n return ".var_export($arr, true);
 
-         $sql = "select user_id from tp_users where robot=1 order by rand() limit 1";
-        $robotuser = Db::query($sql);
-        p($robotuser);
+        $filename = RUNTIME_PATH.'luckyNumber/act.php';
+        $File = new \Common\Util\File();
+
+        $File->writeFile($filename, $data);
     }
 }
