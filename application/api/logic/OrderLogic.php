@@ -101,21 +101,23 @@ class OrderLogic {
                     accountLog($user_id, 0, -$used_points, '订单使用积分', 0,$order_id, $order_sn);
                 }
 
-                $i = 1;
-                while ($i <= $num) {
+                $i = 0;
+                // 批量生成随机幸运号 $num（幸运号数量)
+                $lucky_numbers = $this->generateLuckyNumber($act_id, $num);
+                while ($i < $num) {
                     // 生成幸运码
-                   $lucky_number = $this->generateLuckyNumber($act_id);
+                   $lucky_number = $lucky_numbers[$i];
                    // 更新附加表
                    // 时间戳和毫秒数
                     list($usec, $sec) = explode(" ", microtime());
                     $usec = round($usec *1000);
-                   $luckynumber = array(
+                    $luckynumber = array(
                        'order_id' => $order_id,
                        'order_sn' => $order_sn,
                        'user_id' => $user_id,
                        'act_id' => $act_id,
                        'goods_id' => $goods_id,
-                       'num' => $num,
+                       'num' => 1,
                        'add_time' => $sec,
                        'add_time_ms' => $usec,
                        'lucky_number' => $lucky_number,
@@ -142,21 +144,27 @@ class OrderLogic {
     }
 
     // 随机生成幸运号
-    /*public function generateLuckyNumber($act_id){
+    public function generateLuckyNumber($act_id, $num){
         $actInfo = Db::name('goods_activity')->where('act_id', $act_id)->field('total_count')->find();
+        // 所有的幸运号
+        $allLuckys = range(10000001, 10000000+$actInfo['total_count']);
+        // 查找已被使用的幸运号
+        $usedLucky = Db::name('lucky_number')->where('act_id', $act_id)->getField('lucky_number', true);
+        // 求出两个数组的差集（未被使用的幸运号）
+        $usableLucky = array_diff($allLuckys, $usedLucky);
+        $keys = array_rand($usableLucky, $num);
 
-        $num = mt_rand(1, $actInfo['total_count']);
-        $lucky_number = 10000000 + $num;
-        $count = Db::name('lucky_number')->where(array('act_id'=>$act_id, 'lucky_number'=>$lucky_number))->count();
-        if($count) $this->generateLuckyNumber($act_id);
-
-        return $lucky_number;
-    }*/
-
-    public function generateLuckyNumber($act_id){
-        $lucky_number = Db::name('lucky_number')->where('act_id', $act_id)->max('lucky_number');
-
-        $lucky_number = $lucky_number ? $lucky_number+1 : '10000001';
-        return $lucky_number;
+        if(is_array($keys)){
+            return array_values(array_intersect_key($usableLucky, array_flip($keys)));
+        } else {
+            return array($usableLucky[$keys]);
+        }
     }
+
+    // public function generateLuckyNumber($act_id){
+    //     $lucky_number = Db::name('lucky_number')->where('act_id', $act_id)->max('lucky_number');
+
+    //     $lucky_number = $lucky_number ? $lucky_number+1 : '10000001';
+    //     return $lucky_number;
+    // }
 }

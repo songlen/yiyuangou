@@ -209,10 +209,31 @@ class Task extends Base {
     }
 
     public function test(){
-        $act_id = '1';
-        $lucky_number = Db::name('lucky_number')->where('act_id', $act_id)->max('lucky_number');
+        // $arr = array(
+        //     array('number'=>'1001', 'status'=>0),
+        //     array('number'=>'1002', 'status'=>0),
+        //     array('number'=>'1003', 'status'=>1),
+        //     array('number'=>'1004', 'status'=>0),
+        //     array('number'=>'1005', 'status'=>1),
+        // );
 
-        $lucky_number = $lucky_number ? $lucky_number+1 : '10000001';
-        echo $lucky_number;
+        // array_filter($arr, function($item){
+        //     return $item['status'] == 1;
+        // });
+$act_id = 1; $num = 5;
+        $actInfo = Db::name('goods_activity')->where('act_id', $act_id)->field('total_count')->find();
+        // 所有的幸运号
+        $allLuckys = range(10000001, 10000000+$actInfo['total_count']);
+        // 查找已被使用的幸运号
+        $usedLucky = Db::name('lucky_number')->where('act_id', $act_id)->getField('lucky_number', true);
+        // 求出两个数组的差集（未被使用的幸运号）
+        $usableLucky = array_diff($allLuckys, $usedLucky);
+        $keys = array_rand($usableLucky, $num);
+        // p($usableLucky, array_flip($keys));
+        if(is_array($keys)){
+            return array_values(array_intersect_key($usableLucky, array_flip($keys)));
+        } else {
+            return array($usableLucky[$keys]);
+        }
     }
 }
