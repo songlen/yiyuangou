@@ -62,6 +62,11 @@ class Index extends Base {
     public function getCategory(){
         $categoryList = $this->getAllCategory();
         array_unshift($categoryList, array('id'=>0, 'name'=>'全部'));
+        array_unshift($categoryList, array('id'=>0, 'name'=>'全部'));
+        array_unshift($categoryList, array('id'=>0, 'name'=>'全部'));
+        array_unshift($categoryList, array('id'=>0, 'name'=>'全部'));
+        array_unshift($categoryList, array('id'=>0, 'name'=>'全部'));
+        array_unshift($categoryList, array('id'=>0, 'name'=>'全部'));
         response_success($categoryList);
     }
 }
