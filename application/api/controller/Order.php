@@ -34,7 +34,7 @@ class Order extends Base {
             ->where($where)
             ->order('order_id DESC')
             ->limit(($page-1)*10 . ',' . 10)
-            ->field('order_id, order_sn, phase, surplus, pay_status, total_amount, goods_id')
+            ->field('order_id, order_sn, phase, surplus, pay_status, total_amount, goods_id, num')
             ->select();
 
         if($orderList){
@@ -70,7 +70,7 @@ class Order extends Base {
             ->where($where)
             ->order('order_id DESC')
             ->limit(($page-1)*10 . ',' . 10)
-            ->field('order_id, order_sn, o.num, phase, is_win, pay_status, total_amount, goods_id')
+            ->field('order_id, order_sn, o.num, phase, is_win, pay_status, total_amount, goods_id, num')
             ->select();
             
         if($orderList){
