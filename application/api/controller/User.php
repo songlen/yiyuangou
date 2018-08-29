@@ -43,7 +43,8 @@ class User extends Base {
      *  注册
      */
     public function register() {
-    	$mobile = I('mobile');
+        $mobile = I('mobile');
+        $nickname = I('nickname');
     	$code = I('code');
     	$password = trim(I('password'));
     	// $password_confirm = trim(I('password_confirm'));
@@ -51,6 +52,9 @@ class User extends Base {
     	if(check_ca_mobile($mobile) == false){
     		response_error('', '手机号格式错误');
     	}
+
+        if(empty(trim($nickname))) response_error('', '用户名必填');
+        if(Db::name('users')->where('nickname', $nickname)->count()) response_error('', '用户名已被使用');
 
     	$userInfo = Db::name('users')->where("mobile={$mobile}")->find();
     	if($userInfo){
@@ -69,7 +73,7 @@ class User extends Base {
     	$map = array(
     		'mobile' => $mobile,
     		'password' => encrypt($password),
-    		'nickname' => $mobile,
+    		'nickname' => $nickname,
     		'reg_time' => time(),
     		'last_login' => time(),
     		'token' => md5(time().mt_rand(1,999999999)),
