@@ -319,14 +319,17 @@ class Cart extends Base {
         if(!empty($order_sns)){
             foreach ($order_sns as $order_sn) {
                 // 获取订单信息，判断是否已支付
-                $order = M('order')->where('order_sn', $order_sn)->field('user_id, order_id, order_sn, pay_status, goods_price, prom_id, num')->find();
+                $order = M('order')->where('order_sn', $order_sn)->field('user_id, order_id, order_sn, pay_status, goods_price, prom_id, num, integral')->find();
                 if($order['pay_status'] == '1'){
                     break;
                 }
 
                 // 支付成功修改订单状态为已支付，扣除活动表中冻结的份额，增加被购买份数
                 M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time()));
-                accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0, $order['order_id'], $order_sn);
+                // 只有不是积分支付的才能获得积分
+                if($order['integral'] == 0){
+                    accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0, $order['order_id'], $order_sn);
+                }
 
                 $act_id = $order['prom_id'];
 
