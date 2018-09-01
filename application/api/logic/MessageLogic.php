@@ -40,7 +40,7 @@ class MessageLogic {
                 if($item['user_id'] == $win_user_id){
                     $message = '恭喜您中奖，点击';
                     $jsondata = array(
-                        'hrefValue' => '查看中奖详情',
+                        'hrefValue' => '追踪中奖的幸运号码',
                         'router' => 'finishedDetails',
                         'param' => array(
                             'id' => $item['order_id'],
