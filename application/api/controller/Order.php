@@ -70,7 +70,7 @@ class Order extends Base {
             ->where($where)
             ->order('order_id DESC')
             ->limit(($page-1)*10 . ',' . 10)
-            ->field('order_id, order_sn, o.num, phase, is_win, pay_status, total_amount, goods_id, num')
+            ->field('order_id, order_sn, o.num, phase, is_win, pay_status, total_amount, goods_id, num, buy_goods')
             ->select();
             
         if($orderList){
@@ -96,7 +96,7 @@ class Order extends Base {
         $order_id = I('order_id/d');
 
         $orderInfo = Db::name('order')->where("user_id=$user_id and order_id=$order_id")
-            ->field('order_id, order_sn, is_win, consignee, mobile, country, province , city, address, prom_id, order_amount, add_time')
+            ->field('order_id, order_sn, is_win, consignee, mobile, country, province , city, address, prom_id, order_amount, add_time, buy_goods')
             ->find();
 
         if(empty($orderInfo)) response_error('', '订单不存在');
@@ -492,9 +492,9 @@ class Order extends Base {
             break;
         }
 
-        // 支付成功修改订单状态为已支付
-        M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time()));
+        // 支付成功修改订单状态为已支付 , 并标记该订单不可再次补差价购买
+        M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time(), 'buy_goods'=>'1'));
         // 支付获得积分
-         accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0,$order['order_id'], $order_sn);
+        accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0,$order['order_id'], $order_sn);
     }
 }
