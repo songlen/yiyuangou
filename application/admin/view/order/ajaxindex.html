@@ -34,6 +34,9 @@
           <div style="text-align: center; width: 60px;" class="">{$shipping_status[$list[shipping_status]]}</div>
         </td>
         <td align="center" abbr="article_time" axis="col6" class="">
+          <div style="text-align: center; width: 60px;" class="">{$list.prom_type == 0 ? '补差价购买':'夺宝中奖'}</div>
+        </td>
+        <td align="center" abbr="article_time" axis="col6" class="">
           <div style="text-align: center; width: 120px;" class="">{$list.add_time|date='Y-m-d H:i',###}</div>
         </td>
         <td align="left" axis="col1" class="handle" align="center">
