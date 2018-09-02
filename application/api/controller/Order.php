@@ -109,6 +109,7 @@ class Order extends Base {
             'order_amount' => $orderInfo['order_amount'],
             'act_id' => $orderInfo['prom_id'],
             'add_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
+            'buy_goods'=>$orderInfo['buy_goods'],
         );
         // 地址信息
         $result['address'] = array(
