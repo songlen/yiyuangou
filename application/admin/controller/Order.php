@@ -184,6 +184,7 @@ class Order extends Base {
     	$shipping_status = I('shipping_status');
     	$condition['shipping_status'] = empty($shipping_status) ? array('neq',1) : $shipping_status;
         $condition['order_status'] = array('in','0,1,2,4');
+        $condition['pay_status'] = 0;
         $condition['prom_type'] = ['in','0,5']; // 0 普通订单 5 中奖下单
     	$count = M('order')->where($condition)->count();
     	$Page  = new AjaxPage($count,10);
