@@ -24,6 +24,9 @@ class MessageLogic {
 
         $win_user_id = $activity['win_user_id'];
         $goods_name = $activity['goods_name'];
+        // 通过中奖号查找中奖订单id
+        $lucky = M('lucky_number')->where(array('lucky_number', $activity['lucky_number']))->field('order_id winOrderId')->find();
+        $winOrderId = $lucky['order_id'];
 
         // 获取活动参与的订单
         $orders = Db::name('order')
@@ -32,6 +35,7 @@ class MessageLogic {
             ->where('pay_status', 1)
             ->field('user_id, order_id, num')
             ->group('user_id')
+            ->order('order_id desc')
             ->select();
 
         if(!empty($orders)){
@@ -44,7 +48,7 @@ class MessageLogic {
                         'hrefValue' => '追踪中奖的幸运号码',
                         'router' => 'finishedDetails',
                         'param' => array(
-                            'id' => $item['order_id'],
+                            'id' => $winOrderId,
                             'type' => '1',
                         ),
                     );
