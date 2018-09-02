@@ -75,6 +75,7 @@ class Activity extends Base {
             ->join('users u', 'o.user_id=u.user_id', 'left')
             ->where('prom_id', $act_id)
             ->where('pay_status', '1')
+            ->where('prom_type', 4)
             ->field('nickname, num, FROM_UNIXTIME(o.add_time, "%Y-%m-%d %H:%i:%s") time')
             ->select();
 
@@ -84,6 +85,7 @@ class Activity extends Base {
             ->where('prom_id', $act_id)
             ->where('pay_status', '1')
             ->where('add_time', ['>=', time()-1800])
+            ->where('prom_type', 4)
             ->field('num, add_time')
             ->select();
 
