@@ -153,7 +153,7 @@ class Task extends Base {
         $goods_name = $activity['goods_name'];
         // 通过中奖号查找中奖订单id
         $lucky = M('lucky_number')->where('lucky_number', $activity['lucky_number'])->field('order_id winOrderId')->find();
-        $winOrderId = $lucky['order_id'];
+        $winOrderId = $lucky['winOrderId'];
         p($winOrderId);
     }
 }
