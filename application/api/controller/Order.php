@@ -27,6 +27,7 @@ class Order extends Base {
             'user_id' => $user_id,
             'prom_type' => 4,
             'ga.status' => 1,
+            'pay_status' => '1',
         );
 
         $orderList = M('order')->alias('o')
@@ -63,6 +64,7 @@ class Order extends Base {
             'user_id' => $user_id,
             'prom_type' => 4,
             'ga.status' => 3,
+            'pay_status' => 1,
         );
 
         $orderList = M('order')->alias('o')
