@@ -150,7 +150,7 @@ class Order extends Base {
     }
 
     /**
-     * [goodsOrder 商品订单]
+     * [goodsOrder 商品订单] 就是补差价购买订单及中奖订单
      * @return [type] [description]
      */
     public function goodsOrder(){
@@ -159,15 +159,16 @@ class Order extends Base {
 
         $where = array(
             'o.user_id' => $user_id,
-            'o.prom_type' => array('in', array(0, 5)),
+            'o.prom_type' => 0,
         );
 
+        $limit_start = ($page-1)*10;
         $orderList = M('order')->alias('o')
             ->join('order_goods og', 'o.order_id=og.order_id')
             ->where($where)
             ->whereOr('is_win', 1)
             ->order('order_id DESC')
-            ->limit(($page-1)*10 . ',' . 10)
+            ->limit($limit_start,  10)
             ->field('o.order_id, order_sn, goods_id, goods_num, order_status, shipping_status, pay_status, total_amount')
             ->select();
 

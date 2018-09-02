@@ -32,8 +32,8 @@ class OpenPrizeLogic {
         Db::name('LuckyNumber')->where("lucky_number=$lucky_number and act_id=$act_id")->update(array('is_win'=>'1'));
         // 订单表中记录是否中奖
         Db::name('order')->where("order_id={$luckyInfo['order_id']}")->update(array('is_win'=>'1'));
-        // 给中奖用户下商品订单
-        $this->winningGoodsOrder($luckyInfo['win_user_id'], $luckyInfo['order_id']);
+        // 给中奖用户下商品订单//// 不下订单了，直接取is_win =1 就是中奖订单
+        // $this->winningGoodsOrder($luckyInfo['win_user_id'], $luckyInfo['order_id']);
         // 进行滚期
         $this->continueActivity($act_id);
         // 给参与用户发送是否中奖消息
