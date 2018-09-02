@@ -76,7 +76,7 @@ class Order extends Base {
         $Page  = new AjaxPage($count,20);
         $show = $Page->show();
         //获取订单列表
-        $orderList = $orderLogic->getOrderList($condition,$sort_order,$Page->firstRow,$Page->listRows);
+        $orderList = $orderLogic->getOrderList($condition,, $conditionOr, $sort_order,$Page->firstRow,$Page->listRows);
         $this->assign('orderList',$orderList);
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('pager',$Page);
