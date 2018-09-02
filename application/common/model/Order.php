@@ -131,7 +131,7 @@ class Order extends Model
         $pt = $data['prom_type'];//订单类型：0默认1抢购2团购3优惠4预售5虚拟6拼团
         $btn = array();
 
-        if($ps == '1'){
+        if($ps == '1' && $ss == 0){
             $btn['delivery'] = '去发货';
         }
         /*if($data['pay_code'] == 'cod') {
