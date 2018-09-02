@@ -215,6 +215,8 @@ class OpenPrizeLogic {
             'num' => '1',
             'tax_amount' => 0,
             'original_order_id' => $order_id,
+            'pay_status' => '1',
+            'pay_time'=>time(),
         );
 
         $commit_result = true;

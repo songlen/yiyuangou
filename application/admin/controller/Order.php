@@ -678,22 +678,6 @@ class Order extends Base {
         return $this->fetch();
     }
 
-    /*
-    *批量发货
-    */
-    public function delivery_batch(){
-		header("Content-type: text/html; charset=utf-8");
-exit("功能未开发");
-    }
-
-    /*
-    *批量发货处理 
-    */
-    public function delivery_batch_handle(){
-		header("Content-type: text/html; charset=utf-8");
-exit("功能未开发");
-    }
-
     /**
      * 删除某个退换货申请
      */

@@ -159,7 +159,7 @@ class Order extends Base {
 
         $where = array(
             'o.user_id' => $user_id,
-            'o.prom_type' => 0,
+            'o.prom_type' => array('in', array(0, 5)),
         );
 
         $orderList = M('order')->alias('o')
