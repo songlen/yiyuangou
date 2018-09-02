@@ -31,6 +31,7 @@ class MessageLogic {
             ->where('robot', 0)
             ->where('pay_status', 1)
             ->field('user_id, order_id, num')
+            ->group('user_id')
             ->select();
 
         if(!empty($orders)){
