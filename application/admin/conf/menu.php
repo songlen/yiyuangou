@@ -79,7 +79,7 @@ return	array(
 			array('name' => '订单','child'=>array(
 					array('name' => '商品订单', 'act'=>'index', 'op'=>'Order'),
 					// array('name' => '虚拟订单', 'act'=>'virtual_list', 'op'=>'Order'),
-					array('name' => '发货单', 'act'=>'delivery_list', 'op'=>'Order'),
+					// array('name' => '发货单', 'act'=>'delivery_list', 'op'=>'Order'),
 					// array('name' => '退款单', 'act'=>'refund_order_list', 'op'=>'Order'),
 					// array('name' => '退换货', 'act'=>'return_list', 'op'=>'Order'),
 					// array('name' => '添加订单', 'act'=>'add_order', 'op'=>'Order'),
