@@ -35,7 +35,7 @@ class MessageLogic {
 
         if(!empty($orders)){
             foreach ($orders as $item) {
-                $message = $item['user_id'] == $win_user_id ? '恭喜您中奖' : '很遗憾您购买的'.$goods_name.'商品未中奖';
+                // $message = $item['user_id'] == $win_user_id ? '恭喜您中奖' : '很遗憾您购买的'.$goods_name.'商品未中奖';
 
                 if($item['user_id'] == $win_user_id){
                     $message = '恭喜您中奖，点击';
@@ -62,6 +62,7 @@ class MessageLogic {
 
                 $data = array(
                     'message' => $message,
+                    'type' => 0,
                     'category' => '1',
                     'send_time' => time(),
                     'data' => serialize($jsondata),
