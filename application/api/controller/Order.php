@@ -449,7 +449,7 @@ class Order extends Base {
 
     // 商品支付
     public function pay(){
-        $old_order_id = I('old_order_id');
+        $old_order_id = I('old_order_id'); //原订单id 用来buy_goods=1
         $user_id = I('user_id');
         $order_sn = I('order_sn');
         $param['card_number'] = I('card_number'); // 卡号
@@ -480,7 +480,7 @@ class Order extends Base {
         $PayLogic = new PayLogic();
         $pay_result = $PayLogic->doPay($user_id, $order_sn, $param, $error);
         if($pay_result == true){
-            $this->payCallback($order_sn);
+            $this->payCallback($order_sn, $old_order_id);
             response_success('', '支付成功');
         } else {
             response_error('', $error);
@@ -491,7 +491,8 @@ class Order extends Base {
      * [payCallback 支付回调]
      * @return [type] [description]
      */
-    public function payCallback($order_sn = ''){
+    public function payCallback($order_sn = '', $old_order_id){
+
         // 获取订单信息，判断是否已支付 
         $order = M('order')->where('order_sn', $order_sn)->field('user_id, order_id, goods_price, pay_status, prom_id, num, integral')->find();
         if($order['pay_status'] == '1'){
@@ -504,5 +505,7 @@ class Order extends Base {
         if($order['integral'] == 0){
             accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0,$order['order_id'], $order_sn);
         }
+        // 将原订单buy_goods改为1
+        M('order')->where('order_id', $old_order_id)->update(array('buy_goods'=>1));
     }
 }
