@@ -643,6 +643,7 @@ class Order extends Base {
         $orderObj = $orderModel->where(['order_id'=>$order_id])->find();
         $order =$orderObj->append(['full_address'])->toArray();
     	$orderGoods = $orderGoodsMdel::all(['order_id'=>$order_id,'is_send'=>['lt',2]]);
+        p($orderGoods);
         if($id){
             if(!$orderGoods){
                 $this->error('所选订单有商品已完成退货或换货');//已经完成售后的不能再发货

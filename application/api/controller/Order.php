@@ -345,7 +345,8 @@ class Order extends Base {
         $result['priceInfo'] = $priceInfo;
 
         if($submit_order){
-            $result = $this->placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo);
+            // order_id 原订单id 用来积分支付时，改变buy_goods=1
+            $result = $this->placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo, $order_id);
             // 如果下单失败，返回失败信息
             if ($result['status'] ==  '-1') response_error('', $result['error']);
             // 则 下单成功
@@ -369,7 +370,7 @@ class Order extends Base {
      * @param  [type] $priceInfo [description]
      * @return [type]            [description]
      */
-    private function placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo){
+    private function placeGoodsOrder($user_id, $goodsInfo, $address, $priceInfo, $old_order_id){
         if(empty($address)) return array('status'=>'-1', 'error' => '请填写收货地址');
 
         $order_sn = date('YmdHis').mt_rand(1000,9999);
@@ -417,6 +418,8 @@ class Order extends Base {
 
             // 如果使用了积分
             if($priceInfo['points']>0){
+                // 更新原订单表buy_goods
+                M('order')->where('order_id', $old_order_id)->update(array('buy_goods'=>1));
                 accountLog($user_id, 0, -$priceInfo['points'], '订单使用积分', 0,$order_id, $order_sn);
             }
 
@@ -446,6 +449,7 @@ class Order extends Base {
 
     // 商品支付
     public function pay(){
+        $old_order_id = I('old_order_id');
         $user_id = I('user_id');
         $order_sn = I('order_sn');
         $param['card_number'] = I('card_number'); // 卡号
@@ -495,7 +499,7 @@ class Order extends Base {
         }
 
         // 支付成功修改订单状态为已支付 , 并标记该订单不可再次补差价购买
-        M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time(), 'buy_goods'=>'1'));
+        M('order')->where('order_sn', $order_sn)->update(array('pay_status'=>'1', 'pay_time'=>time()));
         // 支付获得积分
         if($order['integral'] == 0){
             accountLog($order['user_id'], 0, $order['goods_price'], '订单获得积分', 0,$order['order_id'], $order_sn);
