@@ -125,13 +125,7 @@ class Task extends Base {
     }
 
     public function test(){
-        $arr = array(
-            array('number'=>'1001', 'status'=>0),
-            array('number'=>'1002', 'status'=>0),
-            array('number'=>'1003', 'status'=>1),
-            array('number'=>'1004', 'status'=>0),
-            array('number'=>'1005', 'status'=>1),
-        );
+
 
         // array_filter($arr, function($item){
         //     return $item['status'] == 1;
@@ -151,12 +145,15 @@ class Task extends Base {
         } else {
             return array($usableLucky[$keys]);
         }*/
-       $filename = RUNTIME_PATH.'last100/act_29.php';
+        $act_id = 8;
+      $activity = M('goods_activity')->where('act_id', $act_id)->find();
+        if($activity['status'] != 3) return false;
 
-        $lists = include ($filename);
-        p($lists);
-        foreach ($lists as $key => $value) {
-            p($value);
-        }
+        $win_user_id = $activity['win_user_id'];
+        $goods_name = $activity['goods_name'];
+        // 通过中奖号查找中奖订单id
+        $lucky = M('lucky_number')->where(array('lucky_number', $activity['lucky_number']))->field('order_id winOrderId')->find();
+        $winOrderId = $lucky['order_id'];
+        p($winOrderId);
     }
 }
