@@ -60,8 +60,7 @@ class Order extends Base {
         if($begin && $end){
         	$condition['add_time'] = array('between',"$begin,$end");
         }
-        $condition['prom_type'] = 0; //补差价购买
-        $conditionOr['is_win'] = 1; // 中奖订单
+        $condition['prom_type'] = array('in', array(0, 5)); //补差价购买
 
         $order_sn = ($keyType && $keyType == 'order_sn') ? $keywords : I('order_sn') ;
         $order_sn ? $condition['order_sn'] = trim($order_sn) : false;
@@ -72,11 +71,11 @@ class Order extends Base {
         I('shipping_status') != '' ? $condition['shipping_status'] = I('shipping_status') : false;
         I('user_id') ? $condition['user_id'] = trim(I('user_id')) : false;
         $sort_order = I('order_by','DESC').' '.I('sort');
-        $count = M('order')->where($condition)->whereOr($conditionOr)->count();
+        $count = M('order')->where($condition)->whereOr('is_win', 1)->count();
         $Page  = new AjaxPage($count,20);
         $show = $Page->show();
         //获取订单列表
-        $orderList = $orderLogic->getOrderList($condition, $conditionOr, $sort_order,$Page->firstRow,$Page->listRows);
+        $orderList = $orderLogic->getOrderList($condition,$sort_order,$Page->firstRow,$Page->listRows);
         $this->assign('orderList',$orderList);
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('pager',$Page);
@@ -643,7 +642,6 @@ class Order extends Base {
         $orderObj = $orderModel->where(['order_id'=>$order_id])->find();
         $order =$orderObj->append(['full_address'])->toArray();
     	$orderGoods = $orderGoodsMdel::all(['order_id'=>$order_id,'is_send'=>['lt',2]]);
-        p($orderGoods);
         if($id){
             if(!$orderGoods){
                 $this->error('所选订单有商品已完成退货或换货');//已经完成售后的不能再发货
