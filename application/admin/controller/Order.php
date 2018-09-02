@@ -61,7 +61,7 @@ class Order extends Base {
         	$condition['add_time'] = array('between',"$begin,$end");
         }
         $condition['prom_type'] = 0; //补差价购买
-        $conditionOr = ['is_win'] = 1; // 中奖订单
+        $conditionOr['is_win'] = 1; // 中奖订单
 
         $order_sn = ($keyType && $keyType == 'order_sn') ? $keywords : I('order_sn') ;
         $order_sn ? $condition['order_sn'] = trim($order_sn) : false;
