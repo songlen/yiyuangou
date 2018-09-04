@@ -191,11 +191,11 @@ class Cart extends Base {
                 response_error('', ' 已结束');
             }
             if($actInfo['is_publish'] != '1'){
-                response_error('', ' 未发布');
+                response_error('', '未发布');
             }
 
             if($item['num'] > $actInfo['surplus']){
-                response_error('', ' 商品数量超过剩余数量');
+                response_error('', '商品数量超过剩余数量');
             }
 
             $goodsList[] = array(
@@ -257,7 +257,6 @@ class Cart extends Base {
                 );
                 response_success($data, '支付成功');
             } else {
-                // $this->payCallback($order_sn_gather);
                 $data = array(
                     'type' => 'order_success',
                     'order_sn' => $order_sn_gather,

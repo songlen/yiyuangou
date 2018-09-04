@@ -25,7 +25,7 @@ class MessageLogic {
         $win_user_id = $activity['win_user_id'];
         $goods_name = $activity['goods_name'];
         // 通过中奖号查找中奖订单id
-        $lucky = M('lucky_number')->where('lucky_number', $activity['lucky_number'])->field('order_id')->find();
+        $lucky = M('lucky_number')->where(array('act_id'=>$act_id, 'lucky_number'=>$activity['lucky_number']))->field('order_id')->find();
         $winOrderId = $lucky['order_id'];
 
         // 获取活动参与的订单
@@ -60,7 +60,7 @@ class MessageLogic {
                         'param' => array(
                             'order_id' => $item['order_id'],
                             'goods_id' => $activity['goods_id'],
-                            'num' => $item['num']
+                            'num' => 1
                         ),
                     );
                 }

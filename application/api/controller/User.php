@@ -384,7 +384,7 @@ class User extends Base {
             ->whereOr(function($query) use ($user_id){
                 $query->where('type', '1')->where('status', null);
             })
-            ->select();
+            ->count();
 
         if($count){
             response_success(array('exists'=>1));
