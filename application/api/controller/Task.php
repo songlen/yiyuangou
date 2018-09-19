@@ -37,7 +37,7 @@ class Task extends Base {
         if(empty($activits)){
             exit();
         }
-p($activits);
+
        foreach ($activits as $key => $item) {
             $act_id = $item['act_id'];
             // 执行开奖流程
