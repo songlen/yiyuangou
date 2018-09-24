@@ -1,3 +1,4 @@
 application/database.php
 runtime/*
 application/api/logic/SmsLogic.php
+application/api/logic/PayLogic.php
