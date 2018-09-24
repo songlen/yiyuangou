@@ -167,8 +167,12 @@ class Goods extends Base {
         $GoodsLogic = new GoodsLogic();
         $brandList = $GoodsLogic->getSortBrands();
         $categoryList = $GoodsLogic->getSortCategory();
+        $admin_id = session('admin_id');
+
         $this->assign('categoryList',$categoryList);
         $this->assign('brandList',$brandList);
+        $this->assign('admin_id',$admin_id);
+
         return $this->fetch();
     }
     
@@ -208,6 +212,10 @@ class Goods extends Base {
 
         $catList = D('goods_category')->select();
         $catList = convert_arr_key($catList, 'id');
+
+
+        $admin_id = session('admin_id');
+        $this->assign('admin_id',$admin_id);
         $this->assign('catList',$catList);
         $this->assign('goodsList',$goodsList);
         $this->assign('page',$show);// 赋值分页输出

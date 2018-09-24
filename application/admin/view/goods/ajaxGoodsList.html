@@ -58,7 +58,8 @@
                       <span class="no" onClick="changeTableVal('goods','goods_id','{$list.goods_id}','is_hot',this)" ><i class="fa fa-ban"></i>否</span>
                     </if>
                   </div>
-                </td> -->       
+                </td> -->   
+                <if condition="$admin_id == 1">
                 <td align="center" axis="col0">
                   <div style="text-align: center; width: 50px;">
                     <if condition='$list[is_on_sale] eq 1'>
@@ -67,7 +68,8 @@
                       <span class="no" onClick="changeTableVal('goods','goods_id','{$list.goods_id}','is_on_sale',this)" ><i class="fa fa-ban"></i>否</span>
                     </if>
                   </div>
-                </td>    
+                </td>
+              </if>
                 <td align="center" axis="col0">                  
                 <div style="text-align: center; width: 50px; <if condition="$list.store_count elt tpCache('basic.warning_storage')">color:#D91222;</if> ">
                   {$list.store_count}
