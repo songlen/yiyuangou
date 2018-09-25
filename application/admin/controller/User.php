@@ -430,6 +430,48 @@ class User extends Base {
         exit();
     }
 
+    // 赠送积分日志
+    public function givePointsLog(){
+
+        $change_time_start = I('change_time_start');
+        $change_time_end = I('change_time_end');
+
+        $where1 = array('al.type'=>2, 'al.pay_points'=> array('<>', '0'));
+        $where2 = array('type'=>2, 'pay_points'=> array('<>', '0'));
+
+        if($change_time_start && $change_time_end){
+            $change_time_start = strtotime(date('Y-m-d', strtotime($change_time_start)));
+            $change_time_end = $change_time_end = strtotime(date('Y-m-d', strtotime($change_time_end))) + 3600*24-1;
+
+            $where1['change_time'] = array(array('<=', $change_time_end), array('>=', $change_time_start));
+            $where2['change_time'] = array(array('<=', $change_time_end), array('>=', $change_time_start));
+        }
+
+        //获取记录总数
+        $count = M('account_log')->where(array('type'=>2))->count();
+        $page = new Page($count);
+        $lists  = M('account_log')->alias('al')
+            ->join('users u', 'al.user_id=u.user_id', 'left')
+            ->where($where1)
+            ->field('u.nickname, u.mobile, al.change_time, al.pay_points')
+            ->order('change_time desc')
+            ->limit($page->firstRow.','.$page->listRows)
+            ->select();
+// p(M('account_log')->getLastSql());
+        // 总积分
+        $totalPoints = M('account_log')->where($where2)->sum('pay_points');
+
+        $this->assign('total_points', 1);
+        $this->assign('page',$page->show());
+        $this->assign('lists',$lists);
+        $this->assign('totalPoints',$totalPoints);
+        $this->assign('change_time_start', $change_time_start ? date('Y-m-d', $change_time_start) : '');
+        $this->assign('change_time_end', $change_time_end ? date('Y-m-d', $change_time_end) : '');
+
+        return $this->fetch();
+    }
+
+
     /**
      *
      * @time 2016/09/03

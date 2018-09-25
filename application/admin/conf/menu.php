@@ -16,6 +16,7 @@ return	array(
 				)),
 				array('name' => '会员','child'=>array(
 						array('name'=>'会员列表','act'=>'index','op'=>'User'),
+						array('name'=>'赠送积分记录','act'=>'givePointsLog','op'=>'User'),
 						// array('name'=>'会员等级','act'=>'levelList','op'=>'User'),
 						// array('name'=>'充值记录','act'=>'recharge','op'=>'User'),
 						// array('name'=>'提现申请','act'=>'withdrawals','op'=>'User'),
