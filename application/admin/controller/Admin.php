@@ -129,11 +129,6 @@ class Admin extends Base {
             $username = I('post.username/s');
             $password = I('post.password/s');
 
-            $verify = new Verify();
-            if (!$verify->check($code, "admin_login")) {
-                $this->ajaxReturn(['status' => 0, 'msg' => '验证码错误']);
-            }
-
             $adminLogic = new AdminLogic;
             $return = $adminLogic->login($username, $password);
             $this->ajaxReturn($return);
