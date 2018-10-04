@@ -34,9 +34,9 @@ class Task extends Base {
         );
 
         $activits = Db::name('goods_activity')
-            ->where($where)
-            ->whereOr(function($query){
-                $query->where('maiman_time', array('<>', null));
+            ->where(function($query){
+                $query->where($where);
+                $query->whereOr('maiman_time', array('<>', null));
             })
             ->field('act_id, goods_id, goods_name')
             ->select();
