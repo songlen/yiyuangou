@@ -10,6 +10,7 @@ use think\Db;
 use app\api\logic\MessageLogic;
 use app\api\logic\OrderLogic;
 include APP_PATH.'common/util/File.class.php';
+use app\common\util\File;
 
 // 开奖
 class OpenPrizeLogic {
@@ -56,7 +57,7 @@ class OpenPrizeLogic {
         $data = "<?php \r\n return ".var_export($lastlist100, true).';';
 
         $filename = RUNTIME_PATH.'last100/act_'.$act_id.'.php';
-        $File = new Common\Util\File();
+        $File = new \File();
         $File->writeFile($filename, $data);
         // 时间加起来
         $sumTime = 0;
