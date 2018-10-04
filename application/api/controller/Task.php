@@ -38,7 +38,7 @@ class Task extends Base {
                 $query->where($where);
             })
             ->whereOr(function($query){
-                $query->where(array('status'=>1, 'maiman_time'=>'not null'));
+                $query->where(array('status'=>1, 'maiman_time'=>array('>', 1)));
             })
             ->field('act_id, goods_id, goods_name')
             ->select();
