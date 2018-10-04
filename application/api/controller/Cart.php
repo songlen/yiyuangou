@@ -139,8 +139,8 @@ class Cart extends Base {
     public function prepareOrder(){
         $user_id = I('user_id/d');
         $goodsInfo = I('goodsInfo');
-        $use_point = I('use_point', 0); // 是否使用积分
-        $submit_order = I('submit_order', 0); // 是否提交订单
+        $use_point = I('use_point'); // 是否使用积分
+        $submit_order = I('submit_order'); // 是否提交订单
         $address_id = I('address_id/d');
 
         $goodsInfo =  stripslashes(html_entity_decode($goodsInfo));
