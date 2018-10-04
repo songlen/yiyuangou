@@ -10,7 +10,6 @@ use think\Db;
 use app\api\logic\MessageLogic;
 use app\api\logic\OrderLogic;
 include APP_PATH.'common/util/File.class.php';
-use Common\Util\File;
 
 // 开奖
 class OpenPrizeLogic {
