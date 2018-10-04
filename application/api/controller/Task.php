@@ -41,7 +41,6 @@ class Task extends Base {
             ->field('act_id, goods_id, goods_name')
             ->select();
 
-        p(M('goods_activity')->getLastSql);
         p($activits);
         if(empty($activits)){
             exit();
