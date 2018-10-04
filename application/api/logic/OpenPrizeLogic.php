@@ -57,7 +57,7 @@ class OpenPrizeLogic {
         $data = "<?php \r\n return ".var_export($lastlist100, true).';';
 
         $filename = RUNTIME_PATH.'last100/act_'.$act_id.'.php';
-        $File = new \File();
+        $File = new Common\Util\File();
         $File->writeFile($filename, $data);
         // 时间加起来
         $sumTime = 0;
