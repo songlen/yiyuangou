@@ -7,7 +7,7 @@
  * Time: 下午2:53
  */
 
-namespace app\common\util;
+namespace Common\Util;
 
 use think\Storage;
 
