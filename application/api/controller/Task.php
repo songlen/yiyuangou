@@ -33,18 +33,15 @@ class Task extends Base {
             'status' => '1',
         );
 
-        $activits = Db::table('goods_activity')
-            ->field('act_id, goods_id, goods_name')
-            ->select(function($query){
-                $query->where($where);
+        $activits = Db::name('goods_activity')
+            ->where($where)
+            ->whereOr(function($query){
+                $query->where('maiman_time', array('<>', null));
             })
-            ->select(function($query){
-                $query->whereOr('maiman_time', array('<>', null));
-            });
+            ->field('act_id, goods_id, goods_name')
+            ->select();
 
-            
-
-        p(M('goods_activity')->getLastSql());
+        p(M('goods_activity')->getLastSql);
         p($activits);
         if(empty($activits)){
             exit();
