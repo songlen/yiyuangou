@@ -110,7 +110,9 @@ class PayLogic {
         $mpgResponse=$mpgHttpPost->getMpgResponse();
         $complete = $mpgResponse->getComplete();
 
-        var_dump($complete);die();
+        var_dump($complete);
+        p(echo $mpgResponse->getMessage());
+        die();
         if($complete == true){
             return true;
         } else {
