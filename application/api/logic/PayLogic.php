@@ -109,7 +109,9 @@ class PayLogic {
 
         $mpgResponse=$mpgHttpPost->getMpgResponse();
         $complete = $mpgResponse->getComplete();
-print("\nCardType = " . $mpgResponse->getCardType());
+        $ResponseCode = $mpgResponse->getResponseCode();
+        
+        print("\nCardType = " . $mpgResponse->getCardType());
         print("\nTransAmount = " . $mpgResponse->getTransAmount());
         print("\nTxnNumber = " . $mpgResponse->getTxnNumber());
         print("\nReceiptId = " . $mpgResponse->getReceiptId());
@@ -128,8 +130,8 @@ print("\nCardType = " . $mpgResponse->getCardType());
         print("\nAVSResponse = " . $mpgResponse->getAvsResultCode());
         print("\nCVDResponse = " . $mpgResponse->getCvdResultCode());
         print("\nITDResponse = " . $mpgResponse->getITDResponse());
-        die();
-        if($complete == 'true'){
+die();
+        if($complete == 'true' && $ResponseCode < 50){
             return true;
         } else {
             $error = $mpgResponse->getMessage();
