@@ -25,7 +25,7 @@ class PayLogic {
         $amount = '0.01';
         $pan=$param['card_number'];
         $expiry_date = $param['expiry_date'];        //December 2008
-        $crypt = '8';
+        $crypt = '7';
 
         /************************** AVS Variables *****************************/
 
@@ -99,7 +99,7 @@ class PayLogic {
 
         $mpgRequest = new \mpgRequest($mpgTxn);
         $mpgRequest->setProcCountryCode("CA"); //"US" for sending transaction to US environment
-        $mpgRequest->setTestMode(true); //false or comment out this line for production transactions
+        $mpgRequest->setTestMode(false); //false or comment out this line for production transactions
 
         /*********************** HTTPS Post Object ****************************/
 
