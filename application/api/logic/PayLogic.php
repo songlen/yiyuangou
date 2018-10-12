@@ -110,6 +110,7 @@ class PayLogic {
         $mpgResponse=$mpgHttpPost->getMpgResponse();
         $complete = $mpgResponse->getComplete();
         print($complete);
+        print($mpgResponse->getMessage());
         print($mpgResponse->getAvsResultCode());
         echo '<br>';
         print($mpgResponse->getCvdResultCode());
