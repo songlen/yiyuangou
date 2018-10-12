@@ -109,9 +109,9 @@ class PayLogic {
 
         $mpgResponse=$mpgHttpPost->getMpgResponse();
         $complete = $mpgResponse->getComplete();
-        echo $mpgResponse->getAvsResultCode();
+        print($mpgResponse->getAvsResultCode());
         echo '<br>';
-        echo $mpgResponse->getCvdResultCode();
+        print($mpgResponse->getCvdResultCode());
         die();
         if($complete == 'true'){
             return true;
