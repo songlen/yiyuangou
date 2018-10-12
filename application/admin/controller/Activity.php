@@ -103,7 +103,8 @@ class Activity extends Base
             if(empty($data['id'])){
                 // 计算期数
                 $max_phase = Db::name('goods_activity')->max('phase');
-                $data['phase'] = $max_phase+1;
+                // $data['phase'] = $max_phase+1;
+                $data['phase'] = 1;
                 $data['add_time'] = time();
 
                 $insertId = Db::name('goods_activity')->insert($data);

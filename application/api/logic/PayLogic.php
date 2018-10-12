@@ -14,8 +14,8 @@ class PayLogic {
         vendor('eCommerce.mpgClass');
         /************************ Request Variables ***************************/
 
-        $store_id='gwca009685';
-        $api_token='68YZOsyDH90DKGSxdasc';
+        $store_id='store5';
+        $api_token='yesguy';
 
         /********************* Transactional Variables ************************/
 
@@ -23,17 +23,17 @@ class PayLogic {
         $order_id = $order_sn;
         $cust_id = $user_id;
         $amount = '0.01';
-        $pan=$param['card_number'];
-        $expiry_date = $param['expiry_date'];        //December 2008
+        $pan='4242424242424242';
+        $expiry_date = '0812';        //December 2008
         $crypt = '7';
 
         /************************** AVS Variables *****************************/
 
-        $avs_street_number = $param['street_number'];
-        $avs_street_name = $param['street_name'];
-        $avs_zipcode = $param['zipcode'];
-        $avs_email = $param['email'];
-        $avs_hostname = '35.182.2.214';
+        $avs_street_number = '201';
+        $avs_street_name = 'Michigan Ave';
+        $avs_zipcode = 'M1M1M1';
+        $avs_email = 'test@host.com';
+        $avs_hostname = 'www.testhost.com';
         $avs_browser = 'Mozilla';
         $avs_shiptocountry = 'Canada';
         $avs_merchprodsku = '123456';
@@ -43,7 +43,7 @@ class PayLogic {
         /************************** CVD Variables *****************************/
 
         $cvd_indicator = '1';
-        $cvd_value = $param['cvd_value'];
+        $cvd_value = '198';
 
         /********************** AVS Associative Array *************************/
 
@@ -109,7 +109,6 @@ class PayLogic {
 
         $mpgResponse=$mpgHttpPost->getMpgResponse();
         $complete = $mpgResponse->getComplete();
-
         if($complete == 'true'){
             return true;
         } else {
