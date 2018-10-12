@@ -29,16 +29,16 @@ class PayLogic {
 
         /************************** AVS Variables *****************************/
 
-        /*$avs_street_number = $param['street_number'];
+        $avs_street_number = $param['street_number'];
         $avs_street_name = $param['street_name'];
         $avs_zipcode = $param['zipcode'];
-        $avs_email = $param['email'];
-        $avs_hostname = '35.182.2.214';
-        $avs_browser = 'Mozilla';
-        $avs_shiptocountry = 'Canada';
-        $avs_merchprodsku = '123456';
-        $avs_custip = $param['ip'];
-        $avs_custphone = $param['custphone'];//'5556667777';*/
+        // $avs_email = $param['email'];
+        // $avs_hostname = '35.182.2.214';
+        // $avs_browser = 'Mozilla';
+        // $avs_shiptocountry = 'Canada';
+        // $avs_merchprodsku = '123456';
+        // $avs_custip = $param['ip'];
+        // $avs_custphone = $param['custphone'];//'5556667777';
 
         /************************** CVD Variables *****************************/
 
