@@ -25,7 +25,7 @@ class PayLogic {
         $amount = '0.01';
         $pan=$param['card_number'];
         $expiry_date = $param['expiry_date'];        //December 2008
-        $crypt = '7';
+        $crypt = '8';
 
         /************************** AVS Variables *****************************/
 
