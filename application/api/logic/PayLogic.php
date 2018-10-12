@@ -1,12 +1,8 @@
 <?php
-/**
- * 订单处理类
- */
 
 namespace app\api\logic;
 use think\Db;
 
-// 开奖
 class PayLogic {
 
     public function doPay($user_id, $order_sn, $param, &$error){
