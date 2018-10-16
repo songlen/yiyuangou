@@ -198,7 +198,7 @@
 	});
 
 	function publish(act_id){
-		layer.confirm('发布后不可再编辑，确定发布吗？', {btn: ['确定','取消']}, function(){
+		layer.confirm('确定发布吗？', {btn: ['确定','取消']}, function(){
 			$.ajax({
 				type : 'GET',
 				url:"/index.php?m=Admin&c=Activity&a=publish&act_id="+act_id,
