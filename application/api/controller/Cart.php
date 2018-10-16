@@ -299,6 +299,8 @@ class Cart extends Base {
                 $order_amount += $item['order_amount'];
             }
         }
+
+        $param['order_amount'] = $order_amount;
         $PayLogic = new PayLogic();
         $pay_result = $PayLogic->doPay($user_id, $order_sn, $param, $error);
         if($pay_result == true){
