@@ -198,6 +198,7 @@ class Cart extends Base {
                 response_error('', '商品数量超过剩余数量');
             }
 
+
             $goodsList[] = array(
                 'act_id' => $item['act_id'],
                 'goods_id' => $item['goods_id'],

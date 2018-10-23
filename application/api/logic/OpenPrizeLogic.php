@@ -170,6 +170,7 @@ class OpenPrizeLogic {
             'add_time' => time(),
             'publish_time' => time(),
             'continue_hour_step' => $activity['continue_hour_step'],
+            'limit_num' => $activity['limit_num'],
         );
 
         M('goods_activity')->insert($data);

@@ -62,9 +62,19 @@
                     <label><em>*</em>续期的结束时间间隔</label>
                 </dt>
                 <dd class="opt">
-                    <input type="text" id="continue_hour_step" name="continue_hour_step" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" value="<if $info.continue_hour_step>{$info.continue_hour_step}</if>" class="input-txt">
+                    <input type="text" id="continue_hour_step" name="continue_hour_step" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" value="<if $info.continue_hour_step>{$info.continue_hour_step}<else />48</if>" class="input-txt">
                     <span class="err" id="err_end_time"></span>
                     <p class="notic">请填写整数，N（小时）</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>限制购买数量</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" id="limit_num" name="limit_num" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" value="<if $info.limit_num>{$info.limit_num}<else />0</if>" class="input-txt">
+                    <span class="err" id="err_end_time"></span>
+                    <p class="notic">0代表不限制</p>
                 </dd>
             </dl>
             <dl class="row">
