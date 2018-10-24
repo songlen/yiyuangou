@@ -198,6 +198,17 @@ class Cart extends Base {
                 response_error('', '商品数量超过剩余数量');
             }
 
+            // 检测是否超出限制购买数量 ，1先查出已购买的数量
+            if($actInfo['limit_num'] > 0){
+                $buyed = Db::name('order')
+                    ->where('prom_type', 4)
+                    ->where('prom_id', $item['act_id'])
+                    ->field('num')
+                    ->find();
+                $buyed_num = $buyed ? $buyed['num'] : 0;
+                if($actInfo['limit_num']-$buyed_num-$item['num'] < 1) response_error('', '超出管理员设定的购买数量限制');
+            }
+
 
             $goodsList[] = array(
                 'act_id' => $item['act_id'],
