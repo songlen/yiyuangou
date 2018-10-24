@@ -208,7 +208,7 @@ class Cart extends Base {
                     ->find();
                 $buyed_num = $buyed ? $buyed['num'] : 0;
                 $can_buy_num = $actInfo['limit_num'] - $buyed_num - $item['num'];
-                if($can_buy_num < 1) response_error('', '超出管理员限制的购买数量:'.$actInfo['limit_num'].'-'.$buyed_num.'-'.$item['num']);
+                if($can_buy_num < 1) response_error('', '超出管理员限制的购买数量:'.$can_buy_num);
             }
 
 
