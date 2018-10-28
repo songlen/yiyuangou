@@ -63,7 +63,8 @@ class Task extends Base {
        }
 
        // 删除lock
-       unlink($lockfile);
+       echo '1';
+       var_dump(unlink($lockfile));
     }
 
 	/**
