@@ -35,7 +35,7 @@ class Task extends Base {
         }else{
             file_put_contents($lockfile, 1, true);
         }
-        
+
         $time = time();
         $where = array(
             'end_time' => ['<=', time()+30],
@@ -62,6 +62,9 @@ class Task extends Base {
             $OpenPrizeLogic = new OpenPrizeLogic();
             $OpenPrizeLogic->exec($act_id);
        }
+
+       // 删除lock
+       unlink($lockfile);
     }
 
 	/**
