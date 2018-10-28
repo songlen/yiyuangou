@@ -27,7 +27,7 @@ class Task extends Base {
      * @return [type] [description]
      */
     public function openPrize(){
-
+var_dump(unlink($lockfile));die();
         $lockfile = '/tmp/mytest.lock';
          
         if(file_exists($lockfile)){
