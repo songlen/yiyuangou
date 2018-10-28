@@ -52,7 +52,7 @@ class Task extends Base {
             ->select();
 
         if(empty($activits)){
-            unlink($lockfile)
+            unlink($lockfile);
             exit();
         }
 
