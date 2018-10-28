@@ -22,7 +22,7 @@ class PayLogic {
         $type='purchase';
         $order_id = $order_sn;
         $cust_id = $user_id;
-        $amount = 0.01;//$param['order_amount'];
+        $amount = $param['order_amount'];
         $pan=$param['card_number'];
         $expiry_date = $param['expiry_date'];        //December 2008
         $crypt = '7';
