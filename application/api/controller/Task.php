@@ -28,7 +28,6 @@ class Task extends Base {
      */
     public function openPrize(){
         $lockfile = '/tmp/mytest.lock';
-var_dump(unlink($lockfile));die();
          
         if(file_exists($lockfile)){
             exit();
@@ -64,7 +63,7 @@ var_dump(unlink($lockfile));die();
        }
 
        // 删除lock
-       unlink($lockfile);
+       unlink($lockfile)
     }
 
 	/**
