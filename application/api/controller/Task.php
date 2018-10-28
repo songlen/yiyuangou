@@ -52,6 +52,7 @@ class Task extends Base {
             ->select();
 
         if(empty($activits)){
+            unlink($lockfile)
             exit();
         }
 
@@ -63,8 +64,7 @@ class Task extends Base {
        }
 
        // 删除lock
-       echo '1';
-       var_dump(unlink($lockfile));
+       unlink($lockfile);
     }
 
 	/**
