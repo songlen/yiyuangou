@@ -27,6 +27,15 @@ class Task extends Base {
      * @return [type] [description]
      */
     public function openPrize(){
+
+        $lockfile = '/tmp/mytest.lock';
+         
+        if(file_exists($lockfile)){
+            exit();
+        }else{
+            file_put_contents($lockfile, 1, true);
+        }
+        
         $time = time();
         $where = array(
             'end_time' => ['<=', time()+30],
