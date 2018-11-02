@@ -110,11 +110,12 @@
 				                <div style="text-align:left;   min-width:50px !important; max-width:inherit !important;">
 				                  <span class="btn"><em><i class="fa fa-cog"></i>操作<i class="arrow"></i></em>
 				                  <ul>
-				                  	<if condition="$vo.status != '3'">
+				                  	<!-- <if condition="$vo.status != '3'">
 									<li><a href="{:U('Activity/duobao_modify',array('id'=>$vo['act_id']))}">编辑</a></li>
 									<else>
 									<li><a href="javascript:layer.msg('发布后不可编辑')">编辑</a></li>
-									</if>
+									</if> -->
+									<li><a href="{:U('Activity/duobao_modify',array('id'=>$vo['act_id']))}">编辑</a>
 									<!-- <li><a href="{:U('Activity/robot_add', array('act_id'=>$vo.act_id))}">机器人</a></li> -->
 									<if condition="$vo.is_publish eq '1'">
 									<li><a href="{:U('Activity/orderList', array('act_id'=>$vo.act_id))}">购买记录</a></li>
