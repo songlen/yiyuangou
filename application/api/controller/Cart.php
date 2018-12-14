@@ -235,7 +235,7 @@ class Cart extends Base {
             $actual_amount = 0.00; // 如果使用积分，全部抵扣，实付款为0
         } else {
             $points = 0;
-            $actual_amount = $tax_amount; // 实付款
+            $actual_amount = $tax_amount + 0.1; // 实付款
         }
 
         $priceInfo = array(
